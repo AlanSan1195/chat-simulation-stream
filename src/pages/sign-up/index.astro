@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SignUp } from '@clerk/astro/components';
+---
+
+<Layout title="Registrarse - Chat Simulation Stream">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2">
+          Chat Simulation Stream
+        </h1>
+        <p class="text-slate-400">Crea tu cuenta para continuar</p>
+      </div>
+      <SignUp redirectUrl="/dashboard" />
+    </div>
+  </div>
+</Layout>
