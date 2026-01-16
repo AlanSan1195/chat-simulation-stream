@@ -1,165 +1,144 @@
 # Chat Simulation Stream
 
-Plataforma web para streamers principiantes que simula una audiencia interactiva en tiempo real. Genera mensajes de chat contextuales relacionados con el videojuego que estás jugando.
+Plataforma web para streamers principiantes que simula una audiencia interactiva en tiempo real. Genera mensajes de chat contextuales por videojuego usando frases dinámicas con IA 
 
-## Características
+## ✅ Puntos clave 
 
-- 🎮 **3 Videojuegos soportados**: Red Dead Redemption 2, Baldur's Gate 3, Minecraft
-- 💬 **Chat en tiempo real**: Mensajes simulados con frecuencia aleatoria (3-10 segundos)
-- 🔐 **Autenticación segura**: Integración con Clerk
-- ⚡ **Streaming SSE**: Server-Sent Events para actualizaciones en tiempo real
-- 🎨 **UI moderna**: Diseño oscuro optimizado para gaming con Tailwind CSS
+- **Chat en tiempo real** con SSE: el frontend recibe mensajes sin recargar la página.
+- **IA con failover**: si falla un proveedor, se intenta con otro.
+- **Cache en memoria**: frases y juegos por usuario viven en memoria (no persistente).
+- **Límite por usuario**: máximo 4 juegos generados por cuenta.
+- **Rutas protegidas**: `/dashboard` y `/api/*` requieren sesión con Clerk.
 
-## Stack Tecnológico
+## 🧭 Flujo principal
 
-- **Framework**: Astro 4.x (SSR)
+1. El usuario inicia sesión en `/sign-in` o `/sign-up`.
+2. Ingresa el nombre del juego en el dashboard.
+3. El backend genera frases con IA y las cachea.
+4. El frontend abre el stream SSE y recibe mensajes cada 2–6 segundos.
+
+## ✨ Características
+
+- 🎮 **Juegos dinámicos**: cualquier juego; fallback con 3 juegos hardcodeados.
+- 💬 **Chat simulado**: mensajes con categorías (gameplay, reactions, questions, emotes).
+- 🔐 **Autenticación**: Clerk protege dashboard y APIs.
+
+
+
+## 🧩 Stack tecnológico
+
+- **Framework**: Astro 5 (SSR)
 - **UI**: React 19 + Tailwind CSS 4
-- **Autenticación**: Clerk
-- **Iconos**: Tabler Icons
-- **TypeScript**: Modo estricto
+- **Auth**: Clerk
+- **IA**: Groq + Cerebras (failover)
+- **TypeScript**: modo estricto
 - **Package Manager**: pnpm
 
-## Requisitos Previos
+## ✅ Requisitos previos
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm 8+
-- Cuenta en [Clerk.com](https://clerk.com)
+- Cuenta en https://clerk.com
 
-## Instalación
+## ⚙️ Configuración
 
-1. **Instalar dependencias**
-   ```bash
-   pnpm install
-   ```
+1. Crea un archivo `.env` en la raíz.
+2. Agrega las variables de Clerk (obligatorias):
 
-2. **Configurar variables de entorno**
-   
-   Copia el archivo `.env.example` a `.env`:
-   ```bash
-   cp .env.example .env
-   ```
+```env
+PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxx
+```
 
-3. **Obtener API keys de Clerk**
+3. (Opcional) Para generar frases con IA agrega:
 
-   - Ve a [dashboard.clerk.com](https://dashboard.clerk.com)
-   - Crea una nueva aplicación o selecciona una existente
-   - En el sidebar, ve a "API Keys"
-   - Copia las keys y pégalas en tu archivo `.env`:
+```env
+GROQ_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+CEREBRAS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+```
 
-   ```env
-   PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxx
-   CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxx
-   ```
+## ▶️ Instalación y ejecución
 
-4. **Iniciar servidor de desarrollo**
-   ```bash
-   pnpm dev
-   ```
+```bash
+pnpm install
+pnpm dev
+```
 
-   La aplicación estará disponible en `http://localhost:4321`
+La app queda en `http://localhost:4321`.
 
-## Estructura del Proyecto
+## 🧪 Scripts disponibles
+
+```bash
+pnpm dev
+pnpm build
+pnpm preview
+```
+
+## 🔌 Endpoints principales
+
+- **GET `/api/chat-stream?game=...`** → Stream SSE con mensajes.
+- **POST `/api/generate-phrases`** → Genera frases con IA y guarda en cache.
+- **GET `/api/generate-phrases`** → Devuelve juegos del usuario y slots restantes.
+
+## 🔐 Rutas de la app
+
+- `/` → Landing.
+- `/dashboard` → Panel protegido.
+- `/sign-in` y `/sign-up` → Autenticación con Clerk.
+
+## 🗂️ Estructura del proyecto (resumen)
 
 ```
 chat-simulation-stream/
 ├── src/
-│   ├── components/          # Componentes React
-│   │   ├── ChatMessage.tsx
-│   │   ├── ChatWindow.tsx
-│   │   ├── GameSelector.tsx
-│   │   └── StreamerDashboard.tsx
-│   ├── layouts/
-│   │   └── Layout.astro
+│   ├── components/          # UI React
+│   ├── layouts/             # Layouts Astro
 │   ├── lib/                 # Lógica de negocio
-│   │   ├── chatGenerator.ts
-│   │   ├── gameData.ts
-│   │   └── messagePatterns.ts
+│   │   ├── ai/              # Servicios IA + failover
+│   │   ├── chatGenerator.ts # Generador de mensajes
+│   │   ├── messagePatterns.ts
+│   │   └── phraseCache.ts   # Cache y límites por usuario
 │   ├── pages/
-│   │   ├── api/
-│   │   │   └── chat-stream.ts  # Endpoint SSE
-│   │   ├── dashboard.astro     # Dashboard protegido
-│   │   └── index.astro         # Landing page
+│   │   ├── api/             # Endpoints
+│   │   ├── dashboard.astro
+│   │   └── index.astro
 │   ├── styles/
-│   │   └── global.css
-│   ├── utils/
-│   │   └── types.ts
 │   └── middleware.ts        # Protección de rutas
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+├── api/                     # Servidor Bun opcional
+└── astro.config.mjs
 ```
 
-## Uso
+## 🧠 Conceptos clave para estudio
 
-1. **Iniciar sesión**: Haz clic en "Comenzar mi Stream" en la landing page
-2. **Seleccionar juego**: Elige uno de los 3 videojuegos disponibles
-3. **Iniciar chat**: Presiona el botón "Iniciar Chat"
-4. **Ver mensajes**: Los mensajes comenzarán a aparecer automáticamente
-5. **Detener chat**: Usa el botón "Detener Chat" cuando desees
+- **SSE (Server-Sent Events)**: conexión abierta desde el backend para enviar eventos en vivo.
+- **Cache en memoria**: datos que viven mientras el servidor está en ejecución.
+- **Normalización**: se guarda el nombre del juego en minúsculas para comparar fácil.
+- **Failover**: si un proveedor de IA falla, se usa el siguiente.
+- **Límites por usuario**: 4 juegos como máximo por cuenta.
 
-## Scripts Disponibles
+## 🛠️ Personalización rápida
 
-```bash
-# Desarrollo
-pnpm dev
+### Agregar un juego hardcodeado
 
-# Build de producción
-pnpm build
+1. Añade frases en `MESSAGE_PATTERNS`.
+2. Mapea el nombre en `hardcodedMapping`.
 
-# Preview del build
-pnpm preview
-```
+Archivos clave: [src/lib/messagePatterns.ts](src/lib/messagePatterns.ts) y [src/lib/phraseCache.ts](src/lib/phraseCache.ts).
 
-## Personalización
+### Ajustar la frecuencia de mensajes
 
-### Agregar nuevos juegos
+Modifica el rango en [src/pages/api/chat-stream.ts](src/pages/api/chat-stream.ts). El valor actual es de 2–6 segundos.
 
-Edita `src/lib/gameData.ts` y `src/lib/messagePatterns.ts`:
+### Cambiar el límite por usuario
 
-```typescript
-// gameData.ts
-export const GAMES: Game[] = [
-  // ... juegos existentes
-  {
-    id: 'nuevo-juego',
-    name: 'nuevo-juego',
-    displayName: 'Nuevo Juego',
-    icon: '🎮'
-  }
-];
+Edita `MAX_GAMES_PER_USER` en [src/lib/phraseCache.ts](src/lib/phraseCache.ts).
 
-// messagePatterns.ts
-export const MESSAGE_PATTERNS: Record<GameId, MessagePattern> = {
-  // ... patrones existentes
-  'nuevo-juego': {
-    gameplay: ['Mensaje 1', 'Mensaje 2'],
-    reactions: ['Reacción 1', 'Reacción 2'],
-    questions: ['Pregunta 1', 'Pregunta 2'],
-    emotes: ['Emote1', 'Emote2']
-  }
-};
-```
+## 🧩 Servicio opcional (Bun)
 
-### Ajustar frecuencia de mensajes
+La carpeta [api/](api/) contiene un servidor Bun alterno con SSE en `/chat`. Úsalo solo si quieres separar el streaming de IA del SSR principal.
 
-Modifica el intervalo en `src/pages/api/chat-stream.ts`:
-
-```typescript
-const interval = getRandomInterval(3000, 10000); // 3-10 segundos (actual)
-const interval = getRandomInterval(5000, 15000); // 5-15 segundos (ejemplo)
-```
-
-## Roadmap Futuro
-
-- [ ] Más videojuegos
-- [ ] Control de frecuencia de mensajes por el usuario
-- [ ] Diferentes "modos" de audiencia (casual, competitiva, supportive)
-- [ ] Persistencia de sesiones en base de datos
-- [ ] Estadísticas de uso
-- [ ] Integración con OBS como browser source
-- [ ] Generación de mensajes con IA (opcional)
-- [ ] Emotes visuales con imágenes
-
-## Soporte
-
+## 🤝 Soporte
 Si tienes problemas o preguntas, abre un issue en el repositorio.
+
+## Agradecimientos
+-Gracias a la herramienta de @midu para tirar de modelos y tener capa gratuita siempre me parecio genial usarla para este tipo de servicios de froma gratuita tambien.
