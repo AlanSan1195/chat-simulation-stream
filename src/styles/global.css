@@ -1,35 +1,22 @@
 @import "tailwindcss";
 
-/* Animaciones personalizadas */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@theme {
+  /* Colores principales */
+  --color-primary: #f36b44;
+  --color-secundary: #e3e4e1;
+  --color-terciary: #151515;
+  --color-terminal: #2d2d2d;
+  --font-rocket: "rocket", "sans-serif";
+  --font-jet: "jet", "sans-serif";
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+@font-face {
+  font-family: "rocket";
+  src: url(/public/assets/AlphaLyrae-Medium.woff2) format("woff2");
+  font-display: swap;
 }
-
-/* Scrollbar personalizado */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgb(15 23 42);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(71 85 105);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(100 116 139);
+@font-face {
+  font-family: "jet";
+  src: url(/public/assets/JetBrainsMono-variable.woff2) format("woff2");
+  font-display: swap;
 }

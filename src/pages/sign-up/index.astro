@@ -3,14 +3,15 @@ import Layout from '../../layouts/Layout.astro';
 import { SignUp } from '@clerk/astro/components';
 ---
 
-<Layout title="Registrarse - Chat Simulation Stream">
+<Layout title="Registrarse - Rocket Chat Simulator">
   <div class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2">
-          Chat Simulation Stream
+        <h1 class="text-4xl font-light tracking-tight text-black mb-1">
+          Roc<span class="inline-block transform -translate-y-0.5">k</span>et
         </h1>
-        <p class="text-slate-400">Crea tu cuenta para continuar</p>
+        <p class="text-xl font-light italic text-[#e07b5a]">Chat Simulator</p>
+        <p class="text-black/60 mt-4">Crea tu cuenta para continuar</p>
       </div>
       <SignUp redirectUrl="/dashboard" />
     </div>

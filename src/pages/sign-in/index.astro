@@ -1,16 +1,15 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { SignIn } from '@clerk/astro/components';
+import Layout from "../../layouts/Layout.astro";
+import { SignIn } from "@clerk/astro/components";
+import LogoRocket from "../../../public/logo-rocket.svg";
 ---
 
-<Layout title="Iniciar Sesión - Chat Simulation Stream">
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2">
-          Chat Simulation Stream
-        </h1>
-        <p class="text-slate-400">Inicia sesión para continuar</p>
+<Layout title="Iniciar Sesion - Rocket Chat Simulator">
+  <div class="min-h-screen flex items-center justify-center p-4 ">
+    <div class="w-full max-w-min    ">
+      <div class=" text-center pb-4">
+        <LogoRocket class="w-20 h-20 mx-auto mb-4" />
+        <h1 class="text-6xl md:text-3xl font-rocket text-black">Rocket</h1>
       </div>
       <SignIn redirectUrl="/dashboard" />
     </div>
