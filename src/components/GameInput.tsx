@@ -71,9 +71,9 @@ export default function GameInput({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <label htmlFor="game-input" className="block text-sm text-black/70">
+    <div className="space-y-2 ">
+      <div className="flex items-center justify-between font-jet px-1">
+        <label htmlFor="game-input" className="block text-sm  text-black/70">
           A que jugaras hoy ?
         </label>
         <span className="text-xs text-[#e07b5a]">
@@ -90,7 +90,7 @@ export default function GameInput({
           onKeyDown={handleKeyDown}
           disabled={disabled || isLoading}
           placeholder="Ej: Elden Ring, Silkson, Minecraft, Valorant..."
-          className="w-full bg-transparent border-2 border-black/20 rounded-full pl-6 pr-14 py-3 text-black placeholder-black/40 focus:outline-none focus:border-[#e07b5a] disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm"
+          className="w-full bg-transparent border-2 border-black/20 rounded-full pl-6 pr-14 py-3 text-black placeholder-black/40 focus:outline-none focus:border-[#e07b5a] disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm "
         />
         
         <button
@@ -100,11 +100,11 @@ export default function GameInput({
           title="Generar chat para este juego"
         >
           {isLoading ? (
-            <IconLoader2 size={18} className="animate-spin text-white" />
+            <IconLoader2 size={18} className="animate-spin text-white " />
           ) : success ? (
             <IconCheck size={18} className="text-white" />
           ) : (
-            <IconSearch size={18} className="text-white" />
+            <IconSearch size={18} className="text-black" />
           )}
         </button>
       </div>
@@ -128,7 +128,7 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={`px-4 py-1.5 text-xs rounded-full border transition-colors font-mono ${
+              className={` mx-1 px-4 py-1.5 text-xs rounded-full border transition-colors font-jet ${
                 selectedGame === game
                   ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
                   : 'bg-transparent text-black border-black/30 hover:border-[#e07b5a] hover:text-[#e07b5a]'

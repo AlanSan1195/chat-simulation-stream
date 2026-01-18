@@ -5,6 +5,8 @@ import GameInput from './GameInput';
 import ChatWindow from './ChatWindow';
 import '../styles/global.css';
 
+
+
 export default function StreamerDashboard() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -80,9 +82,9 @@ export default function StreamerDashboard() {
   }, []);
 
   return (
-    <div className="grid lg:grid-cols-2 gap-12 items-start">
+    <div className="grid lg:grid-cols-3 gap-12   ">
       {/* Panel de Control - Left side */}
-      <div className="space-y-8">
+      <div className=" space-y-9 flex flex-col">
         {/* Logo/Title */}
         <div className="">
           <div className="flex items-center gap-1">
@@ -94,7 +96,7 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet text-black ">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-semibold text-black ">Panel de Control</h2>
 
         {/* Game Input */}
         <GameInput
@@ -106,20 +108,20 @@ export default function StreamerDashboard() {
         />
 
         {/* Play/Stop Buttons */}
-        <div className="flex items-center gap-4 pt-4">
+        <div className="flex items-center gap-4 ">
           <button
             onClick={handleStartChat}
             disabled={!selectedGame || isActive}
             className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
               !selectedGame || isActive
-                ? 'bg-[#e07b5a]/30 cursor-not-allowed'
-                : 'bg-[#e07b5a]/40 hover:bg-[#e07b5a]/60'
+                ? 'bg-primary/30 cursor-not-allowed'
+                : 'bg-primary/90 hover:bg-primary hover:scale-105'
             }`}
             title="Iniciar Chat"
           >
             <IconPlayerPlay 
               size={28} 
-              className={!selectedGame || isActive ? 'text-[#e07b5a]/50' : 'text-[#e07b5a]'} 
+              className={!selectedGame || isActive ? 'text-terciary/50' : 'text-terciary'} 
             />
           </button>
 
@@ -128,25 +130,28 @@ export default function StreamerDashboard() {
             disabled={!isActive}
             className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
               !isActive
-                ? 'bg-[#e07b5a]/30 cursor-not-allowed'
-                : 'bg-[#e07b5a] hover:bg-[#c96a4a]'
+                ? 'bg-primary/30 cursor-not-allowed'
+                : 'bg-primary hover:scale-105'
             }`}
             title="Detener Chat"
           >
             <IconPlayerStop 
               size={28} 
-              className={!isActive ? 'text-[#e07b5a]/50' : 'text-white'} 
+              className={!isActive ? 'text-terciary/50' : 'text-terciary'} 
             />
           </button>
         </div>
 
         {/* Info Card */}
-        <div className="bg-[#e8a090]/40 border border-[#e07b5a]/30 rounded-lg p-4 mt-8">
-          <div className="flex items-start gap-3">
-            <IconInfoCircle className="text-[#e07b5a] flex-shrink-0 mt-0.5" size={18} />
+        <div className=" border border-primary rounded-lg p-2  ">
+          <div className="flexgap-3">
+        
             <div className="space-y-1">
-              <p className="text-sm font-medium text-[#e07b5a]">Como funciona</p>
-              <p className="text-xs text-[#c96a4a]/80 font-mono leading-relaxed">
+              <div className='flex gap-x-1'>
+                <IconInfoCircle className="text-primary mt-0.5" size={16} />
+                <p className="text-sm font-jet font-semibold text-primary">Como funciona</p>
+              </div>
+              <p className="text-xs text-primary/80 font-jet leading-relaxed">
                 Escribe cualquier videojuego y la IA generara comentarios de chat personalizados. 
                 Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
               </p>
@@ -156,9 +161,11 @@ export default function StreamerDashboard() {
       </div>
 
       {/* Ventana de Chat - Right side */}
-      <div className="lg:pt-8">
+      <div className="grid lg:col-span-2 ">
         <ChatWindow messages={messages} isActive={isActive} />
       </div>
+
+
     </div>
   );
 }

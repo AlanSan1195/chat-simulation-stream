@@ -17,7 +17,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className="flex items-start gap-3 py-2 px-2 hover:bg-[#1a1a1a]/50 rounded transition-colors animate-fade-in">
       {/* Icon */}
-      <div className="flex-shrink-0 text-[#e07b5a] mt-0.5">
+      <div className="flex-shrink-0 text-primary mt-0.5">
         {iconType === 'flower' ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <circle cx="12" cy="12" r="3" />
@@ -43,7 +43,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Message Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-white/90 text-sm break-words leading-relaxed">
+        <p className="text-white/90 font-rocket break-words leading-relaxed">
           {message.content}
         </p>
       </div>

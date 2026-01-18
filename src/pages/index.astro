@@ -1,37 +1,43 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { SignedIn, SignedOut } from '@clerk/astro/components';
+import Layout from "../layouts/Layout.astro";
+import { SignedIn, SignedOut } from "@clerk/astro/components";
+import Fotter from "../components/Fotter.astro";
 ---
 
 <Layout title="Rocket - Chat Simulator">
-  <div class="min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="max-w-3xl w-full text-center space-y-8">
+  <div class="min-h-screen flex flex-col items-center justify-center  ">
+    <div class="max-w-3xl w-full text-center space-y-8 ">
       <!-- Hero Section -->
       <div class="">
-        <h1 class="text-6xl md:text-[180px] font-rocket text-black">
-          Rocket
-        </h1>
-        <p class="text-3xl md:text-4xl font-rocket text-primary tracking-wide">
+        <h1 class="text-6xl md:text-[180px] font-rocket text-black">Rocket</h1>
+        <p class="text-3xl md:text-4xl font-rocket text-primary">
           Chat Simulator
         </p>
       </div>
 
       <!-- Description Box -->
-      <div class="bg-terminal rounded-lg p-6 md:p-8 border-2 border-primary text-left relative">
-        <p id="text-terminal-hero" class="text-base md:text-lg text-secundary leading-relaxed font-jet">
-          Practica con una audiencia simulada a tu gameplay y experimenta un stream de verdad
+      <div
+        class="bg-terminal rounded-lg p-6 md:p-8 border-2 border-primary text-left relative"
+      >
+        <p
+          id="text-terminal-hero"
+          class="text-base md:text-lg text-secundary leading-relaxed font-jet"
+        >
+          Practica con una audiencia simulada a tu gameplay y experimenta un
+          stream de verdad
         </p>
 
         <!-- cli -->
-        <div class="h-[2.2px] w-6 bg-primary absolute bottom-3 right-5 cli "></div>
+        <div class="h-[2.2px] w-6 bg-primary absolute bottom-3 right-5 cli">
+        </div>
       </div>
 
       <!-- CTA -->
       <div class="space-y-3">
         <SignedOut>
-          <a 
+          <a
             href="/sign-in"
-            class="inline-block bg-primary hover:bg-primary text-white font-medium py-3 px-8 rounded-md text-base transition-all"
+            class="inline-block bg-primary hover:bg-primary text-white py-3 px-8 rounded-md font-rocket transition-all"
           >
             Comenzar Stream
           </a>
@@ -39,34 +45,34 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
             Inicia sesion para ingresar al dashboard
           </p>
         </SignedOut>
-        
+
         <SignedIn>
-          <a 
-            href="/dashboard" 
-            class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-3 px-8 rounded-md text-base transition-all"
+          <a
+            href="/dashboard"
+            class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 rounded-md text-base transition-all"
           >
             Ir al Dashboard
           </a>
         </SignedIn>
       </div>
     </div>
+    <!-- <Fotter /> -->
   </div>
-</>
+</Layout>
 
 <style>
-
   .cli {
     animation: blink 1.2s step-start infinite;
   }
 
   @keyframes blink {
-    0%, 50% {
+    0%,
+    50% {
       opacity: 1;
     }
-    51%, 100% {
+    51%,
+    100% {
       opacity: 0;
     }
   }
-
-
 </style>
