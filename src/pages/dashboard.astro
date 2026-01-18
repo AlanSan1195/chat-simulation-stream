@@ -2,15 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
 import StreamerDashboard from '../components/StreamerDashboard';
+import { IconLogout } from '@tabler/icons-react';
 ---
 
-<Layout title="Dashboard - Chat Simulation Stream">
+<Layout title="Dashboard - Rocket Chat Simulator">
   <SignedOut>
-    <div class="min-h-screen flex items-center justify-center">
+    <div class="min-h-screen bg-[#e8e4de] flex items-center justify-center">
       <div class="text-center space-y-4">
-        <h1 class="text-3xl font-bold text-slate-300">Acceso Restringido</h1>
-        <p class="text-slate-400">Debes iniciar sesión para acceder al dashboard</p>
-        <a href="/" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+        <h1 class="text-3xl font-light text-black">Acceso Restringido</h1>
+        <p class="text-black/60">Debes iniciar sesion para acceder al dashboard</p>
+        <a href="/" class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-2 px-6 rounded-md transition">
           Volver al inicio
         </a>
       </div>
@@ -18,21 +19,14 @@ import StreamerDashboard from '../components/StreamerDashboard';
   </SignedOut>
 
   <SignedIn>
-    <div class="min-h-screen flex flex-col">
-      <!-- Header -->
-      <header class="bg-slate-800 border-b border-slate-700 py-4 px-6">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              Chat Simulation
-            </h1>
-          </div>
-          <UserButton />
-        </div>
-      </header>
+    <div class="min-h-screen bg-[#e8e4de] flex flex-col relative">
+      <!-- Logout button top right -->
+      <div class="absolute top-6 right-6 z-10">
+        <UserButton />
+      </div>
 
       <!-- Main Content -->
-      <main class="flex-1 p-6">
+      <main class="flex-1 p-8 pt-6">
         <div class="max-w-7xl mx-auto">
           <StreamerDashboard client:only="react" />
         </div>

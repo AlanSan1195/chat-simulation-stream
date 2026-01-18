@@ -3,6 +3,7 @@ import { IconPlayerPlay, IconPlayerStop, IconInfoCircle } from '@tabler/icons-re
 import type { ChatMessage } from '../utils/types';
 import GameInput from './GameInput';
 import ChatWindow from './ChatWindow';
+import '../styles/global.css';
 
 export default function StreamerDashboard() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -79,89 +80,83 @@ export default function StreamerDashboard() {
   }, []);
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
-      {/* Panel de Control */}
-      <div className="lg:col-span-1 space-y-6">
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-6">
-          <h2 className="text-xl font-bold text-slate-100">Panel de Control</h2>
-
-          {/* Game Input */}
-          <GameInput
-            selectedGame={selectedGame}
-            onGameSelect={handleGameSelect}
-            disabled={isActive}
-            userGames={userGames}
-            remainingSlots={remainingSlots}
-          />
-
-          {/* Juego seleccionado */}
-          {selectedGame && (
-            <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-600">
-              <p className="text-sm text-slate-400 mb-1">Juego actual</p>
-              <p className="text-lg font-semibold text-slate-200 capitalize">
-                {selectedGame}
-              </p>
-            </div>
-          )}
-
-          {/* Botones de Control */}
-          <div className="space-y-3">
-            <button
-              onClick={handleStartChat}
-              disabled={!selectedGame || isActive}
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-slate-700 disabled:to-slate-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <IconPlayerPlay size={20} />
-              <span>Iniciar Chat</span>
-            </button>
-
-            <button
-              onClick={handleStopChat}
-              disabled={!isActive}
-              className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 disabled:from-slate-700 disabled:to-slate-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <IconPlayerStop size={20} />
-              <span>Detener Chat</span>
-            </button>
+    <div className="grid lg:grid-cols-2 gap-12 items-start">
+      {/* Panel de Control - Left side */}
+      <div className="space-y-8">
+        {/* Logo/Title */}
+        <div className="">
+          <div className="flex items-center gap-1">
+            <p className="text-xl  text-black ml-1 " style={{ fontFamily: 'rocket' }}>Rocket</p>
           </div>
+          <h1 className="text-5xl text-primary" style={{ fontFamily: 'rocket' }}>
+            Chat simulator
+          </h1>
+        </div>
 
-          {/* Estado */}
-          <div className="flex items-center justify-between py-3 px-4 bg-slate-900/50 rounded-lg border border-slate-600">
-            <span className="text-sm text-slate-400">Estado</span>
-            <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-500'}`} />
-              <span className="text-sm font-medium text-slate-200">
-                {isActive ? 'Activo' : 'Inactivo'}
-              </span>
-            </div>
-          </div>
+        {/* Panel de Control Title */}
+        <h2 className="text-xl font-jet text-black ">Panel de Control</h2>
 
-          {/* Estadísticas */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between py-2 px-4 bg-slate-900/50 rounded-lg">
-              <span className="text-sm text-slate-400">Mensajes</span>
-              <span className="text-sm font-semibold text-slate-200">{messages.length}</span>
-            </div>
-          </div>
+        {/* Game Input */}
+        <GameInput
+          selectedGame={selectedGame}
+          onGameSelect={handleGameSelect}
+          disabled={isActive}
+          userGames={userGames}
+          remainingSlots={remainingSlots}
+        />
+
+        {/* Play/Stop Buttons */}
+        <div className="flex items-center gap-4 pt-4">
+          <button
+            onClick={handleStartChat}
+            disabled={!selectedGame || isActive}
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+              !selectedGame || isActive
+                ? 'bg-[#e07b5a]/30 cursor-not-allowed'
+                : 'bg-[#e07b5a]/40 hover:bg-[#e07b5a]/60'
+            }`}
+            title="Iniciar Chat"
+          >
+            <IconPlayerPlay 
+              size={28} 
+              className={!selectedGame || isActive ? 'text-[#e07b5a]/50' : 'text-[#e07b5a]'} 
+            />
+          </button>
+
+          <button
+            onClick={handleStopChat}
+            disabled={!isActive}
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+              !isActive
+                ? 'bg-[#e07b5a]/30 cursor-not-allowed'
+                : 'bg-[#e07b5a] hover:bg-[#c96a4a]'
+            }`}
+            title="Detener Chat"
+          >
+            <IconPlayerStop 
+              size={28} 
+              className={!isActive ? 'text-[#e07b5a]/50' : 'text-white'} 
+            />
+          </button>
         </div>
 
         {/* Info Card */}
-        <div className="bg-blue-950/30 border border-blue-800/50 rounded-xl p-4">
-          <div className="flex items-start space-x-3">
-            <IconInfoCircle className="text-blue-400 flex-shrink-0 mt-0.5" size={20} />
+        <div className="bg-[#e8a090]/40 border border-[#e07b5a]/30 rounded-lg p-4 mt-8">
+          <div className="flex items-start gap-3">
+            <IconInfoCircle className="text-[#e07b5a] flex-shrink-0 mt-0.5" size={18} />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-blue-300">Como funciona</p>
-              <p className="text-xs text-blue-200/80">
+              <p className="text-sm font-medium text-[#e07b5a]">Como funciona</p>
+              <p className="text-xs text-[#c96a4a]/80 font-mono leading-relaxed">
                 Escribe cualquier videojuego y la IA generara comentarios de chat personalizados. 
-                Tienes un limite de 4 juegos. Los mensajes aparecen cada 3-7 segundos.
+                Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Ventana de Chat */}
-      <div className="lg:col-span-2">
+      {/* Ventana de Chat - Right side */}
+      <div className="lg:pt-8">
         <ChatWindow messages={messages} isActive={isActive} />
       </div>
     </div>
