@@ -88,15 +88,17 @@ export default function StreamerDashboard() {
         {/* Logo/Title */}
         <div className="">
           <div className="flex items-center gap-1">
-            <p className="text-xl  text-black ml-1 " style={{ fontFamily: 'rocket' }}>Rocket</p>
+            <p className="text-2xl  " style={{ fontFamily: 'rocket' }}>Rocket</p>
           </div>
-          <h1 className="text-5xl text-primary" style={{ fontFamily: 'rocket' }}>
-            Chat simulator
+          <h1 className="text-3xl text-primary uppercase" style={{ fontFamily: 'rocket' }}>
+            {
+              isActive && selectedGame ? `Streaming: ${selectedGame}` : 'No hay stream activo'
+            }
           </h1>
         </div>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-semibold text-black ">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-semibold  ">Panel de Control</h2>
 
         {/* Game Input */}
         <GameInput
@@ -143,15 +145,15 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Info Card */}
-        <div className=" border border-primary rounded-lg p-2  ">
+        <div className=" border border-primary dark:border-primary/20 rounded-lg p-2  ">
           <div className="flexgap-3">
         
             <div className="space-y-1">
               <div className='flex gap-x-1'>
-                <IconInfoCircle className="text-primary mt-0.5" size={16} />
-                <p className="text-sm font-jet font-semibold text-primary">Como funciona</p>
+                <IconInfoCircle className="text-primary dark:text-primary/60 mt-0.5" size={16} />
+                <p className="text-sm font-jet font-semibold text-primary dark:text-primary/60 ">Como funciona</p>
               </div>
-              <p className="text-xs text-primary/80 font-jet leading-relaxed">
+              <p className="text-xs text-primary/70 dark:text-primary/30 font-jet leading-relaxed">
                 Escribe cualquier videojuego y la IA generara comentarios de chat personalizados. 
                 Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
               </p>

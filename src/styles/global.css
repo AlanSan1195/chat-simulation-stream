@@ -10,6 +10,27 @@
   --font-jet: "jet", "sans-serif";
 }
 
+
+body{
+  background-color: var(--color-secundary); 
+  color: var(--color-terciary);
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: var(--color-secundary);
+    color: black;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body{
+    color: white;
+    background-color: var(--color-terciary);
+  }
+}
+
+
 @font-face {
   font-family: "rocket";
   src: url(/public/assets/AlphaLyrae-Medium.woff2) format("woff2");

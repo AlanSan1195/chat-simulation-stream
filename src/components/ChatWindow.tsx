@@ -19,11 +19,11 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
     <div className="flex flex-col h-[550px]">
       {/* Header */}
       <div className=" ">
-        <h2 className="text-2xl font-rocket  text-black  px-2 ">Chat </h2>
+        <h2 className="text-2xl font-rocket  px-2 uppercase ">Chat </h2>
       </div>
 
       {/* Messages Container */}
-      <div className="bg-terminal rounded-lg flex-1 overflow-hidden">
+      <div className="bg-terminal dark:bg-black/40 rounded-lg flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 space-y-1">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-[#666] space-y-2">

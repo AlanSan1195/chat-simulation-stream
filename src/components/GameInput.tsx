@@ -73,7 +73,7 @@ export default function GameInput({
   return (
     <div className="space-y-2 ">
       <div className="flex items-center justify-between font-jet px-1">
-        <label htmlFor="game-input" className="block text-sm  text-black/70">
+        <label htmlFor="game-input" className="block text-sm  ">
           A que jugaras hoy ?
         </label>
         <span className="text-xs text-[#e07b5a]">
@@ -90,13 +90,13 @@ export default function GameInput({
           onKeyDown={handleKeyDown}
           disabled={disabled || isLoading}
           placeholder="Ej: Elden Ring, Silkson, Minecraft, Valorant..."
-          className="w-full bg-transparent border-2 border-black/20 rounded-full pl-6 pr-14 py-3 text-black placeholder-black/40 focus:outline-none focus:border-[#e07b5a] disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm "
+          className="w-full bg-transparent dark:bg-black/40 border-2 border-black/20 dark:border-secundary/20 rounded-lg pl-6 pr-14 py-3 text-black dark:text-white placeholder-black/40 dark:placeholder-white/10 focus:outline-none focus:border-[#e07b5a] disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm "
         />
         
         <button
           onClick={() => handleSubmit()}
           disabled={disabled || isLoading || !inputValue.trim()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#e07b5a] hover:bg-[#c96a4a] disabled:bg-black/20 disabled:cursor-not-allowed transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-[#e07b5a] hover:bg-[#c96a4a] disabled:bg-black/20 dark:disabled:bg-white/20 disabled:cursor-not-allowed transition-colors"
           title="Generar chat para este juego"
         >
           {isLoading ? (
@@ -128,10 +128,10 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={` mx-1 px-4 py-1.5 text-xs rounded-full border transition-colors font-jet ${
+              className={` mx-1 px-4 py-1.5 text-xs rounded-lg border transition-colors font-jet ${
                 selectedGame === game
-                  ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
-                  : 'bg-transparent text-black border-black/30 hover:border-[#e07b5a] hover:text-[#e07b5a]'
+                  ? 'bg-[#2d2d2d] text-white  dark:border-primary dark:bg-black border-[#2d2d2d] '
+                  : 'bg-transparent text-black dark:text-secundary/30 hover:text-primary dark:hover:text-secundary/60 dark:hover:border-secundary/50 border-2 border-black/20 dark:border-white/20  '
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {game}
@@ -142,7 +142,7 @@ export default function GameInput({
 
       {/* Loading indicator */}
       {isLoading && (
-        <p className="text-xs text-black/50 flex items-center gap-2 font-mono">
+        <p className="text-xs  flex items-center gap-2 font-mono">
           <IconLoader2 size={14} className="animate-spin" />
           Generando frases con IA para "{inputValue}"...
         </p>
