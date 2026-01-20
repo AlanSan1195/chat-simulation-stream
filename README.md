@@ -1,6 +1,6 @@
 # Chat Simulation Stream
 
-![Chat Simulation Stream](public/desktop-hero-white.png)
+![Chat Simulation Stream](public/desktop-hero-dark.png)
 
 Plataforma web para streamers principiantes que simula una audiencia interactiva en tiempo real. Genera mensajes de chat contextuales por videojuego usando IA.
 
@@ -62,7 +62,7 @@ chat-simulation-stream/
 │   │   ├── ChatWindow.tsx
 │   │   ├── ChatMessage.tsx
 │   │   └── GameInput.tsx
-│   ├── lib/                  # Logica de negocio
+│   ├── lib/                  
 │   │   ├── ai/               # Servicios de IA
 │   │   │   ├── serviceManager.ts
 │   │   │   ├── types.ts
@@ -102,7 +102,7 @@ chat-simulation-stream/
 
 ---
 
-# Casos de Estudio para Desarrolladores Junior
+# Casos de Estudio
 
 Esta seccion documenta patrones y tecnicas implementadas en el proyecto que son valiosas para tu aprendizaje.
 
