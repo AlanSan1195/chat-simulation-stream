@@ -13,8 +13,8 @@ export default defineConfig({
   integrations: [
     react(), 
     clerk({
-      afterSignInUrl: '/dashboard',
-      afterSignUpUrl: '/dashboard',
+      signInFallbackRedirectUrl: '/dashboard',
+      signUpFallbackRedirectUrl: '/dashboard',
       signInUrl: '/sign-in',
       signUpUrl: '/sign-up',
     })
