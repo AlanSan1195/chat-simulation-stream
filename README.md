@@ -42,7 +42,7 @@ pnpm install
 pnpm dev
 ```
 
-La app queda disponible en `http://rocket.netlify.app`.
+La app queda disponible en `http://rocketsimulator.netlify.app`.
 
 ## Scripts Disponibles
 
