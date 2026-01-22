@@ -3,7 +3,9 @@ import { defineMiddleware, sequence } from 'astro:middleware';
 
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
-  '/api/(.*)'  // Protege TODOS los endpoints API
+  '/api/generate-phrases',
+  '/api/chat-stream',
+  // '/api/health' es público para monitoreo
 ]);
 
 // Middleware para headers de seguridad
