@@ -27,19 +27,33 @@ const securityHeaders = defineMiddleware(async (context, next) => {
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   
   // Content Security Policy - ajustada para Clerk y recursos necesarios
-  // En desarrollo permitimos conexiones WebSocket locales para HMR y herramientas
-  const connectSrc = isDev 
-    ? "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev ws://localhost:* ws://127.0.0.1:*"
-    : "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev";
+  // En desarrollo usamos dominios de dev, en producción usamos el dominio personalizado
+  const clerkDomains = isDev
+    ? {
+        script: "https://*.clerk.accounts.dev",
+        connect: "https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev",
+        frame: "https://*.clerk.accounts.dev",
+        img: "https://*.clerk.com https://img.clerk.com",
+      }
+    : {
+        script: "https://*.rocketchat.online https://*.clerk.com",
+        connect: "https://*.rocketchat.online https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.com",
+        frame: "https://*.rocketchat.online https://*.clerk.com",
+        img: "https://*.clerk.com https://img.clerk.com https://*.rocketchat.online",
+      };
+
+  const connectSrc = isDev
+    ? `connect-src 'self' ${clerkDomains.connect} ws://localhost:* ws://127.0.0.1:*`
+    : `connect-src 'self' ${clerkDomains.connect}`;
   
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://challenges.cloudflare.com",
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkDomains.script} https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://*.clerk.com https://img.clerk.com",
+    `img-src 'self' data: ${clerkDomains.img}`,
     "font-src 'self' data:",
     connectSrc,
-    "frame-src 'self' https://challenges.cloudflare.com https://*.clerk.accounts.dev",
+    `frame-src 'self' https://challenges.cloudflare.com ${clerkDomains.frame}`,
     "worker-src 'self' blob:",
   ].join('; ');
   
