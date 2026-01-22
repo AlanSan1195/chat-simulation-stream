@@ -9,9 +9,14 @@ import clerk from '@clerk/astro';
 
 
 
+import vercel from '@astrojs/vercel';
+
+
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+
   integrations: [
     react(), 
     clerk({
@@ -30,4 +35,5 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
+  adapter: vercel(),
 });
