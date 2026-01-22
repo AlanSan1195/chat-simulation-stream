@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SignedIn, SignedOut } from "@clerk/astro/components";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/astro/components";
 import Fotter from "../components/Fotter.astro";
 ---
 
@@ -32,21 +32,22 @@ import Fotter from "../components/Fotter.astro";
         </div>
       </div>
 
-      <!-- CTA -->
+
       <div class="space-y-3">
-        <SignedOut>
-          <a
-            href="/sign-in"
+        <SignedOut >
+          <!-- sin crear page de redireccion clerk me facilita mode en su boton para poner la modal en vez de redireccionar a otra pagina -->
+          <SignInButton
+            mode="modal"
             class="inline-block bg-primary hover:bg-primary text-white py-3 px-8 rounded-md font-rocket transition-all"
           >
             Comenzar Stream
-          </a>
+          </SignInButton>
           <p class="text-sm  font-jet">
             Inicia sesión para ingresar al dashboard
           </p>
         </SignedOut>
 
-        <SignedIn>
+        <SignedIn >
           <a
             href="/dashboard"
             class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 rounded-md text-base transition-all"

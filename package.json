@@ -15,6 +15,8 @@
     "@astrojs/react": "^4.4.2",
     "@cerebras/cerebras_cloud_sdk": "^1.64.1",
     "@clerk/astro": "^2.16.11",
+    "@clerk/localizations": "^3.35.1",
+    "@clerk/themes": "^2.4.49",
     "@tabler/icons-react": "^3.36.1",
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.7",

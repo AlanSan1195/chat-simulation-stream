@@ -29,8 +29,8 @@ const securityHeaders = defineMiddleware(async (context, next) => {
   // Content Security Policy - ajustada para Clerk y recursos necesarios
   // En desarrollo permitimos conexiones WebSocket locales para HMR y herramientas
   const connectSrc = isDev 
-    ? "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com wss://*.clerk.accounts.dev ws://localhost:* ws://127.0.0.1:*"
-    : "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com wss://*.clerk.accounts.dev";
+    ? "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev ws://localhost:* ws://127.0.0.1:*"
+    : "connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev";
   
   const csp = [
     "default-src 'self'",
@@ -50,6 +50,7 @@ const securityHeaders = defineMiddleware(async (context, next) => {
 
 // Middleware de autenticación con Clerk
 const authMiddleware = clerkMiddleware((auth, context) => {
+  // clerck nos permite extraer este metodo de redirect y de obtener el userId para seber si el usuario ha iniciado sesión o no
   const { redirectToSignIn, userId } = auth();
   
   if (!userId && isProtectedRoute(context.request)) {

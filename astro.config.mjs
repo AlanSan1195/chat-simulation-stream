@@ -1,5 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { esMX } from '@clerk/localizations'
+import { dark, neobrutalism } from '@clerk/themes';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -17,6 +19,10 @@ export default defineConfig({
       signUpFallbackRedirectUrl: '/dashboard',
       signInUrl: '/sign-in',
       signUpUrl: '/sign-up',
+      localization: esMX,
+      appearance: {
+        theme: dark,
+      },
     })
   ],
 
