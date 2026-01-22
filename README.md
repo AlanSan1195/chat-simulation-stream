@@ -6,21 +6,23 @@ Plataforma web para streamers principiantes que simula una audiencia interactiva
 
 ## Stack Tecnologico
 
-| Categoria        | Tecnologia                |
-|------------------|---------------------------|
-| Framework        | Astro 5 (SSR)             |
-| UI               | React 19 + Tailwind CSS 4 |
-| Autenticacion    | Clerk                     |
-| IA Primario      | Groq SDK                  |
-| IA Fallback      | Cerebras Cloud SDK        |
-| Lenguaje         | TypeScript                |
-| Package Manager  | pnpm                      |
+| Categoria        | Tecnologia                           |
+|------------------|--------------------------------------|
+| Framework        | Astro 5 (SSR)                        |
+| Despliegue       | Vercel (`@astrojs/vercel`)           |
+| UI               | React 19 + Tailwind CSS 4            |
+| Autenticacion    | Clerk (tema oscuro + espanol)        |
+| IA Primario      | Groq SDK                             |
+| IA Fallback      | Cerebras Cloud SDK                   |
+| Lenguaje         | TypeScript                           |
+| Package Manager  | pnpm                                 |
 
 ## Requisitos Previos
 
 - Node.js 18+
 - pnpm 8+
 - Cuenta en [Clerk](https://clerk.com)
+- Cuenta en [Vercel](https://vercel.com) (para despliegue)
 
 ## Configuracion
 
@@ -42,15 +44,27 @@ pnpm install
 pnpm dev
 ```
 
-La app queda disponible en `https://www.rocketchat.online/`.
+La app queda disponible en:
+- **Desarrollo**: `http://localhost:4321`
+- **Produccion**: `https://www.rocketchat.online/`
 
 ## Scripts Disponibles
 
 ```bash
-pnpm dev      # Servidor de desarrollo
-pnpm build    # Build de produccion
-pnpm preview  # Preview del build
+pnpm dev      # Servidor de desarrollo (localhost:4321)
+pnpm build    # Build de produccion para Vercel
+pnpm preview  # Preview local del build
 ```
+
+## Despliegue en Vercel
+
+1. Conectar repositorio en [Vercel Dashboard](https://vercel.com/dashboard)
+2. Configurar variables de entorno:
+   - `PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - `CLERK_SECRET_KEY`
+   - `GROQ_API_KEY` (opcional)
+   - `CEREBRAS_API_KEY` (opcional)
+3. Vercel detecta automaticamente que es un proyecto Astro
 
 ## Estructura del Proyecto
 
@@ -524,6 +538,54 @@ useEffect(() => {
 
 ---
 
+## Caso 8: Headers de Seguridad con CSP Dinamica
+
+**Archivo:** `src/middleware.ts`
+
+### Problema
+Necesitamos headers de seguridad (CSP, X-Frame-Options, etc.) pero Clerk requiere diferentes dominios en desarrollo vs produccion.
+
+### Solucion: Middleware con Configuracion Dinamica
+
+```typescript
+const securityHeaders = defineMiddleware(async (context, next) => {
+  const response = await next();
+  const isDev = import.meta.env.DEV;
+  
+  // Headers de seguridad estaticos
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  // CSP dinamica segun entorno
+  const clerkDomains = isDev
+    ? { /* dominios de desarrollo */ }
+    : { /* dominios de produccion */ };
+  
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' ${clerkDomains.script}`,
+    // ... mas directivas
+  ].join('; ');
+  
+  response.headers.set('Content-Security-Policy', csp);
+  return response;
+});
+
+// Combinar middlewares con sequence()
+export const onRequest = sequence(authMiddleware, securityHeaders);
+```
+
+### Conceptos Clave
+
+1. **sequence()**: Combina multiples middlewares en orden
+2. **import.meta.env.DEV**: Boolean que indica si estamos en desarrollo
+3. **Headers de respuesta**: Se modifican despues de `await next()`
+
+---
+
 ## Personalizacion Rapida
 
 ### Agregar un Juego Hardcodeado
@@ -548,6 +610,94 @@ Edita `MAX_GAMES_PER_USER` en `src/lib/phraseCache.ts`.
 ## Servidor Alternativo (Bun)
 
 La carpeta `api/` contiene un servidor Bun opcional con SSE. Usalo solo si quieres separar el streaming del SSR principal.
+
+---
+
+# Documentacion de Problemas y Soluciones
+
+Esta seccion documenta los problemas encontrados durante el desarrollo, las dudas que surgieron y el proceso de solucion.
+
+---
+
+## Problema 1: Clerk no funcionaba en produccion (CSP bloqueaba recursos)
+
+### Contexto
+Despues de desplegar en Vercel con dominio personalizado `rocketchat.online`, Clerk dejaba de funcionar. Los componentes de autenticacion no cargaban.
+
+### Sintomas
+- Consola del navegador mostraba errores de CSP (Content Security Policy)
+- Los scripts de Clerk eran bloqueados
+- Las imagenes de perfil no cargaban
+- La conexion WebSocket de Clerk fallaba
+
+### Dudas que surgieron
+- Por que funcionaba en desarrollo pero no en produccion?
+- Clerk usa dominios diferentes en dev vs prod?
+- Como se que dominios agregar al CSP?
+
+### Analisis del problema
+En desarrollo, Clerk usa dominios de prueba (`*.clerk.accounts.dev`), pero en produccion con dominio personalizado usa diferentes dominios (`*.clerk.com` y el subdominio propio).
+
+### Solucion: CSP dinamica segun entorno
+
+```typescript
+// src/middleware.ts
+const isDev = import.meta.env.DEV;
+
+const clerkDomains = isDev
+  ? {
+      script: "https://*.clerk.accounts.dev",
+      connect: "https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev",
+      frame: "https://*.clerk.accounts.dev",
+      img: "https://*.clerk.com https://img.clerk.com",
+    }
+  : {
+      script: "https://*.rocketchat.online https://*.clerk.com",
+      connect: "https://*.rocketchat.online https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.com",
+      frame: "https://*.rocketchat.online https://*.clerk.com",
+      img: "https://*.clerk.com https://img.clerk.com https://*.rocketchat.online",
+    };
+
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkDomains.script} https://challenges.cloudflare.com`,
+  `img-src 'self' data: ${clerkDomains.img}`,
+  `connect-src 'self' ${clerkDomains.connect}`,
+  `frame-src 'self' https://challenges.cloudflare.com ${clerkDomains.frame}`,
+  // ...
+].join('; ');
+```
+
+### Leccion aprendida
+Siempre verificar en DevTools > Console los errores de CSP. Clerk tiene documentacion sobre que dominios necesita, pero varian segun si usas dominio personalizado o no.
+
+---
+### Ademas
+tuvimos que configurar los dominos de clerk en mi provedor de dominio Dondomio para rocket.chat como: "A", "AAAA" y "CNAME" apuntando a Vercel tambien.
+- en clerk despues de conseguir un Domino estable, dreas un entorno de produccion para conseguir las variables de entorno para produccion y asi no usar las de desarrollo.
+- en vercel, en la configuracion del proyecto, agregar las variables de entorno para produccion.
+- Dashborad de clerk teniamos que configurar los porveedores de inicio de session que hayamso escogido, como google, github, etc. ir a la conspola developers de cada proveedor y agregar el dominio personalizado en los campos de redireccion. y conseguir las clientId y secret para agregarlos en clerk.
+---
+
+
+
+
+## Resumen de Configuracion Actual
+
+### Adaptador de despliegue
+- **Vercel** con `@astrojs/vercel`
+- SSR habilitado (`output: 'server'`)
+
+### Autenticacion
+- CSP configurada dinamicamente para dev/prod
+
+### Optimizaciones de rendimiento
+- Preload de fuentes personalizadas
+- Preconnect a Clerk
+
+### Servicios de IA
+- Groq (primario)
+- Cerebras (fallback)
 
 ---
 
