@@ -10,9 +10,6 @@ const services: AIService[] = [
 
 let currentServiceIndex = 0;
 
-// Timeout para llamadas a IA (30 segundos)
-const AI_TIMEOUT_MS = 30000;
-
 /**
  * Obtiene el siguiente servicio usando round-robin
  */
@@ -20,19 +17,6 @@ function getNextService(): AIService {
   const service = services[currentServiceIndex];
   currentServiceIndex = (currentServiceIndex + 1) % services.length;
   return service;
-}
-
-/**
- * Wrapper para agregar timeout a promesas
- */
-async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, serviceName: string): Promise<T> {
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
-      reject(new Error(`Timeout: ${serviceName} no respondió en ${timeoutMs / 1000}s`));
-    }, timeoutMs);
-  });
-
-  return Promise.race([promise, timeoutPromise]);
 }
 
 /**
@@ -46,44 +30,24 @@ export async function chatWithAI(messages: AIServiceMessage[]): Promise<string> 
     const service = getNextService();
     
     try {
-      console.log(`[AI] Intentando con servicio: ${service.name}`);
-      
-      const streamPromise = service.chat(messages);
-      const stream = await withTimeout(streamPromise, AI_TIMEOUT_MS, service.name);
+      console.log(`[AI] Usando servicio: ${service.name}`);
+      const stream = await service.chat(messages);
       
       // Consumir el stream y concatenar la respuesta
       let fullResponse = '';
-      const startTime = Date.now();
-      
       for await (const chunk of stream) {
         fullResponse += chunk;
-        
-        // Verificar que no llevemos demasiado tiempo consumiendo el stream
-        if (Date.now() - startTime > AI_TIMEOUT_MS) {
-          console.warn(`[AI] Stream de ${service.name} excedió timeout, usando respuesta parcial`);
-          break;
-        }
       }
       
-      if (fullResponse.trim().length === 0) {
-        throw new Error('Respuesta vacía del servicio de IA');
-      }
-      
-      console.log(`[AI] Respuesta exitosa de ${service.name} (${fullResponse.length} chars)`);
       return fullResponse;
-      
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      console.error(`[AI] Error con ${service.name}: ${errorMessage}`);
+      console.error(`[AI] Error con ${service.name}:`, error);
       lastError = error as Error;
       // Continuar con el siguiente servicio
     }
   }
   
-  // Si todos los servicios fallaron, lanzar error descriptivo
-  const errorMsg = lastError?.message || 'Error desconocido';
-  console.error(`[AI] Todos los servicios fallaron. Último error: ${errorMsg}`);
-  throw new Error(`Todos los servicios de IA fallaron: ${errorMsg}`);
+  throw lastError || new Error('Todos los servicios de IA fallaron');
 }
 
 /**

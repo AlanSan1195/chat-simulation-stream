@@ -25,5 +25,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .opencode/plan/
-/api/
+api/
 .vercel
