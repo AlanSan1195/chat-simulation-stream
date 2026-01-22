@@ -7,7 +7,7 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import clerk from '@clerk/astro';
 
-import netlify from '@astrojs/netlify';
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -30,5 +30,4 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  adapter: netlify()
 });
