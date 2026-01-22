@@ -26,3 +26,4 @@ pnpm-debug.log*
 .idea/
 .opencode/plan/
 api/
+.vercel
