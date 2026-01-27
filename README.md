@@ -26,6 +26,7 @@ Plataforma web para streamers principiantes que simula una audiencia interactiva
 
 ## Configuracion
 
+1. Crea un archivo `.env` en la raiz del proyecto:
 
 ```env
 # Obligatorias - Clerk Auth
@@ -36,6 +37,8 @@ CLERK_SECRET_KEY=sk_test_xxx
 GROQ_API_KEY=xxx
 CEREBRAS_API_KEY=xxx
 ```
+
+> Ver [SETUP.md](./SETUP.md) para instrucciones detalladas sobre como obtener las keys de Clerk.
 
 2. Instala dependencias y ejecuta:
 
@@ -72,27 +75,30 @@ pnpm preview  # Preview local del build
 chat-simulation-stream/
 ├── src/
 │   ├── components/           # Componentes React
-│   │   ├── StreamerDashboard.tsx
-│   │   ├── ChatWindow.tsx
-│   │   ├── ChatMessage.tsx
-│   │   └── GameInput.tsx
+│   │   ├── StreamerDashboard.tsx  # Dashboard principal
+│   │   ├── ChatWindow.tsx         # Ventana de chat
+│   │   ├── ChatMessage.tsx        # Mensaje individual
+│   │   ├── GameInput.tsx          # Input de busqueda de juegos
+│   │   └── GameSelector.tsx       # Selector dropdown (deprecated)
 │   ├── lib/                  
 │   │   ├── ai/               # Servicios de IA
-│   │   │   ├── serviceManager.ts
-│   │   │   ├── types.ts
-│   │   │   └── services/
-│   │   │       ├── groq.ts
-│   │   │       └── cerebras.ts
-│   │   ├── chatGenerator.ts
-│   │   ├── messagePatterns.ts
-│   │   └── phraseCache.ts
+│   │   ├── serviceManager.ts  # Orquestador con failover
+│   │   ├── types.ts           # Interfaz AIService
+│   │   ├── index.ts           # Re-exports
+│   │   └── services/
+│   │       ├── groq.ts        # Servicio Groq
+│   │       └── cerebras.ts    # Servicio Cerebras
+│   │   ├── chatGenerator.ts   # Generador de mensajes
+│   │   ├── messagePatterns.ts # Frases hardcodeadas
+│   │   └── phraseCache.ts     # Cache en memoria
 │   ├── pages/
 │   │   ├── api/
-│   │   │   ├── chat-stream.ts
-│   │   │   └── generate-phrases.ts
+│   │   │   ├── chat-stream.ts      # SSE streaming
+│   │   │   └── generate-phrases.ts # Generacion con IA
 │   │   ├── dashboard.astro
 │   │   └── index.astro
-│   └── middleware.ts
+│   └── middleware.ts          # Auth + headers seguridad
+├── SETUP.md                   # Guia de configuracion de Clerk
 ├── astro.config.mjs
 └── package.json
 ```
@@ -704,3 +710,9 @@ tuvimos que configurar los dominos de clerk en mi provedor de dominio Dondomio p
 ## Agradecimientos
 
 Gracias a la herramienta de [@midu](https://github.com/midudev) para modelos de IA con capa gratuita.
+
+---
+
+## Licencia
+
+MIT License - Puedes usar, modificar y distribuir este codigo libremente.
