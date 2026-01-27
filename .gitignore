@@ -28,3 +28,4 @@ pnpm-debug.log*
 api/
 .opencode/skills/
 .vercel
+.gitignore
