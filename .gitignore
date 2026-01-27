@@ -26,4 +26,5 @@ pnpm-debug.log*
 .idea/
 .opencode/plan/
 api/
+.opencode/skills/
 .vercel
