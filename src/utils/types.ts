@@ -1,11 +1,11 @@
 // Tipos base para mensajes de chat
-export type MessageCategory = 'gameplay' | 'reactions' | 'questions' | 'emotes';
+export type MessageCategory = 'gameplay' | 'reactions' | 'questions' ;
 
 export interface MessagePattern {
   gameplay: string[];
   reactions: string[];
   questions: string[];
-  emotes: string[];
+
 }
 
 export interface ChatMessage {

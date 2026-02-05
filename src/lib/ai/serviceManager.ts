@@ -63,8 +63,10 @@ export async function generateGamePhrases(gameName: string): Promise<{
 Genera comentarios auténticos, variados y entretenidos que los espectadores escribirían durante un stream.
 
 REGLAS:
-- Los comentarios deben ser cortos y medios (1-45 palabras máximo)
-- Usa español casual/coloquial con algo de inglés gamer (POG, GG, F, etc.)
+- Los comentarios deben ser cortos y medios (1-65 palabras máximo)
+- Usa español casual y coloquial
+- Incluye variedad: comentarios sobre gameplay, reacciones, preguntas y emotes
+- Usa jerga de gamers y cultura de internet
 - Incluye emotes populares como: 🤯, 🕹️, 😂, ❤️, 🥲, 🤬,🤓
 - Algunos pueden tener emojis pero no abuses
 - Varía entre comentarios serios, graciosos, preguntas y reacciones
@@ -77,8 +79,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
 {
   "gameplay": ["frase1", "frase2", ... hasta 50 frases sobre gameplay/mecánicas],
   "reactions": ["frase1", "frase2", ... hasta 15 frases de reacciones cortas],
-  "questions": ["frase1", "frase2", ... hasta 20 preguntas que haría el chat],
-  "emotes": ["emote1", "emote2", ... hasta 10 combinaciones de emotes]
+  "questions": ["frase1", "frase2", ... hasta 30 preguntas que haría el chat],
 }`;
 
   const response = await chatWithAI([

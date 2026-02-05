@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
       // Función para programar el siguiente mensaje
       const scheduleNext = () => {
-        const interval = getRandomInterval(3000, 7000); // 3-7 segundos
+        const interval = getRandomInterval(2000, 4000); // 2-4 segundos
         return setTimeout(() => {
           sendMessage();
           timeoutId = scheduleNext();

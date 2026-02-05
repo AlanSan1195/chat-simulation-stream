@@ -33,8 +33,8 @@ function generateUsername(): string {
 }
 
 function getRandomCategory(): MessageCategory {
-  const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions', 'emotes'];
-  const weights = [0.4, 0.3, 0.2, 0.1]; // 40% gameplay, 30% reactions, 20% questions, 10% emotes
+  const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions'];
+  const weights = [0.4, 0.2, 0.4]; // 40% gameplay, 20% reactions, 40% questions
   
   const random = Math.random();
   let sum = 0;
@@ -53,32 +53,44 @@ function getRandomCategory(): MessageCategory {
 const FALLBACK_PHRASES: MessagePattern = {
   gameplay: [
     'Nice!',
-    'GG',
-    'Bien jugado',
-    'Eso estuvo genial',
-    'Que pro',
-    'Increible',
-    'Brutal',
+    'eres la polla alan san',
+    'Bien jugado, pero no le llegas al xokas',
+    'Eso estuvo genial, ojala,hagas colab',
+    'Que pro pro pro pro',
+    'Increible homiee',
+    'Brutal he burtal!!',
+    'Me encanta este juego',
+    'Sigue asi crack',
+    'Vas a topeee',
+    'Dale con todooo',
+    'A por todasss',
+    'Eres un maquinaaa',
+    'ibai te va a regañar',
+    'illojuan ?',
+    'mierdon histrico',
+    ''
   ],
   reactions: [
     'JAJAJA',
+    'WTF',
     'XD',
     'LOL',
-    'KEKW',
-    'No puede ser',
+    'JAJAJAJASJAJSAJSJAJSA',
+    'jajaja',
+    'No puede ser, ay no ',
   ],
   questions: [
     'Cuantas horas llevas?',
     'Que tal el juego?',
     'Lo recomiendas?',
+    'si es tan bueno como dicen?',
+    'Es dificil?',
+    'Vale la pena comprarlo?',
+    'Cual es tu parte favorita?',
+    'Hay muchos bugs?',
+    'Se puede jugar en cooperativo?',
+    'Que tal los graficos?',
   ],
-  emotes: [
-    'PogChamp',
-    'LUL',
-    'KEKW',
-    'GG',
-    'EZ',
-  ]
 };
 
 /**

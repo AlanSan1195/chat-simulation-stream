@@ -49,18 +49,6 @@ export const MESSAGE_PATTERNS: Record<HardcodedGameId, MessagePattern> = {
       'Encontraste algun easter egg?',
       'Ya hiciste todas las side quests?',
       'Que build estas usando?'
-    ],
-    emotes: [
-      'PogChamp',
-      'LUL',
-      'Sadge',
-      'PepeLaugh',
-      'Clap',
-      'MonkaS',
-      'KEKW',
-      'EZ',
-      'GG',
-      'Pog'
     ]
   },
   bg3: {
@@ -108,18 +96,6 @@ export const MESSAGE_PATTERNS: Record<HardcodedGameId, MessagePattern> = {
       'Que build recomiendas?',
       'Cuantas horas llevas?',
       'Salvaste a todos?'
-    ],
-    emotes: [
-      'PogChamp',
-      'LUL',
-      'KEKW',
-      'MonkaS',
-      'Sadge',
-      'Clap',
-      'EZ',
-      'GG',
-      'Pog',
-      'PepeLaugh'
     ]
   },
   minecraft: {
@@ -167,18 +143,6 @@ export const MESSAGE_PATTERNS: Record<HardcodedGameId, MessagePattern> = {
       'Encontraste una mansion?',
       'Ya derrotaste al Ender Dragon?',
       'Cuantos diamantes tienes?'
-    ],
-    emotes: [
-      'PogChamp',
-      'LUL',
-      'Sadge',
-      'PepeLaugh',
-      'Clap',
-      'EZ',
-      'MonkaS',
-      'KEKW',
-      'GG',
-      'Pog'
     ]
   }
 };
