@@ -80,6 +80,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
   "gameplay": ["frase1", "frase2", ... hasta 50 frases sobre gameplay/mecánicas],
   "reactions": ["frase1", "frase2", ... hasta 15 frases de reacciones cortas],
   "questions": ["frase1", "frase2", ... hasta 30 preguntas que haría el chat],
+  "emotes": ["emote1", "emote2", ... hasta 20 emotes populares usados en Twitch/YouTube]
 }`;
 
   const response = await chatWithAI([
