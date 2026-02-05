@@ -5,26 +5,48 @@ import StreamerDashboard from '../components/StreamerDashboard';
 import Header from '../components/Header.astro';
 ---
 
-<Layout title="Dashboard - Rocket Chat Simulator">
+<Layout 
+  title="Dashboard - Rocket Chat Simulator"
+  description="Panel de control para simular chat de Twitch/YouTube. Configura tu stream de practica y genera comentarios realistas con IA."
+  noindex={true}
+>
   <SignedOut>
-    <div class="min-h-screen bg-[#e8e4de] flex items-center justify-center">
-      <div class="text-center space-y-4">
+    <main class="min-h-screen bg-[#e8e4de] flex items-center justify-center" role="main">
+      <article class="text-center space-y-4">
         <h1 class="text-3xl font-light text-black">Acceso Restringido</h1>
         <p class="text-black/60">Debes iniciar sesion para acceder al dashboard</p>
-        <a href="/" class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-2 px-6 rounded-md transition">
+        <a 
+          href="/" 
+          class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-2 px-6 rounded-md transition"
+          aria-label="Volver a la pagina principal"
+        >
           Volver al inicio
         </a>
-      </div>
-    </div>
+      </article>
+    </main>
   </SignedOut>
 
   <SignedIn>
-      <Header/>
-      <!-- Main Content -->
-    <main class="flex-1 p-8 pt-10 ">
-      <div class="max-w-7xl mx-auto ">
+    <Header/>
+    <main class="flex-1 p-8 pt-10" role="main">
+      <div class="max-w-7xl mx-auto">
+        <h1 class="sr-only">Panel de Control - Rocket Chat Simulator</h1>
         <StreamerDashboard client:only="react" />
       </div>
     </main>
   </SignedIn>
 </Layout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

@@ -4,21 +4,26 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/astro/components";
 import Fotter from "../components/Fotter.astro";
 ---
 
-<Layout title="Rocket - Chat Simulator">
-  <div class="min-h-screen flex flex-col items-center justify-center  ">
-    <div class="max-w-3xl w-full text-center space-y-8 ">
+<Layout 
+  title="Rocket Chat Simulator - Practica Streaming con Audiencia Simulada"
+  description="Simula un chat de Twitch o YouTube para practicar streaming. Genera comentarios realistas con IA para entrenar antes de tu primer stream en vivo."
+>
+  <main class="min-h-screen flex flex-col items-center justify-center" role="main">
+    <article class="max-w-3xl w-full text-center space-y-8">
       <!-- Hero Section -->
-      <div class="">
-        <h1 class="text-6xl md:text-[180px] font-rocket  ">Rocket</h1>
-        <p class="text-3xl md:text-4xl font-rocket text-primary uppercase">
+      <header>
+        <h1 class="text-6xl md:text-[180px] font-rocket">Rocket</h1>
+        <p class="text-3xl md:text-4xl font-rocket text-primary uppercase" aria-label="Chat Simulator - Simulador de chat para streamers">
           Chat Simulator
         </p>
-      </div>
+      </header>
 
       <!-- Description Box -->
-      <div
+      <section
         class="bg-terminal rounded-lg p-6 md:p-8 border-2 border-primary text-left relative"
+        aria-labelledby="description-heading"
       >
+        <h2 id="description-heading" class="sr-only">Descripcion del servicio</h2>
         <p
           id="text-terminal-hero"
           class="text-base md:text-lg text-secundary leading-relaxed font-jet"
@@ -27,38 +32,36 @@ import Fotter from "../components/Fotter.astro";
           stream de verdad
         </p>
 
-        <!-- cli -->
-        <div class="h-[2.2px] w-6 bg-primary absolute bottom-3 right-5 cli">
-        </div>
-      </div>
+        <!-- cli cursor animation -->
+        <span class="h-[2.2px] w-6 bg-primary absolute bottom-3 right-5 cli" aria-hidden="true"></span>
+      </section>
 
-
-      <div class="space-y-3">
-        <SignedOut >
-          <!-- sin crear page de redireccion clerk me facilita mode en su boton para poner la modal en vez de redireccionar a otra pagina -->
+      <!-- CTA Section -->
+      <nav class="space-y-3" aria-label="Acciones principales">
+        <SignedOut>
           <SignInButton
             mode="modal"
             class="inline-block bg-primary hover:bg-primary text-white py-3 px-8 rounded-md font-rocket transition-all"
           >
             Comenzar Stream
           </SignInButton>
-          <p class="text-sm  font-jet">
-            Inicia sesión para ingresar al dashboard
+          <p class="text-sm font-jet">
+            Inicia sesion para ingresar al dashboard
           </p>
         </SignedOut>
 
-        <SignedIn >
+        <SignedIn>
           <a
             href="/dashboard"
             class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 rounded-md text-base transition-all"
+            aria-label="Ir al panel de control del simulador"
           >
             Ir al Dashboard
           </a>
         </SignedIn>
-      </div>
-    </div>
-    <!-- <Fotter /> -->
-  </div>
+      </nav>
+    </article>
+  </main>
 </Layout>
 
 <style>
@@ -75,5 +78,18 @@ import Fotter from "../components/Fotter.astro";
     100% {
       opacity: 0;
     }
+  }
+  
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

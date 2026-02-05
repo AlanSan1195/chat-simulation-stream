@@ -1,19 +1,27 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { SignUp } from '@clerk/astro/components';
+import LogoRocket from "../../../public/logo-rocket.svg";
 ---
 
-<Layout title="Registrarse - Rocket Chat Simulator">
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-8">
+<Layout 
+  title="Registrarse - Rocket Chat Simulator"
+  description="Crea tu cuenta en Rocket Chat Simulator para simular chat de Twitch/YouTube y practicar streaming."
+  noindex={true}
+>
+  <main class="min-h-screen flex items-center justify-center p-4" role="main">
+    <article class="w-full max-w-md">
+      <header class="text-center mb-8">
+        <a href="/" aria-label="Volver a la pagina principal">
+          <LogoRocket class="w-20 h-20 mx-auto mb-4" aria-hidden="true" />
+        </a>
         <h1 class="text-4xl font-light tracking-tight text-black mb-1">
           Roc<span class="inline-block transform -translate-y-0.5">k</span>et
         </h1>
         <p class="text-xl font-light italic text-[#e07b5a]">Chat Simulator</p>
         <p class="text-black/60 mt-4">Crea tu cuenta para continuar</p>
-      </div>
+      </header>
       <SignUp />
-    </div>
-  </div>
+    </article>
+  </main>
 </Layout>

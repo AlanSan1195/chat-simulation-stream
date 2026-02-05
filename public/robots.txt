@@ -1,0 +1,14 @@
+# Rocket Chat Simulator - robots.txt
+# https://rocketchat.online
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /sign-in/
+Disallow: /sign-up/
+
+# Sitemap
+Sitemap: https://rocketchat.online/sitemap-index.xml
+
+# Crawl-delay para ser amigable con los servidores
+Crawl-delay: 1

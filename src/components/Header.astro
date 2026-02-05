@@ -3,10 +3,26 @@ import { UserButton } from "@clerk/astro/components";
 import LogoRocket from "../../public/logo-rocket.svg";
 ---
 
-<!-- Logout button top right -->
-<div class="flex justify-between px-10 md:px-9 xl:px-0  py-4 max-w-7xl mx-auto">
-  <LogoRocket class="w-18 h-18" />
-  <div class=" flex  items-center justify-center scale-145">
-    <UserButton  showName />
-  </div>
-</div>
+<header class="flex justify-between px-10 md:px-9 xl:px-0 py-4 max-w-7xl mx-auto" role="banner">
+  <a href="/" aria-label="Ir a la pagina principal de Rocket Chat Simulator">
+    <LogoRocket class="w-18 h-18" aria-hidden="true" />
+    <span class="sr-only">Rocket Chat Simulator</span>
+  </a>
+  <nav class="flex items-center justify-center scale-145" aria-label="Menu de usuario">
+    <UserButton showName />
+  </nav>
+</header>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
