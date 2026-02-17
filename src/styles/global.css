@@ -8,6 +8,11 @@
   --color-terminal: #201E1D;
   --font-rocket: "rocket", "sans-serif";
   --font-jet: "jet", "sans-serif";
+  --font-geistCircle: "geistCircle", "sans-serif";
+  --font-geistGrid: "geistGrid", "sans-serif";
+  --font-geistLine: "geistLine", "sans-serif";
+  --font-geistSquare: "geistSquare", "sans-serif";
+  --font-geistTraingle: "geistTraingle", "sans-serif";
 }
 
 
@@ -39,5 +44,30 @@ body{
 @font-face {
   font-family: "jet";
   src: url(/public/assets/JetBrainsMono-variable.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "geistCircle";
+  src: url(/public/assets/GeistPixel-Circle.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "geistGrid";
+  src: url(/public/assets/GeistPixel-Grid.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "geistLine";
+  src: url(/public/assets/GeistPixel-Line.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "geistSquare";
+  src: url(/public/assets/GeistPixel-Square.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "geistTraingle";
+  src: url(/public/assets/GeistPixel-Triangle.woff2) format("woff2");
   font-display: swap;
 }

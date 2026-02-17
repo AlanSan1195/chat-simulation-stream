@@ -1,22 +1,27 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { SignedIn, SignedOut } from '@clerk/astro/components';
-import StreamerDashboard from '../components/StreamerDashboard';
-import Header from '../components/Header.astro';
+import Layout from "../layouts/Layout.astro";
+import { SignedIn, SignedOut } from "@clerk/astro/components";
+import StreamerDashboard from "../components/StreamerDashboard";
+import Header from "../components/Header.astro";
 ---
 
-<Layout 
+<Layout
   title="Dashboard - Rocket Chat Simulator"
   description="Panel de control para simular chat de Twitch/YouTube. Configura tu stream de practica y genera comentarios realistas con IA."
   noindex={true}
 >
   <SignedOut>
-    <main class="min-h-screen bg-[#e8e4de] flex items-center justify-center" role="main">
+    <main
+      class="min-h-screen bg-[#e8e4de] flex items-center justify-center"
+      role="main"
+    >
       <article class="text-center space-y-4">
         <h1 class="text-3xl font-light text-black">Acceso Restringido</h1>
-        <p class="text-black/60">Debes iniciar sesion para acceder al dashboard</p>
-        <a 
-          href="/" 
+        <p class="text-black/60">
+          Debes iniciar sesion para acceder al dashboard
+        </p>
+        <a
+          href="/"
           class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-2 px-6 rounded-md transition"
           aria-label="Volver a la pagina principal"
         >
@@ -27,7 +32,7 @@ import Header from '../components/Header.astro';
   </SignedOut>
 
   <SignedIn>
-    <Header/>
+    <Header />
     <main class="flex-1 p-8 pt-10" role="main">
       <div class="max-w-7xl mx-auto">
         <h1 class="sr-only">Panel de Control - Rocket Chat Simulator</h1>

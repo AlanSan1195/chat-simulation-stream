@@ -18,8 +18,8 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
   return (
     <div className="flex flex-col h-[550px]">
       {/* Header */}
-      <div className=" ">
-        <h2 className="text-2xl font-rocket  px-2 uppercase ">Chat </h2>
+      <div className="pb-2 ">
+        <h2 className="text-3xl font-geistSquare  px-2 uppercase ">Chat </h2>
       </div>
 
       {/* Messages Container */}

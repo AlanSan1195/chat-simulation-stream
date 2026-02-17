@@ -88,9 +88,9 @@ export default function StreamerDashboard() {
         {/* Logo/Title */}
         <div className="">
           <div className="flex items-center gap-1">
-            <p className="text-2xl  " style={{ fontFamily: 'rocket' }}>Rocket</p>
+            <p className="text-5xl  " style={{ fontFamily: 'rocket' }}>Rocket</p>
           </div>
-          <h1 className="text-3xl text-primary uppercase" style={{ fontFamily: 'rocket' }}>
+          <h1 className="text-3xl text-primary uppercase" style={{ fontFamily: 'geistSquare' }}>
             {
               isActive && selectedGame ? `Streaming: ${selectedGame}` : 'No hay stream activo'
             }
