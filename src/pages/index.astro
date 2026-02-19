@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/astro/components";
 import Fotter from "../components/Fotter.astro";
+import PlatformToggle from "../components/PlatformToggle.tsx";
 ---
 
 <Layout 
@@ -12,22 +13,24 @@ import Fotter from "../components/Fotter.astro";
     <article class="max-w-3xl w-full text-center space-y-8">
       <!-- Hero Section -->
       <header>
-      
-        <h1 class="text-6xl md:text-[180px] font-geistLine">Rocket</h1>
-        <p class="text-3xl md:text-5xl font-geistLine  text-primary uppercase" aria-label="Chat Simulator - Simulador de chat para streamers">
+        <div class="flex justify-center mb-4">
+          <PlatformToggle client:load />
+        </div>
+        <h1 class="text-6xl md:text-[180px] font-rocket ">Rocket</h1>
+        <p class="chat-simulator-text text-3xl font-departure text-primary uppercase" aria-label="Chat Simulator - Simulador de chat para streamers">
           Chat Simulator
         </p>
       </header>
 
       <!-- Description Box -->
       <section
-        class="bg-terminal rounded-lg p-6 md:p-8 border-2 border-primary text-left relative"
+        class="bg-terminal p-6 md:p-8 border-[0.5px] border-white/20 text-left relative"
         aria-labelledby="description-heading"
       >
         <h2 id="description-heading" class="sr-only">Descripcion del servicio</h2>
         <p
           id="text-terminal-hero"
-          class="text-base md:text-lg text-secundary leading-relaxed font-jet"
+          class="text-base md:text-lg text-white/80 leading-relaxed font-jet"
         >
           Practica con una audiencia simulada a tu gameplay y experimenta un
           stream de verdad
@@ -42,7 +45,7 @@ import Fotter from "../components/Fotter.astro";
         <SignedOut>
           <SignInButton
             mode="modal"
-            class="inline-block bg-primary hover:bg-primary text-white py-3 px-8 rounded-md font-geistLine transition-all"
+            class="inline-block bg-primary hover:bg-primary text-bg-primary py-3 px-8  transition-all font-bold font-departure"
           >
             Comenzar Stream
           </SignInButton>
@@ -54,7 +57,7 @@ import Fotter from "../components/Fotter.astro";
         <SignedIn>
           <a
             href="/dashboard"
-            class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 rounded-md text-base transition-all"
+            class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 text-base transition-all"
             aria-label="Ir al panel de control del simulador"
           >
             Ir al Dashboard
@@ -66,6 +69,12 @@ import Fotter from "../components/Fotter.astro";
 </Layout>
 
 <style>
+  .chat-simulator-text {
+    text-shadow:
+      0 0 1.7px rgb(0, 0, 0),
+      0 0 0px rgba(0, 0, 0, 0.541);
+  }
+
   .cli {
     animation: blink 1.2s step-start infinite;
   }

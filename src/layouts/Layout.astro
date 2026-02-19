@@ -86,8 +86,8 @@ const structuredData = {
     <meta name="twitter:image:alt" content="Rocket Chat Simulator - Practica streaming con audiencia simulada" />
     
     <!-- Theme Color -->
-    <meta name="theme-color" content="#e07b5a" />
-    <meta name="msapplication-TileColor" content="#e07b5a" />
+    <meta name="theme-color" content="#9146FF" />
+    <meta name="msapplication-TileColor" content="#9146FF" />
     
     <!-- Generator -->
     <meta name="generator" content={Astro.generator} />
@@ -102,8 +102,21 @@ const structuredData = {
     <!-- Preconnect a servicios externos -->
     <link rel="preconnect" href="https://clerk.rocketchat.online" />
     <link rel="dns-prefetch" href="https://clerk.rocketchat.online" />
+    <!-- Aplicar color de plataforma antes del primer render para evitar flash -->
+    <script is:inline>
+      (function () {
+        var platforms = {
+          twitch: { color: "#9146FF", textColor: "#ffffff" },
+          kick:   { color: "#53FC18", textColor: "#0a1a00" },
+        };
+        var stored = localStorage.getItem("preferred-platform");
+        var p = platforms[stored] || platforms.twitch;
+        document.documentElement.style.setProperty("--color-primary", p.color);
+        document.documentElement.style.setProperty("--color-primary-text", p.textColor);
+      })();
+    </script>
   </head>
-  <body class="bg-secundary text-black min-h-screen">
+  <body class="bg-bg-secundary text-black min-h-screen">
     <div id="clerk-root">
       <slot />
     </div>

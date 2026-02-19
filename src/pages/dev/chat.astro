@@ -1,0 +1,40 @@
+---
+import ChatWindow from '../../components/ChatWindow';
+import GameInput from '../../components/GameInput';
+import type { ChatMessage } from '../../utils/types';
+
+const now = Date.now();
+const MOCK: ChatMessage[] = [
+  { id: '1', username: 'alanpr0O._', content: 'dfbsfdbfgnbdgfndgndndfgb fdhgfdndghndhgmdgh', timestamp: now, category: 'gameplay' },
+  { id: '2', username: 'uslewquest', content: 'cvzkdfibvd', timestamp: now + 2000, category: 'reactions' },
+  { id: '3', username: 'elborther', content: 'jlfsvhlz aya si que si hagamsolo vayamos juntos!!', timestamp: now + 4000, category: 'gameplay' },
+  { id: '4', username: 'elborther', content: 'dcvfibj', timestamp: now + 6000, category: 'reactions' },
+  { id: '5', username: 'elborther', content: 'JAJAJAJ axd MEJOR ASI', timestamp: now + 8000, category: 'gameplay' },
+  { id: '6', username: 'alanpr0O._', content: 'dfbsfdbfgnbdgfndgndndfgb fdhgfdndghndhgmdgh', timestamp: now + 10000, category: 'gameplay' },
+  { id: '7', username: 'uslewquest', content: 'cvzkdfibvd', timestamp: now + 12000, category: 'reactions' },
+  { id: '8', username: 'elborther', content: 'jlfsvhlz aya si que si hagamsolo vayamos juntos!!', timestamp: now + 14000, category: 'gameplay' },
+  { id: '9', username: 'elborther', content: 'dcvfibj', timestamp: now + 16000, category: 'reactions' },
+  { id: '10', username: 'elborther', content: 'JAJAJAJ axd MEJOR ASI', timestamp: now + 18000, category: 'gameplay' },
+];
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>UI Preview</title>
+  <link rel="stylesheet" href="/src/styles/global.css" />
+</head>
+<body style="background:#151515; padding:2rem; max-width:900px; margin:0 auto; display:grid; grid-template-columns:1fr 2fr; gap:2rem; align-items:start;">
+  <div style="background:#151515">
+    <GameInput
+      client:load
+      selectedGame="Elden Ring"
+      onGameSelect={() => {}}
+      disabled={false}
+      userGames={["elden ring", "minecraft", "valorant"]}
+      remainingSlots={1}
+    />
+  </div>
+  <ChatWindow client:load messages={MOCK} isActive={true} />
+</body>
+</html>

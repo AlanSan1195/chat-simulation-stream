@@ -2,9 +2,11 @@
 
 @theme {
   /* Colores principales */
-  --color-primary: #f36b44;
-  --color-secundary: #e3e4e1;
-  --color-terciary: #151515;
+  --color-primary: #7C22FF;
+  --color-primary-text: #ffffff;
+  --color-secundary: #53FC18; 
+  --color-bg-secundary: #e3e4e1;
+  --color-bg-primary: #151515;
   --color-terminal: #201E1D;
   --font-rocket: "rocket", "sans-serif";
   --font-jet: "jet", "sans-serif";
@@ -13,17 +15,18 @@
   --font-geistLine: "geistLine", "sans-serif";
   --font-geistSquare: "geistSquare", "sans-serif";
   --font-geistTraingle: "geistTraingle", "sans-serif";
+  --font-departure: "departure", "sans-serif";
 }
 
 
 body{
-  background-color: var(--color-secundary); 
-  color: var(--color-terciary);
+  background-color: var(--color-bg-secundary); 
+  color: var(--color-bg-primary);
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    background-color: var(--color-secundary);
+    background-color: var(--color-bg-secundary);
     color: black;
   }
 }
@@ -31,7 +34,7 @@ body{
 @media (prefers-color-scheme: dark) {
   body{
     color: white;
-    background-color: var(--color-terciary);
+    background-color: var(--color-bg-primary);
   }
 }
 
@@ -69,5 +72,10 @@ body{
 @font-face {
   font-family: "geistTraingle";
   src: url(/public/assets/GeistPixel-Triangle.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "departure";
+  src: url(/public/assets/DepartureMono-Regular.woff2) format("woff2");
   font-display: swap;
 }

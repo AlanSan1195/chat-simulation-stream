@@ -1,9 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
-import { IconPlayerPlay, IconPlayerStop, IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@tabler/icons-react';
 import type { ChatMessage } from '../utils/types';
 import GameInput from './GameInput';
 import ChatWindow from './ChatWindow';
 import '../styles/global.css';
+
+function PlayIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+      <polygon points="22 11 22 13 21 13 21 14 20 14 20 15 18 15 18 16 16 16 16 17 15 17 15 18 13 18 13 19 11 19 11 20 10 20 10 21 8 21 8 22 6 22 6 23 3 23 3 22 2 22 2 2 3 2 3 1 6 1 6 2 8 2 8 3 10 3 10 4 11 4 11 5 13 5 13 6 15 6 15 7 16 7 16 8 18 8 18 9 20 9 20 10 21 10 21 11 22 11"/>
+    </svg>
+  );
+}
+
+function PauseIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+      <polygon points="23 2 23 22 22 22 22 23 15 23 15 22 14 22 14 2 15 2 15 1 22 1 22 2 23 2"/>
+      <polygon points="9 2 10 2 10 22 9 22 9 23 2 23 2 22 1 22 1 2 2 2 2 1 9 1 9 2"/>
+    </svg>
+  );
+}
 
 
 
@@ -82,23 +99,19 @@ export default function StreamerDashboard() {
   }, []);
 
   return (
-    <div className="grid lg:grid-cols-3 gap-12   ">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12">
       {/* Panel de Control - Left side */}
-      <div className=" space-y-9 flex flex-col">
+      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4 md:p-6  bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
         {/* Logo/Title */}
-        <div className="">
-          <div className="flex items-center gap-1">
-            <p className="text-5xl  " style={{ fontFamily: 'rocket' }}>Rocket</p>
-          </div>
-          <h1 className="text-3xl text-primary uppercase" style={{ fontFamily: 'geistSquare' }}>
-            {
-              isActive && selectedGame ? `Streaming: ${selectedGame}` : 'No hay stream activo'
-            }
+        <div>
+          <p className="text-5xl font-rocket">Rocket</p>
+          <h1 className="text-3xl text-primary uppercase font-departure">
+            {isActive && selectedGame ? `Streaming: ${selectedGame}` : 'No hay stream activo'}
           </h1>
         </div>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-semibold  ">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-semibold">Panel de Control</h2>
 
         {/* Game Input */}
         <GameInput
@@ -110,64 +123,53 @@ export default function StreamerDashboard() {
         />
 
         {/* Play/Stop Buttons */}
-        <div className="flex items-center gap-4 ">
+        <div className="flex items-center gap-4">
           <button
             onClick={handleStartChat}
             disabled={!selectedGame || isActive}
-            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+            className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
               !selectedGame || isActive
-                ? 'bg-primary/30 cursor-not-allowed'
-                : 'bg-primary/90 hover:bg-primary hover:scale-105'
+                ? 'bg-primary/60 cursor-not-allowed'
+                : 'bg-primary hover:bg-primary hover:scale-105'
             }`}
             title="Iniciar Chat"
           >
-            <IconPlayerPlay 
-              size={28} 
-              className={!selectedGame || isActive ? 'text-terciary/50' : 'text-terciary'} 
-            />
+            <PlayIcon className={!selectedGame || isActive ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
 
           <button
             onClick={handleStopChat}
             disabled={!isActive}
-            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+            className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
               !isActive
-                ? 'bg-primary/30 cursor-not-allowed'
+                ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:scale-105'
             }`}
             title="Detener Chat"
           >
-            <IconPlayerStop 
-              size={28} 
-              className={!isActive ? 'text-terciary/50' : 'text-terciary'} 
-            />
+            <PauseIcon className={!isActive ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
         </div>
 
         {/* Info Card */}
-        <div className=" border border-primary dark:border-primary/20 rounded-lg p-2  ">
-          <div className="flexgap-3">
-        
-            <div className="space-y-1">
-              <div className='flex gap-x-1'>
-                <IconInfoCircle className="text-primary dark:text-primary/60 mt-0.5" size={16} />
-                <p className="text-sm font-jet font-semibold text-primary dark:text-primary/60 ">Como funciona</p>
-              </div>
-              <p className="text-xs text-primary/70 dark:text-primary/30 font-jet leading-relaxed">
-                Escribe cualquier videojuego y la IA generara comentarios de chat personalizados. 
-                Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
-              </p>
+        <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 dark:hover:bg-white/10 transition-colors text-xs select-none">
+          <div className="space-y-1">
+            <div className="flex gap-x-1 items-center">
+              <IconInfoCircle className="text-primary mt-0.5" size={16} />
+              <p className="text-lg font-departure font-semibold text-primary">Como funciona</p>
             </div>
+            <p className="text-white font-jet leading-relaxed opacity-40">
+              Escribe cualquier videojuego y la IA generara comentarios de chat personalizados.
+              Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Ventana de Chat - Right side */}
-      <div className="grid lg:col-span-2 ">
+      <div className="lg:col-span-2 h-[500px] lg:h-full overflow-hidden">
         <ChatWindow messages={messages} isActive={isActive} />
       </div>
-
-
     </div>
   );
 }

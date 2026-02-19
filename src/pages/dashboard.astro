@@ -22,7 +22,7 @@ import Header from "../components/Header.astro";
         </p>
         <a
           href="/"
-          class="inline-block bg-[#e07b5a] hover:bg-[#c96a4a] text-white font-medium py-2 px-6 rounded-md transition"
+          class="inline-block bg-[#9146FF] hover:bg-[#7b2fbe] text-white font-medium py-2 px-6 transition"
           aria-label="Volver a la pagina principal"
         >
           Volver al inicio
@@ -33,8 +33,8 @@ import Header from "../components/Header.astro";
 
   <SignedIn>
     <Header />
-    <main class="flex-1 p-8 pt-10" role="main">
-      <div class="max-w-7xl mx-auto">
+    <main class="flex-1 px-4 py-6 lg:px-8 lg:py-5" role="main">
+      <div class="max-w-7xl shadow-2xl mx-auto lg:h-[700px]  border-0 bg-[#00000030] backdrop-blur-sm p-4 sm:p-6 lg:flex lg:flex-col rounded-xs">
         <h1 class="sr-only">Panel de Control - Rocket Chat Simulator</h1>
         <StreamerDashboard client:only="react" />
       </div>

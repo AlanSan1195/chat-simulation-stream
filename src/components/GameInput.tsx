@@ -71,12 +71,12 @@ export default function GameInput({
   };
 
   return (
-    <div className="space-y-2 ">
+    <div className="space-y-2  ">
       <div className="flex items-center justify-between font-jet px-1">
-        <label htmlFor="game-input" className="block text-sm  ">
+        <label htmlFor="game-input" className="block text-xs  ">
           A que jugaras hoy ?
         </label>
-        <span className="text-xs text-[#e07b5a]">
+          <span className="text-xs text-primary">
           {remainingSlots} juego{remainingSlots !== 1 ? 's' : ''} disponible{remainingSlots !== 1 ? 's' : ''}
         </span>
       </div>
@@ -90,36 +90,37 @@ export default function GameInput({
           onKeyDown={handleKeyDown}
           disabled={disabled || isLoading}
           placeholder="Ej: Elden Ring, Silkson, Minecraft, Valorant..."
-          className="w-full bg-transparent dark:bg-black/40 border-2 border-black/20 dark:border-secundary/20 rounded-lg pl-6 pr-14 py-3 text-black dark:text-white placeholder-black/40 dark:placeholder-white/10 focus:outline-none focus:border-[#e07b5a] disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm "
+          className="w-full bg-bg-secundary dark:bg-black/40 border-[2px] border-black/20 dark:border-bg-secundary/20 pl-6 pr-14 py-3 text-black dark:text-white placeholder-black/40 dark:placeholder-white/10 focus:outline-none  focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm rounded-sm "
         />
         
         <button
           onClick={() => handleSubmit()}
           disabled={disabled || isLoading || !inputValue.trim()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-[#e07b5a] hover:bg-[#c96a4a] disabled:bg-black/20 dark:disabled:bg-white/20 disabled:cursor-not-allowed transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary hover:opacity-80 disabled:bg-black/20 dark:disabled:bg-white/20 disabled:cursor-not-allowed transition-all rounded-xs "
           title="Generar chat para este juego"
+          style={{ color: 'var(--color-primary-text)' }}
         >
           {isLoading ? (
-            <IconLoader2 size={18} className="animate-spin text-white " />
+            <IconLoader2 size={18} className="animate-spin " />
           ) : success ? (
-            <IconCheck size={18} className="text-white" />
+            <IconCheck size={18} />
           ) : (
-            <IconSearch size={18} className="text-black" />
+            <IconSearch size={18} />
           )}
         </button>
       </div>
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 p-3 bg-[#e07b5a]/10 border border-[#e07b5a]/30 rounded-lg">
-          <IconAlertCircle size={18} className="text-[#e07b5a] flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-[#e07b5a]">{error}</p>
+        <div className="flex items-start gap-2 p-3 bg-primary/10 border border-primary/30">
+          <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-primary">{error}</p>
         </div>
       )}
 
-      {/* User's games list */}
+      {/* Tags*/}
       {userGames.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-1">
+        <div className="flex flex-wrap gap-2  ">
           {userGames.map((game) => (
             <button
               key={game}
@@ -128,11 +129,12 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={` mx-1 px-4 py-1.5 text-xs rounded-lg border transition-colors font-jet ${
+              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-rocket rounded-xs  ${
                 selectedGame === game
-                  ? 'bg-[#2d2d2d] text-white  dark:border-primary dark:bg-black border-[#2d2d2d] '
-                  : 'bg-transparent text-black dark:text-secundary/30 hover:text-primary dark:hover:text-secundary/60 dark:hover:border-secundary/50 border-2 border-black/20 dark:border-white/20  '
+                  ? 'bg-primary border-primary'
+                  : 'bg-transparent text-black dark:text-white/80 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-black dark:hover:text-primary dark:hover:border-primary dark:hover:border-primary border-[1px] border-black/20 dark:border-white/30'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
+              style={selectedGame === game ? { color: 'var(--color-primary-text)' } : undefined}
             >
               {game}
             </button>

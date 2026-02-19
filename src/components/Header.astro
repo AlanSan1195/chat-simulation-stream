@@ -1,15 +1,19 @@
 ---
 import { UserButton } from "@clerk/astro/components";
 import LogoRocket from "../../public/logo-rocket.svg";
+import PlatformToggle from "./PlatformToggle.tsx";
 ---
 
-<header class="flex justify-between px-10 md:px-9 xl:px-0 py-4 max-w-7xl mx-auto" role="banner">
-  <a href="/" aria-label="Ir a la pagina principal de Rocket Chat Simulator">
-    <LogoRocket class="w-18 h-18" aria-hidden="true" />
+<header class="flex justify-between px-10  max-w-7xl mx-auto   border-black/20 dark:border-white/10" role="banner">
+  <a href="/" aria-label="Ir a la pagina principal de Rocket Chat Simulator" class=" ">
+    <LogoRocket class="w-18 h-18 text-black dark:text-primary" aria-hidden="true" />
     <span class="sr-only">Rocket Chat Simulator</span>
   </a>
-  <nav class="flex items-center justify-center scale-145" aria-label="Menu de usuario">
-    <UserButton showName />
+  <nav class="flex items-center gap-4 justify-center " aria-label="Menu de usuario">
+    <PlatformToggle client:load />
+    <div class="scale-145 items-center flex">
+      <UserButton  />
+    </div>
   </nav>
 </header>
 
