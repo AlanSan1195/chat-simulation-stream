@@ -101,7 +101,7 @@ export default function StreamerDashboard() {
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12">
       {/* Panel de Control - Left side */}
-      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4 md:p-6  bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
+      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4 md:p-8 itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
         {/* Logo/Title */}
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
@@ -111,7 +111,7 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-semibold">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-semibold mb-4">Panel de Control</h2>
 
         {/* Game Input */}
         <GameInput

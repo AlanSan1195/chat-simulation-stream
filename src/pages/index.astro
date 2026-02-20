@@ -24,7 +24,7 @@ import PlatformToggle from "../components/PlatformToggle.tsx";
 
       <!-- Description Box -->
       <section
-        class="bg-terminal p-6 md:p-8 border-[0.5px] border-white/20 text-left relative"
+        class="bg-terminal mx-6 p-6 md:p-8 border-[0.5px] border-white/20 text-left relative"
         aria-labelledby="description-heading"
       >
         <h2 id="description-heading" class="sr-only">Descripcion del servicio</h2>
@@ -45,7 +45,7 @@ import PlatformToggle from "../components/PlatformToggle.tsx";
         <SignedOut>
           <SignInButton
             mode="modal"
-            class="inline-block bg-primary hover:bg-primary text-bg-primary py-3 px-8  transition-all font-bold font-departure"
+            class="inline-block bg-primary hover:bg-primary text-bg-primary  py-3 px-8  font-bold font-departure"
           >
             Comenzar Stream
           </SignInButton>
@@ -57,7 +57,7 @@ import PlatformToggle from "../components/PlatformToggle.tsx";
         <SignedIn>
           <a
             href="/dashboard"
-            class="inline-block bg-primary hover:scale-105 text-white font-medium py-3 px-8 text-base transition-all"
+            class="inline-block bg-primary hover:scale-105 text-bg-primary font-medium py-3 px-8 text-base transition-all"
             aria-label="Ir al panel de control del simulador"
           >
             Ir al Dashboard

@@ -19,8 +19,8 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
   return (
     <div className="flex flex-col h-full border-[1px] border-white/10 bg-terminal overflow-hidden rounded-sm">
       {/* Header */}
-      <div className="relative flex items-center px-4 py-3 border-b border-white/10 flex-shrink-0">
-        <span className="text-white/60 font-jet text-lg select-none">→|</span>
+      <div className="relative flex items-center px-4 py-8 border-b border-white/10 flex-shrink-0">
+       
         <h2 className="text-white font-jet text-sm font-medium tracking-wide absolute left-0 right-0 text-center pointer-events-none">
           Chat del stream
         </h2>

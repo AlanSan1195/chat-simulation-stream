@@ -132,7 +132,7 @@ export default function GameInput({
               className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-rocket rounded-xs  ${
                 selectedGame === game
                   ? 'bg-primary border-primary'
-                  : 'bg-transparent text-black dark:text-white/80 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-black dark:hover:text-primary dark:hover:border-primary dark:hover:border-primary border-[1px] border-black/20 dark:border-white/30'
+                  : 'bg-transparent text-black dark:text-white/80 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-primary dark:hover:text-white  dark:hover:border-primary border-[1px] border-black/20 dark:border-white/30'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
               style={selectedGame === game ? { color: 'var(--color-primary-text)' } : undefined}
             >
