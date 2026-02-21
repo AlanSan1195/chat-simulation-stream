@@ -27,7 +27,7 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto min-h-0 py-3">
+      <div className="flex-1 overflow-y-auto min-h-0">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center space-y-3">
             <svg
@@ -47,11 +47,12 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
           </div>
         ) : (
           <>
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <ChatMessage
                 key={message.id}
                 message={message}
                 startTime={startTime}
+                isAlternate={index % 2 === 1}
               />
             ))}
             <div ref={messagesEndRef} />

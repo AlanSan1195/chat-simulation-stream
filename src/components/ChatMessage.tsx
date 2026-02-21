@@ -3,6 +3,7 @@ import type { ChatMessage as ChatMessageType } from '../utils/types';
 interface ChatMessageProps {
   message: ChatMessageType;
   startTime: number;
+  isAlternate: boolean;
 }
 
 // Paleta de colores vibrantes para usernames (consistente por usuario)
@@ -64,15 +65,15 @@ function HatAvatar({ color }: { color: string }) {
   );
 }
 
-export default function ChatMessage({ message, startTime }: ChatMessageProps) {
+export default function ChatMessage({ message, startTime, isAlternate }: ChatMessageProps) {
   const usernameColor = getUsernameColor(message.username);
   const emoji = getRandomEmoji(message.id);
   const timestamp = formatTimestamp(startTime, message.timestamp);
 
   return (
-    <div className="flex items-start gap-0 py-1.5 px-2 hover:bg-white/5 transition-colors group">
+    <div className="flex items-center gap-x-1 hover:bg-white/5 transition-colors group">
       {/* Timestamp */}
-      <span className="text-white/40 font-jet text-xs w-16 flex-shrink-0 pt-0.5 tabular-nums">
+      <span className="text-white/40 font-jet text-xs w-16 flex-shrink-0 px-2 tabular-nums">
         {timestamp}
       </span>
 
@@ -82,12 +83,16 @@ export default function ChatMessage({ message, startTime }: ChatMessageProps) {
       </div> */}
 
       {/* Username + message */}
-      <div className="flex-1 min-w-0 text-sm leading-relaxed">
+      <div
+        className={`flex-1 min-w-0 text-sm leading-relaxed px-2 py-3 transition-colors group-hover:bg-white/10 border-t-[0.5px] border-white/20 ${
+          isAlternate ? 'bg-white/5' : 'bg-black/5'
+        }`}
+      >
         <span style={{ color: usernameColor }} className="font-semibold">
           {message.username}
         </span>
         <span className="text-white/40">: </span>
-        <span className="text-white/90 break-words">
+        <span className="text-white/90 text-pretty">
           {message.content}
         </span>
         <span className="ml-1.5 text-base leading-none">{emoji}</span>
