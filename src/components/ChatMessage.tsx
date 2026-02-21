@@ -77,9 +77,9 @@ export default function ChatMessage({ message, startTime }: ChatMessageProps) {
       </span>
 
       {/* Avatar */}
-      <div className="flex-shrink-0 mx-2 mt-0.5">
+      {/* <div className="flex-shrink-0 mx-2 mt-0.5">
         <HatAvatar color={usernameColor} />
-      </div>
+      </div> */}
 
       {/* Username + message */}
       <div className="flex-1 min-w-0 text-sm leading-relaxed">
