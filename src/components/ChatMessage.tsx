@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { ChatMessage as ChatMessageType } from '../utils/types';
 
 interface ChatMessageProps {
@@ -23,20 +24,101 @@ const USERNAME_COLORS = [
   '#00D8FF', // azul neón
 ];
 
-const RANDOM_EMOJIS = [
-  '😂', '💀', '🔥', '👏', '😭', '🗿', '💯', '😅',
-  '🤣', '😤', '🫡', '👀', '😎', '🤯', '💪', '🎮',
-  '⭐', '🚀', '😳', '🤡', '😈', '🙏', '😱', '🤩',
-];
+type SevenTvEmote = {
+  id: string;
+  name: string;
+  data: {
+    host: {
+      url: string;
+      files: Array<{
+        name: string;
+        format: string;
+        width: number;
+        height: number;
+        size: number;
+      }>;
+    };
+  };
+};
+
+const SEVEN_TV_PUBLIC_ENDPOINT = 'https://7tv.io/v3/emote-sets/global';
+
+// tiempo de vida de la cache de emotes de SevenTV (5 minutos)
+const SEVEN_TV_CACHE_TTL = 5 * 60 * 1000;
+
+let cachedEmotes: SevenTvEmote[] | null = null;
+let cacheTimestamp = 0;
+let solicitudEnCurso: Promise<SevenTvEmote[]> | null = null;
 
 function getUsernameColor(username: string): string {
   const hash = username.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
   return USERNAME_COLORS[hash % USERNAME_COLORS.length];
 }
 
-function getRandomEmoji(seed: string): string {
-  const hash = seed.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return RANDOM_EMOJIS[hash % RANDOM_EMOJIS.length];
+function seleccionarEmoteAleatorio(emotes: SevenTvEmote[]): SevenTvEmote | null {
+  if (emotes.length === 0) {
+    return null;
+  }
+
+  const indice = Math.floor(Math.random() * emotes.length);
+  return emotes[indice];
+}
+
+function seleccionarMejorImagen(emote: SevenTvEmote): string | null {
+  const file = emote.data.host.files
+    .filter((entry) => entry.format === 'WEBP')
+    .sort((a, b) => b.width - a.width)[0];
+
+  if (!file) {
+    return null;
+  }
+
+  return `https:${emote.data.host.url}/${file.name}`;
+}
+
+
+//aleteoridad de emote en mensaje
+function obtenerUbicacionEmote(): 'start' | 'end' | null {
+  const aleatorio = Math.random();
+
+  if (aleatorio < 0.25) {
+    return 'start';
+  }
+
+  if (aleatorio < 0.5) {
+    return 'end';
+  }
+
+  return null;
+}
+
+async function getGlobalEmotes(): Promise<SevenTvEmote[]> {
+  const now = Date.now();
+  if (cachedEmotes && now - cacheTimestamp < SEVEN_TV_CACHE_TTL) {
+    return cachedEmotes;
+  }
+
+  if (solicitudEnCurso) {
+    return solicitudEnCurso;
+  }
+
+  solicitudEnCurso = fetch(SEVEN_TV_PUBLIC_ENDPOINT)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Falló la solicitud a SevenTV: ${response.status}`);
+      }
+      return response.json() as Promise<{ emotes?: SevenTvEmote[] }>;
+    })
+    .then((data) => {
+      cachedEmotes = data.emotes ?? [];
+      cacheTimestamp = Date.now();
+      return cachedEmotes;
+    })
+    .finally(() => {
+      solicitudEnCurso = null;
+    });
+
+  return solicitudEnCurso;
 }
 
 function formatTimestamp(startTime: number, messageTime: number): string {
@@ -67,8 +149,61 @@ function HatAvatar({ color }: { color: string }) {
 
 export default function ChatMessage({ message, startTime, isAlternate }: ChatMessageProps) {
   const usernameColor = getUsernameColor(message.username);
-  const emoji = getRandomEmoji(message.id);
   const timestamp = formatTimestamp(startTime, message.timestamp);
+  const [emoteUrl, setEmoteUrl] = useState<string | null>(null);
+  const [emoteName, setEmoteName] = useState<string>('');
+  const [emoteError, setEmoteError] = useState<string | null>(null);
+  const [ubicacionEmote, setUbicacionEmote] = useState<'start' | 'end' | null>(null);
+
+
+  useEffect(() => {
+    let isActive = true;
+    const ubicacion = obtenerUbicacionEmote();
+
+    if (!ubicacion) {
+      setUbicacionEmote(null);
+      setEmoteUrl(null);
+      return () => {
+        isActive = false;
+      };
+    }
+
+    async function loadEmote() {
+      try {
+        const emotes = await getGlobalEmotes();
+        if (emotes.length === 0) {
+          throw new Error('SevenTV no devolvió emotes.');
+        }
+
+        const emote = seleccionarEmoteAleatorio(emotes);
+        if (!emote) {
+          throw new Error('SevenTV no devolvió emotes.');
+        }
+
+        const url = seleccionarMejorImagen(emote);
+        if (!url) {
+          throw new Error('No hay assets WEBP disponibles para el emote.');
+        }
+
+        if (isActive) {
+          setUbicacionEmote(ubicacion);
+          setEmoteUrl(url);
+          setEmoteName(emote.name);
+          setEmoteError(null);
+        }
+      } catch (caught) {
+        if (isActive) {
+          setEmoteError(caught instanceof Error ? caught.message : 'Error desconocido');
+        }
+      }
+    }
+
+    loadEmote();
+
+    return () => {
+      isActive = false;
+    };
+  }, [message.id]);
 
   return (
     <div className="flex items-center gap-x-1 hover:bg-white/5 transition-colors group">
@@ -84,7 +219,7 @@ export default function ChatMessage({ message, startTime, isAlternate }: ChatMes
 
       {/* Username + message */}
       <div
-        className={`flex-1 min-w-0 text-sm leading-relaxed px-2 py-3 transition-colors group-hover:bg-white/10 border-t-[0.5px] border-white/20 ${
+        className={`flex-1 min-w-0 text-sm leading-relaxed px-2 py-3 transition-colors group-hover:bg-white/10 border-t-[0.5px] border-l-[0.5px] border-white/20 ${
           isAlternate ? 'bg-white/5' : 'bg-black/5'
         }`}
       >
@@ -92,10 +227,25 @@ export default function ChatMessage({ message, startTime, isAlternate }: ChatMes
           {message.username}
         </span>
         <span className="text-white/40">: </span>
+        {emoteUrl && !emoteError && ubicacionEmote === 'start' ? (
+          <img
+            src={emoteUrl}
+            alt={emoteName}
+            className="ml-2 mr-1 h-6 w-6 inline-block align-middle"
+            loading="lazy"
+          />
+        ) : null}
         <span className="text-white/90 text-pretty">
           {message.content}
         </span>
-        <span className="ml-1.5 text-base leading-none">{emoji}</span>
+        {emoteUrl && !emoteError && ubicacionEmote === 'end' ? (
+          <img
+            src={emoteUrl}
+            alt={emoteName}
+            className="ml-2 h-6 w-6 inline-block align-middle"
+            loading="lazy"
+          />
+        ) : null}
       </div>
     </div>
   );
