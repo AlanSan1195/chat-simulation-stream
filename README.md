@@ -11,6 +11,7 @@ Plataforma web para streamers principiantes que simula una audiencia interactiva
 | Framework        | Astro 5 (SSR)                        |
 | Despliegue       | Vercel (`@astrojs/vercel`)           |
 | UI               | React 19 + Tailwind CSS 4            |
+| Emotes           | SevenTV API (emote set global)       |
 | Autenticacion    | Clerk (tema oscuro + espanol)        |
 | IA Primario      | Groq SDK                             |
 | IA Fallback      | Cerebras Cloud SDK                   |
@@ -432,6 +433,80 @@ export function addGameToUser(userId: string, gameName: string): boolean {
 
 **Archivo:** `src/lib/chatGenerator.ts`
 
+---
+
+## Caso 5.5: Emotes SevenTV en Mensajes de Chat
+
+**Archivo:** `src/components/ChatMessage.tsx`
+
+### Problema
+Queremos enriquecer el chat con emotes reales y aleatorios sin depender de assets locales.
+
+### Solucion: Consumir emotes del set global de SevenTV
+
+```typescript
+const SEVEN_TV_PUBLIC_ENDPOINT = 'https://7tv.io/v3/emote-sets/global';
+
+async function getGlobalEmotes(): Promise<SevenTvEmote[]> {
+  const response = await fetch(SEVEN_TV_PUBLIC_ENDPOINT);
+  if (!response.ok) {
+    throw new Error(`Falló la solicitud a SevenTV: ${response.status}`);
+  }
+
+  const data = await response.json() as { emotes?: SevenTvEmote[] };
+  return data.emotes ?? [];
+}
+```
+
+### Cache y control de solicitudes
+
+```typescript
+const SEVEN_TV_CACHE_TTL = 5 * 60 * 1000;
+let cachedEmotes: SevenTvEmote[] | null = null;
+let solicitudEnCurso: Promise<SevenTvEmote[]> | null = null;
+
+if (cachedEmotes && now - cacheTimestamp < SEVEN_TV_CACHE_TTL) {
+  return cachedEmotes;
+}
+
+if (solicitudEnCurso) {
+  return solicitudEnCurso;
+}
+```
+
+### Seleccion de imagen y ubicacion aleatoria
+
+```typescript
+function seleccionarMejorImagen(emote: SevenTvEmote): string | null {
+  const file = emote.data.host.files
+    .filter((entry) => entry.format === 'WEBP')
+    .sort((a, b) => b.width - a.width)[0];
+
+  return file ? `https:${emote.data.host.url}/${file.name}` : null;
+}
+
+function obtenerUbicacionEmote(): 'start' | 'end' | null {
+  const aleatorio = Math.random();
+  if (aleatorio < 0.25) return 'start';
+  if (aleatorio < 0.5) return 'end';
+  return null;
+}
+```
+
+### Conceptos Clave
+
+1. **API publica de SevenTV**: Emotes globales disponibles sin autenticacion
+2. **Cache in-memory**: Evita llamadas repetidas y reduce latencia
+3. **Control de concurrencia**: Una sola solicitud activa a la vez
+4. **Assets WEBP**: Se priorizan imagenes optimizadas
+5. **Emotes contextuales**: Se insertan al inicio o al final del mensaje
+
+### Referencias
+- `https://github.com/seventv`
+- `https://7tv.io/docs`
+
+---
+
 ### Problema
 Queremos que los mensajes de gameplay aparezcan mas seguido (40%) que los emotes (10%).
 
@@ -549,7 +624,7 @@ useEffect(() => {
 **Archivo:** `src/middleware.ts`
 
 ### Problema
-Necesitamos headers de seguridad (CSP, X-Frame-Options, etc.) pero Clerk requiere diferentes dominios en desarrollo vs produccion.
+Necesitamos headers de seguridad (CSP, X-Frame-Options, etc.) pero Clerk requiere diferentes dominios en desarrollo vs produccion. Ademas, los emotes de SevenTV requieren permitir sus endpoints y CDN.
 
 ### Solucion: Middleware con Configuracion Dinamica
 
@@ -564,17 +639,19 @@ const securityHeaders = defineMiddleware(async (context, next) => {
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
-  // CSP dinamica segun entorno
-  const clerkDomains = isDev
-    ? { /* dominios de desarrollo */ }
-    : { /* dominios de produccion */ };
-  
+ 
+....
   const csp = [
     "default-src 'self'",
-    `script-src 'self' ${clerkDomains.script}`,
-    // ... mas directivas
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkDomains.script} https://challenges.cloudflare.com`,
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' data: ${clerkDomains.img}`,
+    "font-src 'self' data:",
+    `connect-src 'self' ${clerkDomains.connect}`,
+    `frame-src 'self' https://challenges.cloudflare.com ${clerkDomains.frame}`,
+    "worker-src 'self' blob:",
   ].join('; ');
+
   
   response.headers.set('Content-Security-Policy', csp);
   return response;
@@ -644,35 +721,8 @@ Despues de desplegar en Vercel con dominio personalizado `rocketchat.online`, Cl
 ### Analisis del problema
 En desarrollo, Clerk usa dominios de prueba (`*.clerk.accounts.dev`), pero en produccion con dominio personalizado usa diferentes dominios (`*.clerk.com` y el subdominio propio).
 
-### Solucion: CSP dinamica segun entorno
 
-```typescript
-// src/middleware.ts
-const isDev = import.meta.env.DEV;
 
-const clerkDomains = isDev
-  ? {
-      script: "https://*.clerk.accounts.dev",
-      connect: "https://*.clerk.accounts.dev https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.accounts.dev",
-      frame: "https://*.clerk.accounts.dev",
-      img: "https://*.clerk.com https://img.clerk.com",
-    }
-  : {
-      script: "https://*.rocketchat.online https://*.clerk.com",
-      connect: "https://*.rocketchat.online https://api.clerk.com https://clerk-telemetry.com wss://*.clerk.com",
-      frame: "https://*.rocketchat.online https://*.clerk.com",
-      img: "https://*.clerk.com https://img.clerk.com https://*.rocketchat.online",
-    };
-
-const csp = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkDomains.script} https://challenges.cloudflare.com`,
-  `img-src 'self' data: ${clerkDomains.img}`,
-  `connect-src 'self' ${clerkDomains.connect}`,
-  `frame-src 'self' https://challenges.cloudflare.com ${clerkDomains.frame}`,
-  // ...
-].join('; ');
-```
 
 ### Leccion aprendida
 Siempre verificar en DevTools > Console los errores de CSP. Clerk tiene documentacion sobre que dominios necesita, pero varian segun si usas dominio personalizado o no.
