@@ -22,11 +22,18 @@ function PauseIcon({ className }: { className?: string }) {
   );
 }
 
-
+function StopIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+      <rect x="3" y="3" width="18" height="18" />
+    </svg>
+  );
+}
 
 export default function StreamerDashboard() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userGames, setUserGames] = useState<string[]>([]);
   const [remainingSlots, setRemainingSlots] = useState(4);
@@ -63,6 +70,7 @@ export default function StreamerDashboard() {
     if (!selectedGame) return;
 
     setIsActive(true);
+    setIsPaused(false);
     setMessages([]);
 
     // Crear conexión SSE con el nombre del juego
@@ -83,10 +91,39 @@ export default function StreamerDashboard() {
 
   const handleStopChat = () => {
     setIsActive(false);
+    setIsPaused(false);
+    setMessages([]);
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
+  };
+
+  const handlePauseChat = () => {
+    if (!eventSourceRef.current) return;
+    setIsPaused(true);
+    eventSourceRef.current.close();
+    eventSourceRef.current = null;
+  };
+
+  const handleResumeChat = () => {
+    if (!selectedGame || eventSourceRef.current) return;
+    setIsActive(true);
+    setIsPaused(false);
+
+    const eventSource = new EventSource(`/api/chat-stream?game=${encodeURIComponent(selectedGame)}`);
+
+    eventSource.onmessage = (event) => {
+      const newMessage: ChatMessage = JSON.parse(event.data);
+      setMessages((prev) => [...prev, newMessage]);
+    };
+
+    eventSource.onerror = () => {
+      console.error('Error en conexión SSE');
+      handleStopChat();
+    };
+
+    eventSourceRef.current = eventSource;
   };
 
   // Limpiar al desmontar
@@ -98,6 +135,11 @@ export default function StreamerDashboard() {
     };
   }, []);
 
+  const canStart = !!selectedGame && !isActive && !isPaused;
+  const canPause = isActive && !isPaused;
+  const canResume = isPaused && !eventSourceRef.current;
+  const canStop = isActive || isPaused;
+
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12">
       {/* Panel de Control - Left side */}
@@ -106,7 +148,11 @@ export default function StreamerDashboard() {
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
           <h1 className="text-3xl text-primary uppercase font-departure">
-            {isActive && selectedGame ? `Streaming: ${selectedGame}` : 'No hay stream activo'}
+            {isActive && selectedGame
+              ? isPaused
+                ? `Streaming en pausa: ${selectedGame}`
+                : `Streaming: ${selectedGame}`
+              : 'No hay stream activo'}
           </h1>
         </div>
 
@@ -117,37 +163,64 @@ export default function StreamerDashboard() {
         <GameInput
           selectedGame={selectedGame}
           onGameSelect={handleGameSelect}
-          disabled={isActive}
+          disabled={isActive || isPaused}
           userGames={userGames}
           remainingSlots={remainingSlots}
         />
 
-        {/* Play/Stop Buttons */}
+        {/* Play/Pause/Stop Buttons */}
         <div className="flex items-center gap-4">
           <button
-            onClick={handleStartChat}
-            disabled={!selectedGame || isActive}
+            onClick={isPaused ? handleResumeChat : handleStartChat}
+            disabled={isPaused ? !canResume : !canStart}
             className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
-              !selectedGame || isActive
-                ? 'bg-primary/60 cursor-not-allowed'
-                : 'bg-primary hover:bg-primary hover:scale-105'
+              isPaused
+                ? !canResume
+                  ? 'bg-primary/60 cursor-not-allowed'
+                  : 'bg-primary hover:bg-primary hover:scale-105'
+                : !canStart
+                  ? 'bg-primary/60 cursor-not-allowed'
+                  : 'bg-primary hover:bg-primary hover:scale-105'
             }`}
-            title="Iniciar Chat"
+            title={isPaused ? 'Reanudar Chat' : 'Iniciar Chat'}
           >
-            <PlayIcon className={!selectedGame || isActive ? 'text-bg-primary/50' : 'text-bg-primary'} />
+            <PlayIcon
+              className={
+                isPaused
+                  ? !canResume
+                    ? 'text-bg-primary/50'
+                    : 'text-bg-primary'
+                  : !canStart
+                    ? 'text-bg-primary/50'
+                    : 'text-bg-primary'
+              }
+            />
+          </button>
+
+          <button
+            onClick={handlePauseChat}
+            disabled={!canPause}
+            className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
+              !canPause
+                ? 'bg-primary/60 cursor-not-allowed'
+                : 'bg-primary hover:scale-105'
+            }`}
+            title="Pausar Chat"
+          >
+            <PauseIcon className={!canPause ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
 
           <button
             onClick={handleStopChat}
-            disabled={!isActive}
+            disabled={!canStop}
             className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
-              !isActive
+              !canStop
                 ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:scale-105'
             }`}
             title="Detener Chat"
           >
-            <PauseIcon className={!isActive ? 'text-bg-primary/50' : 'text-bg-primary'} />
+            <StopIcon className={!canStop ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
         </div>
 
