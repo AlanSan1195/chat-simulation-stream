@@ -21,8 +21,8 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
       {/* Header */}
       <div className="relative flex items-center px-4 py-8 border-b border-white/10 flex-shrink-0">
        
-        <h2 className="text-white font-jet text-sm font-medium tracking-wide absolute left-0 right-0 text-center pointer-events-none">
-          Chat del stream
+        <h2 className="text-white font-jet text-sm sm:text-2xl font-medium tracking-wide absolute left-0 right-0 text-center pointer-events-none">
+          Chat
         </h2>
       </div>
 
