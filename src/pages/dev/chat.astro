@@ -1,6 +1,7 @@
 ---
 import ChatWindow from '../../components/ChatWindow';
 import GameInput from '../../components/GameInput';
+import SevenTvEmoteTest from '../../dev/SevenTvEmoteTest';
 import type { ChatMessage } from '../../utils/types';
 
 const now = Date.now();
@@ -36,5 +37,8 @@ const MOCK: ChatMessage[] = [
     />
   </div>
   <ChatWindow client:load messages={MOCK} isActive={true} />
+  <div style="grid-column:1 / -1;">
+    <SevenTvEmoteTest client:load />
+  </div>
 </body>
 </html>
