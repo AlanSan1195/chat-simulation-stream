@@ -30,6 +30,8 @@ function StopIcon({ className }: { className?: string }) {
   );
 }
 
+const MAX_MESSAGES = 200;
+
 export default function StreamerDashboard() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -78,7 +80,10 @@ export default function StreamerDashboard() {
     
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
-      setMessages((prev) => [...prev, newMessage]);
+      setMessages((prev) => {
+        const next = [...prev, newMessage];
+        return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
+      });
     };
 
     eventSource.onerror = () => {
@@ -115,7 +120,10 @@ export default function StreamerDashboard() {
 
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
-      setMessages((prev) => [...prev, newMessage]);
+      setMessages((prev) => {
+        const next = [...prev, newMessage];
+        return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
+      });
     };
 
     eventSource.onerror = () => {

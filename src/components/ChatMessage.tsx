@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import type { ChatMessage as ChatMessageType } from '../utils/types';
 
 interface ChatMessageProps {
@@ -147,7 +147,7 @@ function HatAvatar({ color }: { color: string }) {
   );
 }
 
-export default function ChatMessage({ message, startTime, isAlternate }: ChatMessageProps) {
+function ChatMessageComponent({ message, startTime, isAlternate }: ChatMessageProps) {
   const usernameColor = getUsernameColor(message.username);
   const timestamp = formatTimestamp(startTime, message.timestamp);
   const [emoteUrl, setEmoteUrl] = useState<string | null>(null);
@@ -250,3 +250,13 @@ export default function ChatMessage({ message, startTime, isAlternate }: ChatMes
     </div>
   );
 }
+
+const ChatMessage = memo(ChatMessageComponent, (prev, next) => {
+  return (
+    prev.message.id === next.message.id &&
+    prev.isAlternate === next.isAlternate &&
+    prev.startTime === next.startTime
+  );
+});
+
+export default ChatMessage;

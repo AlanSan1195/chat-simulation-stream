@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import type { ChatMessage as ChatMessageType } from '../utils/types';
 import ChatMessage from './ChatMessage';
 
@@ -8,26 +9,30 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [startTime] = useState(() => Date.now());
 
-  // Auto-scroll al último mensaje
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const itemContent = useCallback(
+    (index: number, message: ChatMessageType) => (
+      <ChatMessage
+        message={message}
+        startTime={startTime}
+        isAlternate={index % 2 === 1}
+      />
+    ),
+    [startTime],
+  );
 
   return (
     <div className="flex flex-col h-full border-[1px] border-white/10 bg-terminal overflow-hidden rounded-sm">
       {/* Header */}
       <div className="relative flex items-center px-4 py-8 border-b border-white/10 flex-shrink-0">
-       
         <h2 className="text-white font-jet text-sm sm:text-2xl font-medium tracking-wide absolute left-0 right-0 text-center pointer-events-none">
           Chat
         </h2>
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="flex-1 min-h-0">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center space-y-3">
             <svg
@@ -46,17 +51,13 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
             <p className="text-sm text-white/30 font-jet">Selecciona un juego e inicia el chat</p>
           </div>
         ) : (
-          <>
-            {messages.map((message, index) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                startTime={startTime}
-                isAlternate={index % 2 === 1}
-              />
-            ))}
-            <div ref={messagesEndRef} />
-          </>
+          <Virtuoso
+            style={{ height: '100%' }}
+            data={messages}
+            itemContent={itemContent}
+            followOutput="smooth"
+            increaseViewportBy={200}
+          />
         )}
       </div>
     </div>

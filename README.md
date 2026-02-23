@@ -11,6 +11,7 @@ Plataforma web para streamers principiantes que simula una audiencia interactiva
 | Framework        | Astro 5 (SSR)                        |
 | Despliegue       | Vercel (`@astrojs/vercel`)           |
 | UI               | React 19 + Tailwind CSS 4            |
+| Virtualizacion   | react-virtuoso 4                     |
 | Emotes           | SevenTV API (emote set global)       |
 | Autenticacion    | Clerk (tema oscuro + espanol)        |
 | IA Primario      | Groq SDK                             |
@@ -669,6 +670,123 @@ export const onRequest = sequence(authMiddleware, securityHeaders);
 
 ---
 
+## Caso 9: Virtualización de Lista con react-virtuoso
+
+**Archivos:** `src/components/ChatWindow.tsx`, `src/components/ChatMessage.tsx`, `src/components/StreamerDashboard.tsx`
+
+### Problema
+
+El chat recibe mensajes cada 1–2.8 segundos de forma indefinida. Sin ningún límite, tras 10 minutos de stream hay ~300 mensajes todos montados en el DOM simultáneamente. Esto provoca tres problemas:
+
+1. **Crecimiento de DOM**: El navegador calcula layout y pinta 300 nodos aunque solo sean visibles ~15.
+2. **Re-renders en cascada**: Cada mensaje nuevo causa que React re-evalúe todos los `ChatMessage` anteriores.
+3. **Crecimiento de memoria**: El array de estado crece sin techo durante toda la sesión.
+
+### Solución: tres cambios coordinados
+
+#### 1. Cap de mensajes en `StreamerDashboard.tsx`
+
+```typescript
+const MAX_MESSAGES = 200;
+
+setMessages((prev) => {
+  const next = [...prev, newMessage];
+  return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
+});
+```
+
+`slice(-200)` conserva siempre los últimos 200 elementos. El array en memoria nunca supera ese límite, independientemente de cuánto dure el stream.
+
+#### 2. `React.memo` con comparador custom en `ChatMessage.tsx`
+
+```typescript
+const ChatMessage = memo(ChatMessageComponent, (prev, next) => {
+  return (
+    prev.message.id === next.message.id &&
+    prev.isAlternate === next.isAlternate &&
+    prev.startTime === next.startTime
+  );
+});
+```
+
+`React.memo` envuelve el componente y recibe como segundo argumento una función comparadora. Esta función recibe las props anteriores (`prev`) y las nuevas (`next`), y devuelve:
+- `true` → las props son iguales, **no renderizar**
+- `false` → las props cambiaron, **renderizar**
+
+Como `message.id` es inmutable una vez creado y `startTime` nunca cambia, en la práctica un `ChatMessage` ya montado nunca vuelve a renderizarse.
+
+#### 3. Virtualización con `react-virtuoso` en `ChatWindow.tsx`
+
+```tsx
+// ANTES: todos los mensajes en el DOM
+{messages.map((message, index) => (
+  <ChatMessage key={message.id} message={message} ... />
+))}
+
+// AHORA: solo los mensajes visibles en el DOM
+<Virtuoso
+  style={{ height: '100%' }}
+  data={messages}
+  itemContent={itemContent}
+  followOutput="smooth"
+  increaseViewportBy={200}
+/>
+```
+
+`react-virtuoso` mide la altura del contenedor, calcula qué índices del array son visibles según el scroll actual, y solo monta esos elementos en el DOM. Los demás existen en memoria como datos pero no como nodos DOM.
+
+```tsx
+const itemContent = useCallback(
+  (index: number, message: ChatMessageType) => (
+    <ChatMessage
+      message={message}
+      startTime={startTime}
+      isAlternate={index % 2 === 1}
+    />
+  ),
+  [startTime],
+);
+```
+
+`useCallback` memoiza la función `itemContent` para que Virtuoso no piense que cambió en cada render del padre y evite re-renderizar la lista completa innecesariamente.
+
+### `followOutput` vs `scrollIntoView`
+
+El scroll automático anterior usaba `scrollIntoView`:
+
+```typescript
+// ANTES: se disparaba en CADA nuevo mensaje, siempre
+useEffect(() => {
+  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+}, [messages]);
+```
+
+El problema: si el usuario scrolleaba hacia arriba para leer algo, el efecto lo devolvía al fondo en el siguiente mensaje.
+
+Con `followOutput="smooth"` de Virtuoso el comportamiento es inteligente:
+- Si el usuario **ya estaba al fondo**, sigue hacia abajo con cada mensaje nuevo.
+- Si el usuario **scrolleó hacia arriba**, los mensajes siguen llegando pero no lo desplazan.
+- En cuanto el usuario vuelve al fondo, el auto-scroll se reactiva solo.
+
+### Resultado
+
+| Escenario | Antes | Después |
+|---|---|---|
+| Nodos DOM tras 10 min | ~300 | ~15–20 (solo visibles) |
+| Re-renders por mensaje nuevo | Todos los anteriores | Solo el nuevo |
+| Memoria del array | Crece sin límite | Máx 200 items |
+| Auto-scroll | Siempre, sin respetar scroll manual | Solo si el usuario está al fondo |
+
+### Conceptos Clave
+
+1. **Virtualización**: Técnica que solo renderiza elementos visibles en pantalla usando placeholders con altura estimada para el scrollbar.
+2. **`React.memo`**: HOC que cachea el resultado del render y lo reutiliza si las props no cambiaron.
+3. **Comparador custom de memo**: Función `(prev, next) => boolean` que define exactamente qué props determinan si hay que re-renderizar.
+4. **`useCallback`**: Memoiza funciones para que su referencia sea estable entre renders.
+5. **Cap de array**: Estrategia `slice(-N)` para mantener el estado acotado en el tiempo.
+
+---
+
 ## Personalizacion Rapida
 
 ### Agregar un Juego Hardcodeado
@@ -750,6 +868,9 @@ tuvimos que configurar los dominos de clerk en mi provedor de dominio Dondomio p
 ### Optimizaciones de rendimiento
 - Preload de fuentes personalizadas
 - Preconnect a Clerk
+- Lista de chat virtualizada con `react-virtuoso` (solo renderiza los mensajes visibles)
+- `React.memo` en `ChatMessage` con comparador custom (evita re-renders de mensajes ya montados)
+- Cap de 200 mensajes en estado para limitar consumo de memoria
 
 ### Servicios de IA
 - Groq (primario)
