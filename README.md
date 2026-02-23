@@ -2,29 +2,22 @@
 
 ![Chat Simulation Stream](public/desktop-hero-dark.png)
 
-Plataforma web para streamers principiantes que simula una audiencia interactiva en tiempo real. Genera mensajes de chat contextuales por videojuego usando IA.
+Plataforma web para streamers principiantes que simula una audiencia interactiva en tiempo real. Genera mensajes de chat contextualizados por videojuego usando IA y los transmite al cliente via SSE.
 
 ## Stack Tecnologico
 
-| Categoria        | Tecnologia                           |
-|------------------|--------------------------------------|
-| Framework        | Astro 5 (SSR)                        |
-| Despliegue       | Vercel (`@astrojs/vercel`)           |
-| UI               | React 19 + Tailwind CSS 4            |
-| Virtualizacion   | react-virtuoso 4                     |
-| Emotes           | SevenTV API (emote set global)       |
-| Autenticacion    | Clerk (tema oscuro + espanol)        |
-| IA Primario      | Groq SDK                             |
-| IA Fallback      | Cerebras Cloud SDK                   |
-| Lenguaje         | TypeScript                           |
-| Package Manager  | pnpm                                 |
-
-## Requisitos Previos
-
-- Node.js 18+
-- pnpm 8+
-- Cuenta en [Clerk](https://clerk.com)
-- Cuenta en [Vercel](https://vercel.com) (para despliegue)
+| Categoria      | Tecnologia                     |
+|----------------|--------------------------------|
+| Framework      | Astro 5 (SSR)                  |
+| Despliegue     | Vercel (`@astrojs/vercel`)     |
+| UI             | React 19 + Tailwind CSS 4      |
+| Virtualizacion | react-virtuoso 4               |
+| Emotes         | SevenTV API (emote set global) |
+| Autenticacion  | Clerk                          |
+| IA Primario    | Groq SDK                       |
+| IA Fallback    | Cerebras Cloud SDK             |
+| Lenguaje       | TypeScript                     |
+| Package Manager| pnpm                           |
 
 ## Configuracion
 
@@ -46,130 +39,108 @@ CEREBRAS_API_KEY=xxx
 
 ```bash
 pnpm install
-pnpm dev
+pnpm dev        # http://localhost:4321
+pnpm build      # Build de produccion
+pnpm preview    # Preview local del build
 ```
-
-La app queda disponible en:
-- **Desarrollo**: `http://localhost:4321`
-- **Produccion**: `https://www.rocketchat.online/`
-
-## Scripts Disponibles
-
-```bash
-pnpm dev      # Servidor de desarrollo (localhost:4321)
-pnpm build    # Build de produccion para Vercel
-pnpm preview  # Preview local del build
-```
-
-## Despliegue en Vercel
-
-1. Conectar repositorio en [Vercel Dashboard](https://vercel.com/dashboard)
-2. Configurar variables de entorno:
-   - `PUBLIC_CLERK_PUBLISHABLE_KEY`
-   - `CLERK_SECRET_KEY`
-   - `GROQ_API_KEY` (opcional)
-   - `CEREBRAS_API_KEY` (opcional)
-3. Vercel detecta automaticamente que es un proyecto Astro
 
 ## Estructura del Proyecto
 
 ```
-chat-simulation-stream/
-├── src/
-│   ├── components/           # Componentes React
-│   │   ├── StreamerDashboard.tsx  # Dashboard principal
-│   │   ├── ChatWindow.tsx         # Ventana de chat
-│   │   ├── ChatMessage.tsx        # Mensaje individual
-│   │   ├── GameInput.tsx          # Input de busqueda de juegos
-│   │   └── GameSelector.tsx       # Selector dropdown (deprecated)
-│   ├── lib/                  
-│   │   ├── ai/               # Servicios de IA
+src/
+├── components/
+│   ├── StreamerDashboard.tsx  # Estado global, conexion SSE
+│   ├── ChatWindow.tsx         # Lista virtualizada con Virtuoso
+│   ├── ChatMessage.tsx        # Mensaje individual (memoizado)
+│   └── GameInput.tsx          # Input de busqueda de juegos
+├── lib/
+│   ├── ai/
 │   │   ├── serviceManager.ts  # Orquestador con failover
 │   │   ├── types.ts           # Interfaz AIService
-│   │   ├── index.ts           # Re-exports
 │   │   └── services/
 │   │       ├── groq.ts        # Servicio Groq
 │   │       └── cerebras.ts    # Servicio Cerebras
-│   │   ├── chatGenerator.ts   # Generador de mensajes
-│   │   ├── messagePatterns.ts # Frases hardcodeadas
-│   │   └── phraseCache.ts     # Cache en memoria
-│   ├── pages/
-│   │   ├── api/
-│   │   │   ├── chat-stream.ts      # SSE streaming
-│   │   │   └── generate-phrases.ts # Generacion con IA
-│   │   ├── dashboard.astro
-│   │   └── index.astro
-│   └── middleware.ts          # Auth + headers seguridad
-├── SETUP.md                   # Guia de configuracion de Clerk
-├── astro.config.mjs
-└── package.json
+│   ├── chatGenerator.ts       # Generador de mensajes
+│   ├── messagePatterns.ts     # Frases hardcodeadas por juego
+│   └── phraseCache.ts         # Cache en memoria + limite por usuario
+├── pages/
+│   ├── api/
+│   │   ├── chat-stream.ts      # Endpoint SSE
+│   │   └── generate-phrases.ts # Generacion con IA
+│   ├── dashboard.astro
+│   └── index.astro
+└── middleware.ts               # Auth + headers de seguridad
 ```
 
-## Endpoints de la API
+## Endpoints
 
-| Endpoint                   | Metodo | Descripcion                           |
-|----------------------------|--------|---------------------------------------|
-| `/api/chat-stream?game=X`  | GET    | Stream SSE de mensajes de chat        |
-| `/api/generate-phrases`    | POST   | Genera frases con IA para un juego    |
-| `/api/generate-phrases`    | GET    | Obtiene juegos del usuario y slots    |
+| Endpoint                  | Metodo | Descripcion                        |
+|---------------------------|--------|------------------------------------|
+| `/api/chat-stream?game=X` | GET    | Stream SSE de mensajes de chat     |
+| `/api/generate-phrases`   | POST   | Genera frases con IA para un juego |
+| `/api/generate-phrases`   | GET    | Obtiene juegos del usuario y slots |
 
-## Rutas de la Aplicacion
+## Rutas
 
-| Ruta         | Protegida | Descripcion            |
-|--------------|-----------|------------------------|
-| `/`          | No        | Landing page           |
-| `/sign-in`   | No        | Login con Clerk        |
-| `/sign-up`   | No        | Registro con Clerk     |
-| `/dashboard` | Si        | Panel del streamer     |
+| Ruta         | Protegida | Descripcion        |
+|--------------|-----------|--------------------|
+| `/`          | No        | Landing page       |
+| `/sign-in`   | No        | Login con Clerk    |
+| `/sign-up`   | No        | Registro con Clerk |
+| `/dashboard` | Si        | Panel del streamer |
 
 ---
 
 # Casos de Estudio
 
-Esta seccion documenta patrones y tecnicas implementadas en el proyecto que son valiosas para tu aprendizaje.
+Patrones y tecnicas implementadas en el proyecto, documentados para aprendizaje.
 
 ---
 
-## Caso 1: Server-Sent Events (SSE) para Streaming en Tiempo Real
+## Caso 1: SSE para Streaming en Tiempo Real
 
 **Archivo:** `src/pages/api/chat-stream.ts`
 
 ### Problema
-Necesitamos enviar mensajes de chat al cliente cada 3-7 segundos sin que el cliente haga polling constante.
+Enviar mensajes al cliente cada pocos segundos sin que el cliente haga polling constante (peticion repetida cada N segundos).
 
-### Solucion: SSE con ReadableStream
+### Por que SSE y no WebSockets?
+
+| | SSE | WebSocket |
+|---|---|---|
+| Direccion | Servidor → cliente (unidireccional) | Bidireccional |
+| Complejidad | Baja, HTTP nativo | Mayor, protocolo propio |
+| Reconexion | Automatica | Manual |
+| Cuando usarlo | El servidor envia datos, el cliente solo escucha | Chat real, juegos en tiempo real |
+
+En este proyecto el cliente nunca necesita enviar datos al servidor durante el stream, por eso SSE es suficiente y mas simple.
+
+### Implementacion en el servidor
 
 ```typescript
+// src/pages/api/chat-stream.ts
 export const GET: APIRoute = async ({ request, url }) => {
   const gameName = url.searchParams.get('game');
 
-  // Crear stream de texto para SSE
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
 
       const sendMessage = () => {
-        try {
-          const message = generateMessage(gameName);
-          const data = `data: ${JSON.stringify(message)}\n\n`;
-          controller.enqueue(encoder.encode(data));
-        } catch (error) {
-          console.error('Error generando mensaje:', error);
-        }
+        const message = generateMessage(gameName);
+        // El formato SSE requiere exactamente: "data: <contenido>\n\n"
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(message)}\n\n`));
       };
 
-      // Funcion recursiva para programar mensajes
-      const scheduleNext = () => {
-        const interval = getRandomInterval(3000, 7000);
-        return setTimeout(() => {
-          sendMessage();
-          timeoutId = scheduleNext();
-        }, interval);
-      };
+      // setTimeout recursivo para intervalos variables (1-2.8s)
+      const scheduleNext = () => setTimeout(() => {
+        sendMessage();
+        timeoutId = scheduleNext();
+      }, getRandomInterval(1000, 2800));
 
       let timeoutId = scheduleNext();
 
-      // Limpiar cuando el cliente cierra la conexion
+      // AbortSignal: se dispara cuando el cliente cierra la pestaña o llama eventSource.close()
       request.signal.addEventListener('abort', () => {
         clearTimeout(timeoutId);
         controller.close();
@@ -187,46 +158,41 @@ export const GET: APIRoute = async ({ request, url }) => {
 };
 ```
 
-### Conceptos Clave
+**Conceptos clave:**
+- `ReadableStream`: API nativa para crear streams de datos. El `controller` permite empujar datos (`enqueue`) o cerrar el stream (`close`).
+- `TextEncoder`: convierte strings a `Uint8Array` porque los streams trabajan con bytes, no strings.
+- Formato SSE: cada mensaje debe terminar con `\n\n`. Sin eso, el cliente no sabe donde termina un mensaje.
+- `AbortSignal`: evita memory leaks — si el cliente se va, el servidor limpia el timeout.
 
-1. **ReadableStream**: API nativa del browser/Node para crear streams de datos
-2. **TextEncoder**: Convierte strings a Uint8Array (bytes)
-3. **Formato SSE**: Cada mensaje debe ser `data: contenido\n\n`
-4. **AbortSignal**: Detecta cuando el cliente cierra la conexion
-
-### Consumo en el Cliente
+### Consumo en el cliente
 
 ```typescript
-// En StreamerDashboard.tsx
+// src/components/StreamerDashboard.tsx
 const eventSource = new EventSource(`/api/chat-stream?game=${encodeURIComponent(selectedGame)}`);
 
 eventSource.onmessage = (event) => {
   const newMessage = JSON.parse(event.data);
-  setMessages((prev) => [...prev, newMessage]);
+  setMessages((prev) => {
+    const next = [...prev, newMessage];
+    // Cap de 200 mensajes para limitar memoria (ver Caso 4)
+    return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
+  });
 };
 
-eventSource.onerror = () => {
-  console.error('Error en conexion SSE');
-  eventSource.close();
-};
+// Limpiar al desmontar o detener
+eventSource.close();
 ```
-
-### Por que SSE y no WebSockets?
-- SSE es **unidireccional** (servidor -> cliente)
-- Mas simple de implementar
-- Reconexion automatica nativa
-- Ideal cuando solo el servidor envia datos
 
 ---
 
-## Caso 2: Patron Strategy + Failover para Servicios de IA
+## Caso 2: Pattern Strategy + Failover para Servicios de IA
 
 **Archivos:** `src/lib/ai/types.ts`, `src/lib/ai/serviceManager.ts`, `src/lib/ai/services/*.ts`
 
 ### Problema
-Queremos usar multiples proveedores de IA (Groq, Cerebras) e intercambiarlos sin cambiar el codigo consumidor. Ademas, si uno falla, usar automaticamente el siguiente.
+Usar multiples proveedores de IA (Groq, Cerebras) sin acoplar el codigo consumidor a ninguno en concreto. Si uno falla, cambiar al siguiente automaticamente.
 
-### Solucion: Interfaz Comun (Strategy Pattern)
+### Interfaz comun (Strategy Pattern)
 
 ```typescript
 // src/lib/ai/types.ts
@@ -236,24 +202,20 @@ export interface AIService {
 }
 ```
 
-Cada servicio implementa esta interfaz:
+Cada servicio implementa la misma interfaz. El codigo que los consume no sabe ni le importa cual esta usando:
 
 ```typescript
 // src/lib/ai/services/groq.ts
 export const groqService: AIService = {
   name: 'Groq',
-  async chat(messages: AIServiceMessage[]) {
-    const groq = getGroqClient();
-    
-    const chatCompletion = await groq.chat.completions.create({
-      messages,
-      model: 'openai/gpt-oss-120b',
-      temperature: 0.7,
-      stream: true,
+  async chat(messages) {
+    const completion = await groq.chat.completions.create({
+      messages, model: 'llama-3.3-70b-versatile', stream: true
     });
 
+    // Async generator: yield chunk a chunk del stream
     async function* generateStream() {
-      for await (const chunk of chatCompletion) {
+      for await (const chunk of completion) {
         yield chunk.choices[0]?.delta?.content || '';
       }
     }
@@ -263,67 +225,50 @@ export const groqService: AIService = {
 };
 ```
 
-### Failover Automatico
+### Failover automatico
 
 ```typescript
 // src/lib/ai/serviceManager.ts
 const services: AIService[] = [groqService, cerebrasService];
-let currentServiceIndex = 0;
-
-function getNextService(): AIService {
-  const service = services[currentServiceIndex];
-  currentServiceIndex = (currentServiceIndex + 1) % services.length;
-  return service;
-}
+let currentIndex = 0;
 
 export async function chatWithAI(messages: AIServiceMessage[]): Promise<string> {
   let lastError: Error | null = null;
-  
-  // Intentar con cada servicio hasta que uno funcione
+
   for (let i = 0; i < services.length; i++) {
-    const service = getNextService();
-    
+    const service = services[currentIndex % services.length];
+    currentIndex++;
+
     try {
-      console.log(`[AI] Usando servicio: ${service.name}`);
       const stream = await service.chat(messages);
-      
-      let fullResponse = '';
-      for await (const chunk of stream) {
-        fullResponse += chunk;
-      }
-      
-      return fullResponse;
+      let result = '';
+      for await (const chunk of stream) result += chunk;
+      return result;
     } catch (error) {
-      console.error(`[AI] Error con ${service.name}:`, error);
       lastError = error as Error;
-      // Continuar con el siguiente servicio
+      // Fallo: el bucle continua con el siguiente servicio
     }
   }
-  
-  throw lastError || new Error('Todos los servicios de IA fallaron');
+
+  throw lastError ?? new Error('Todos los servicios de IA fallaron');
 }
 ```
 
-### Conceptos Clave
-
-1. **Strategy Pattern**: Define familia de algoritmos intercambiables
-2. **Round-Robin**: Distribuye carga entre servicios con `(index + 1) % length`
-3. **Failover**: Si un servicio falla, intenta con el siguiente
-4. **Async Generators**: `async function*` + `yield` para streaming
-
-### Beneficio
-Para agregar un nuevo proveedor de IA, solo creas un nuevo archivo que implemente `AIService` y lo agregas al array.
+**Conceptos clave:**
+- **Strategy Pattern**: define una familia de algoritmos intercambiables detras de una interfaz comun. Agregar un nuevo proveedor = crear un archivo que implemente `AIService` y añadirlo al array.
+- **Round-robin**: `currentIndex % services.length` distribuye carga entre servicios.
+- **Async generators** (`async function*` + `yield`): permiten iterar sobre el stream de tokens sin cargar todo en memoria.
 
 ---
 
-## Caso 3: Patron Singleton Lazy para Clientes de API
+## Caso 3: Singleton Lazy para Clientes de API
 
 **Archivo:** `src/lib/ai/services/groq.ts`
 
 ### Problema
-No queremos crear multiples instancias del cliente Groq cada vez que se hace una peticion.
+Crear el cliente Groq en cada request seria ineficiente y no validaria la API key hasta tarde.
 
-### Solucion: Singleton con Inicializacion Lazy
+### Solucion
 
 ```typescript
 let groqInstance: Groq | null = null;
@@ -331,102 +276,60 @@ let groqInstance: Groq | null = null;
 function getGroqClient(): Groq {
   if (!groqInstance) {
     const apiKey = import.meta.env.GROQ_API_KEY;
-    if (!apiKey) {
-      throw new Error('GROQ_API_KEY no esta configurada');
-    }
+    if (!apiKey) throw new Error('GROQ_API_KEY no esta configurada');
     groqInstance = new Groq({ apiKey });
   }
   return groqInstance;
 }
 ```
 
-### Por que es importante?
-
-1. **Eficiencia**: Una sola instancia reutilizada
-2. **Lazy Loading**: Solo se crea cuando se necesita
-3. **Validacion**: Falla temprano si falta la API key
+**Por que funciona:** la primera vez que se llama, crea la instancia y la guarda. Las siguientes veces, devuelve la misma. Si falta la API key, falla en el primer request (no en el arranque del servidor), lo cual es el momento correcto para un error de configuracion.
 
 ---
 
-## Caso 4: Cache en Memoria con Map
+## Caso 4: Cache en Memoria + Limite por Usuario
 
 **Archivo:** `src/lib/phraseCache.ts`
 
 ### Problema
-No queremos llamar a la IA cada vez que un usuario usa el mismo juego. Necesitamos cache y limitar cuantos juegos puede generar cada usuario.
+Llamar a la IA cada vez que alguien usa el mismo juego es lento y costoso. Ademas, hay que limitar cuantos juegos puede generar cada usuario.
 
-### Solucion: Dos Maps con Normalizacion
+### Dos Maps independientes
 
 ```typescript
-// Cache de frases por juego
-const phrasesCache = new Map<string, CachedGame>();
+const phrasesCache = new Map<string, CachedGame>();   // juego -> frases generadas
+const userGamesCache = new Map<string, UserGames>();   // userId -> lista de juegos
 
-// Cache de juegos por usuario
-const userGamesCache = new Map<string, UserGames>();
-
-// Normalizar para consistencia
-export function normalizeGameName(gameName: string): string {
-  return gameName.toLowerCase().trim();
-}
-
-export function getCachedPhrases(gameName: string): MessagePattern | null {
-  const key = normalizeGameName(gameName);
-  const cached = phrasesCache.get(key);
-  return cached?.phrases || null;
-}
-
-export function setCachedPhrases(gameName: string, phrases: MessagePattern, userId: string): void {
-  const key = normalizeGameName(gameName);
-  phrasesCache.set(key, {
-    phrases,
-    generatedAt: Date.now(),
-    generatedBy: userId
-  });
+// Normalizacion: "Minecraft ", "MINECRAFT" y "minecraft" son el mismo juego
+function normalizeGameName(name: string): string {
+  return name.toLowerCase().trim();
 }
 ```
 
-### Limite por Usuario
+Por que `Map` y no un objeto `{}`? `Map` esta optimizado para inserciones y lecturas frecuentes con claves dinamicas, tiene metodos propios (`get`, `set`, `has`) y no mezcla claves de datos con propiedades del prototipo.
+
+### Limite por usuario
 
 ```typescript
 const MAX_GAMES_PER_USER = 4;
 
-export function canUserAddGame(userId: string): boolean {
-  const userGames = getUserGames(userId);
-  return userGames.length < MAX_GAMES_PER_USER;
-}
-
 export function addGameToUser(userId: string, gameName: string): boolean {
-  const normalizedName = normalizeGameName(gameName);
-  const userGames = userGamesCache.get(userId);
-  
-  if (userGames) {
-    // Ya tiene el juego? No cuenta como nuevo
-    if (userGames.games.includes(normalizedName)) {
-      return true;
-    }
-    
-    // Verificar limite
-    if (userGames.games.length >= MAX_GAMES_PER_USER) {
-      return false;
-    }
-    
-    userGames.games.push(normalizedName);
+  const key = normalizeGameName(gameName);
+  const entry = userGamesCache.get(userId);
+
+  if (entry) {
+    if (entry.games.includes(key)) return true;          // ya lo tiene, no cuenta
+    if (entry.games.length >= MAX_GAMES_PER_USER) return false; // limite alcanzado
+    entry.games.push(key);
   } else {
-    userGamesCache.set(userId, {
-      games: [normalizedName],
-      createdAt: Date.now()
-    });
+    userGamesCache.set(userId, { games: [key], createdAt: Date.now() });
   }
-  
+
   return true;
 }
 ```
 
-### Conceptos Clave
-
-1. **Map vs Object**: Map es mas eficiente para caches dinamicos
-2. **Normalizacion**: Evita duplicados por mayusculas/espacios
-3. **Datos efimeros**: Se pierden al reiniciar el servidor (aceptable para este caso)
+**Nota:** esta cache vive en memoria del servidor. Se pierde al reiniciar. Para este caso de uso es aceptable; en produccion real usarías Redis o una base de datos.
 
 ---
 
@@ -434,257 +337,112 @@ export function addGameToUser(userId: string, gameName: string): boolean {
 
 **Archivo:** `src/lib/chatGenerator.ts`
 
+### Problema
+Los mensajes de gameplay deben aparecer mas seguido (40%) que los emotes (10%). `Math.random()` puro da probabilidades iguales.
+
+### Solucion: pesos con suma acumulada
+
+```typescript
+function getRandomCategory(): MessageCategory {
+  const categories = ['gameplay', 'reactions', 'questions', 'emotes'];
+  const weights =    [0.4,        0.3,         0.2,          0.1    ];
+
+  const random = Math.random(); // numero entre 0 y 1
+  let sum = 0;
+
+  for (let i = 0; i < categories.length; i++) {
+    sum += weights[i];
+    if (random < sum) return categories[i];
+  }
+
+  return 'gameplay'; // fallback (no deberia llegar aqui si los pesos suman 1)
+}
+```
+
+**Como funciona con un ejemplo:**
+
+```
+random = 0.35
+  sum += 0.4  → sum = 0.4  → 0.35 < 0.4? ✓ → devuelve 'gameplay'
+
+random = 0.65
+  sum += 0.4  → sum = 0.4  → 0.65 < 0.4? ✗
+  sum += 0.3  → sum = 0.7  → 0.65 < 0.7? ✓ → devuelve 'reactions'
+```
+
+El truco: cada categoria "ocupa" un rango del espacio 0-1 proporcional a su peso. La suma acumulada define donde termina cada rango.
+
 ---
 
-## Caso 5.5: Emotes SevenTV en Mensajes de Chat
+## Caso 6: Emotes de SevenTV con Cache y Control de Concurrencia
 
 **Archivo:** `src/components/ChatMessage.tsx`
 
 ### Problema
-Queremos enriquecer el chat con emotes reales y aleatorios sin depender de assets locales.
+Cada mensaje puede querer mostrar un emote aleatorio. Si 50 mensajes se montan a la vez y cada uno hace `fetch` a SevenTV, se disparan 50 requests identicas.
 
-### Solucion: Consumir emotes del set global de SevenTV
+### Cache con TTL y deduplicacion de requests
 
 ```typescript
-const SEVEN_TV_PUBLIC_ENDPOINT = 'https://7tv.io/v3/emote-sets/global';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+let cachedEmotes: SevenTvEmote[] | null = null;
+let cacheTimestamp = 0;
+let requestInFlight: Promise<SevenTvEmote[]> | null = null;
 
 async function getGlobalEmotes(): Promise<SevenTvEmote[]> {
-  const response = await fetch(SEVEN_TV_PUBLIC_ENDPOINT);
-  if (!response.ok) {
-    throw new Error(`Falló la solicitud a SevenTV: ${response.status}`);
+  // 1. Si la cache es valida, devolverla directamente
+  if (cachedEmotes && Date.now() - cacheTimestamp < CACHE_TTL) {
+    return cachedEmotes;
   }
 
-  const data = await response.json() as { emotes?: SevenTvEmote[] };
-  return data.emotes ?? [];
+  // 2. Si ya hay una peticion en vuelo, reutilizarla (no lanzar otra)
+  if (requestInFlight) return requestInFlight;
+
+  // 3. Lanzar la peticion y guardar la promesa
+  requestInFlight = fetch('https://7tv.io/v3/emote-sets/global')
+    .then(res => res.json())
+    .then(data => {
+      cachedEmotes = data.emotes ?? [];
+      cacheTimestamp = Date.now();
+      return cachedEmotes!;
+    })
+    .finally(() => { requestInFlight = null; });
+
+  return requestInFlight;
 }
 ```
 
-### Cache y control de solicitudes
+**Por que guardar la promesa y no solo un flag?** Porque si 10 componentes llaman a `getGlobalEmotes()` al mismo tiempo y el fetch tarda 300ms, todos reciben la misma promesa y esperan al mismo resultado. Cuando resuelve, los 10 obtienen los datos con un solo request.
+
+### Ubicacion aleatoria del emote
 
 ```typescript
-const SEVEN_TV_CACHE_TTL = 5 * 60 * 1000;
-let cachedEmotes: SevenTvEmote[] | null = null;
-let solicitudEnCurso: Promise<SevenTvEmote[]> | null = null;
-
-if (cachedEmotes && now - cacheTimestamp < SEVEN_TV_CACHE_TTL) {
-  return cachedEmotes;
-}
-
-if (solicitudEnCurso) {
-  return solicitudEnCurso;
-}
-```
-
-### Seleccion de imagen y ubicacion aleatoria
-
-```typescript
-function seleccionarMejorImagen(emote: SevenTvEmote): string | null {
-  const file = emote.data.host.files
-    .filter((entry) => entry.format === 'WEBP')
-    .sort((a, b) => b.width - a.width)[0];
-
-  return file ? `https:${emote.data.host.url}/${file.name}` : null;
-}
-
+// 25% inicio del mensaje, 25% final, 50% sin emote
 function obtenerUbicacionEmote(): 'start' | 'end' | null {
-  const aleatorio = Math.random();
-  if (aleatorio < 0.25) return 'start';
-  if (aleatorio < 0.5) return 'end';
+  const r = Math.random();
+  if (r < 0.25) return 'start';
+  if (r < 0.50) return 'end';
   return null;
 }
 ```
 
-### Conceptos Clave
-
-1. **API publica de SevenTV**: Emotes globales disponibles sin autenticacion
-2. **Cache in-memory**: Evita llamadas repetidas y reduce latencia
-3. **Control de concurrencia**: Una sola solicitud activa a la vez
-4. **Assets WEBP**: Se priorizan imagenes optimizadas
-5. **Emotes contextuales**: Se insertan al inicio o al final del mensaje
-
-### Referencias
-- `https://github.com/seventv`
-- `https://7tv.io/docs`
-
 ---
 
-### Problema
-Queremos que los mensajes de gameplay aparezcan mas seguido (40%) que los emotes (10%).
-
-### Solucion: Pesos con Suma Acumulada
-
-```typescript
-function getRandomCategory(): MessageCategory {
-  const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions', 'emotes'];
-  const weights = [0.4, 0.3, 0.2, 0.1]; // 40%, 30%, 20%, 10%
-  
-  const random = Math.random(); // 0 a 1
-  let sum = 0;
-  
-  for (let i = 0; i < categories.length; i++) {
-    sum += weights[i];
-    if (random < sum) {
-      return categories[i];
-    }
-  }
-  
-  return 'gameplay'; // Fallback
-}
-```
-
-### Como Funciona
-
-Si `random = 0.35`:
-- `sum = 0.4` -> `0.35 < 0.4` -> Devuelve 'gameplay'
-
-Si `random = 0.65`:
-- `sum = 0.4` -> `0.65 < 0.4`? No
-- `sum = 0.7` -> `0.65 < 0.7`? Si -> Devuelve 'reactions'
-
----
-
-## Caso 6: Middleware de Autenticacion con Clerk
-
-**Archivo:** `src/middleware.ts`
-
-### Problema
-Proteger rutas `/dashboard` y `/api/*` para que solo usuarios autenticados accedan.
-
-### Solucion: Middleware de Astro + Clerk
-
-```typescript
-import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server';
-
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/api/(.*)'
-]);
-
-export const onRequest = clerkMiddleware((auth, context) => {
-  const { redirectToSignIn, userId } = auth();
-  
-  if (!userId && isProtectedRoute(context.request)) {
-    return redirectToSignIn();
-  }
-});
-```
-
-### Conceptos Clave
-
-1. **createRouteMatcher**: Crea un matcher con patrones glob
-2. **clerkMiddleware**: Wrapper que inyecta `auth()` en cada request
-3. **Patron temprano**: Verifica autenticacion antes de procesar la ruta
-
----
-
-## Caso 7: Limpieza de Recursos con useEffect
-
-**Archivo:** `src/components/StreamerDashboard.tsx`
-
-### Problema
-Si el usuario navega fuera del dashboard sin detener el chat, la conexion SSE queda abierta.
-
-### Solucion: Cleanup en useEffect
-
-```typescript
-const eventSourceRef = useRef<EventSource | null>(null);
-
-const handleStartChat = () => {
-  const eventSource = new EventSource(`/api/chat-stream?game=...`);
-  eventSourceRef.current = eventSource;
-  // ...
-};
-
-const handleStopChat = () => {
-  if (eventSourceRef.current) {
-    eventSourceRef.current.close();
-    eventSourceRef.current = null;
-  }
-};
-
-// Cleanup al desmontar el componente
-useEffect(() => {
-  return () => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
-  };
-}, []);
-```
-
-### Por que useRef y no useState?
-
-- `useRef` no causa re-renders al cambiar
-- Perfecto para guardar referencias a objetos mutables
-- El valor persiste entre renders
-
----
-
-## Caso 8: Headers de Seguridad con CSP Dinamica
-
-**Archivo:** `src/middleware.ts`
-
-### Problema
-Necesitamos headers de seguridad (CSP, X-Frame-Options, etc.) pero Clerk requiere diferentes dominios en desarrollo vs produccion. Ademas, los emotes de SevenTV requieren permitir sus endpoints y CDN.
-
-### Solucion: Middleware con Configuracion Dinamica
-
-```typescript
-const securityHeaders = defineMiddleware(async (context, next) => {
-  const response = await next();
-  const isDev = import.meta.env.DEV;
-  
-  // Headers de seguridad estaticos
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
- 
-....
-  const csp = [
-    "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkDomains.script} https://challenges.cloudflare.com`,
-    "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' data: ${clerkDomains.img}`,
-    "font-src 'self' data:",
-    `connect-src 'self' ${clerkDomains.connect}`,
-    `frame-src 'self' https://challenges.cloudflare.com ${clerkDomains.frame}`,
-    "worker-src 'self' blob:",
-  ].join('; ');
-
-  
-  response.headers.set('Content-Security-Policy', csp);
-  return response;
-});
-
-// Combinar middlewares con sequence()
-export const onRequest = sequence(authMiddleware, securityHeaders);
-```
-
-### Conceptos Clave
-
-1. **sequence()**: Combina multiples middlewares en orden
-2. **import.meta.env.DEV**: Boolean que indica si estamos en desarrollo
-3. **Headers de respuesta**: Se modifican despues de `await next()`
-
----
-
-## Caso 9: Virtualización de Lista con react-virtuoso
+## Caso 7: Virtualizacion de Lista con react-virtuoso
 
 **Archivos:** `src/components/ChatWindow.tsx`, `src/components/ChatMessage.tsx`, `src/components/StreamerDashboard.tsx`
 
 ### Problema
 
-El chat recibe mensajes cada 1–2.8 segundos de forma indefinida. Sin ningún límite, tras 10 minutos de stream hay ~300 mensajes todos montados en el DOM simultáneamente. Esto provoca tres problemas:
+Sin limites, tras 10 minutos de stream hay ~300 mensajes todos montados en el DOM. Esto provoca:
 
-1. **Crecimiento de DOM**: El navegador calcula layout y pinta 300 nodos aunque solo sean visibles ~15.
-2. **Re-renders en cascada**: Cada mensaje nuevo causa que React re-evalúe todos los `ChatMessage` anteriores.
-3. **Crecimiento de memoria**: El array de estado crece sin techo durante toda la sesión.
+1. **DOM inflado**: el navegador calcula layout para 300 nodos aunque solo sean visibles ~15.
+2. **Re-renders en cascada**: cada mensaje nuevo hace que React re-evalúe todos los anteriores.
+3. **Memoria sin techo**: el array de estado crece indefinidamente.
 
-### Solución: tres cambios coordinados
+### Tres cambios coordinados
 
-#### 1. Cap de mensajes en `StreamerDashboard.tsx`
+**1. Cap de mensajes** — `StreamerDashboard.tsx`
 
 ```typescript
 const MAX_MESSAGES = 200;
@@ -695,12 +453,14 @@ setMessages((prev) => {
 });
 ```
 
-`slice(-200)` conserva siempre los últimos 200 elementos. El array en memoria nunca supera ese límite, independientemente de cuánto dure el stream.
+`slice(-200)` devuelve siempre los ultimos 200 elementos. El estado nunca supera ese limite en memoria.
 
-#### 2. `React.memo` con comparador custom en `ChatMessage.tsx`
+**2. `React.memo` con comparador custom** — `ChatMessage.tsx`
 
 ```typescript
 const ChatMessage = memo(ChatMessageComponent, (prev, next) => {
+  // true = props iguales = no renderizar
+  // false = props cambiaron = renderizar
   return (
     prev.message.id === next.message.id &&
     prev.isAlternate === next.isAlternate &&
@@ -709,181 +469,200 @@ const ChatMessage = memo(ChatMessageComponent, (prev, next) => {
 });
 ```
 
-`React.memo` envuelve el componente y recibe como segundo argumento una función comparadora. Esta función recibe las props anteriores (`prev`) y las nuevas (`next`), y devuelve:
-- `true` → las props son iguales, **no renderizar**
-- `false` → las props cambiaron, **renderizar**
+`React.memo` envuelve el componente y antes de renderizarlo compara las props con el comparador. Como `message.id` es inmutable y `startTime` nunca cambia, un mensaje ya montado no vuelve a renderizarse nunca.
 
-Como `message.id` es inmutable una vez creado y `startTime` nunca cambia, en la práctica un `ChatMessage` ya montado nunca vuelve a renderizarse.
+Sin `memo`, cada vez que llega un mensaje nuevo y `StreamerDashboard` actualiza su estado, React re-renderiza todos los `ChatMessage` aunque sus props no hayan cambiado.
 
-#### 3. Virtualización con `react-virtuoso` en `ChatWindow.tsx`
+**3. Virtuoso en lugar de `.map()`** — `ChatWindow.tsx`
 
 ```tsx
-// ANTES: todos los mensajes en el DOM
-{messages.map((message, index) => (
-  <ChatMessage key={message.id} message={message} ... />
-))}
+// ANTES: 300 nodos en el DOM
+{messages.map((msg, i) => <ChatMessage key={msg.id} message={msg} isAlternate={i % 2 === 1} />)}
 
-// AHORA: solo los mensajes visibles en el DOM
+// AHORA: solo ~15 nodos visibles en el DOM
 <Virtuoso
   style={{ height: '100%' }}
   data={messages}
-  itemContent={itemContent}
-  followOutput="smooth"
-  increaseViewportBy={200}
+  itemContent={itemContent}   // funcion que renderiza un item dado su indice y dato
+  followOutput="smooth"       // auto-scroll inteligente
+  increaseViewportBy={200}    // pre-renderiza 200px extra para evitar flashes
 />
 ```
 
-`react-virtuoso` mide la altura del contenedor, calcula qué índices del array son visibles según el scroll actual, y solo monta esos elementos en el DOM. Los demás existen en memoria como datos pero no como nodos DOM.
+Virtuoso mide el contenedor, calcula que indices son visibles segun el scroll, y solo monta esos nodos. Los demas existen como datos en el array pero no tienen representacion en el DOM.
 
 ```tsx
+// useCallback evita que Virtuoso piense que la funcion cambio en cada render
 const itemContent = useCallback(
   (index: number, message: ChatMessageType) => (
-    <ChatMessage
-      message={message}
-      startTime={startTime}
-      isAlternate={index % 2 === 1}
-    />
+    <ChatMessage message={message} startTime={startTime} isAlternate={index % 2 === 1} />
   ),
   [startTime],
 );
 ```
 
-`useCallback` memoiza la función `itemContent` para que Virtuoso no piense que cambió en cada render del padre y evite re-renderizar la lista completa innecesariamente.
-
 ### `followOutput` vs `scrollIntoView`
 
-El scroll automático anterior usaba `scrollIntoView`:
-
 ```typescript
-// ANTES: se disparaba en CADA nuevo mensaje, siempre
+// ANTES: se disparaba en CADA mensaje, siempre tiraba al fondo
 useEffect(() => {
   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 }, [messages]);
 ```
 
-El problema: si el usuario scrolleaba hacia arriba para leer algo, el efecto lo devolvía al fondo en el siguiente mensaje.
-
-Con `followOutput="smooth"` de Virtuoso el comportamiento es inteligente:
-- Si el usuario **ya estaba al fondo**, sigue hacia abajo con cada mensaje nuevo.
-- Si el usuario **scrolleó hacia arriba**, los mensajes siguen llegando pero no lo desplazan.
-- En cuanto el usuario vuelve al fondo, el auto-scroll se reactiva solo.
+Con `followOutput="smooth"` el comportamiento es inteligente:
+- El usuario **esta al fondo** → Virtuoso sigue scrolleando con cada nuevo mensaje.
+- El usuario **scrolleo hacia arriba** → los mensajes siguen llegando pero no lo mueven.
+- El usuario **vuelve al fondo** → el auto-scroll se reactiva solo.
 
 ### Resultado
 
-| Escenario | Antes | Después |
-|---|---|---|
-| Nodos DOM tras 10 min | ~300 | ~15–20 (solo visibles) |
-| Re-renders por mensaje nuevo | Todos los anteriores | Solo el nuevo |
-| Memoria del array | Crece sin límite | Máx 200 items |
-| Auto-scroll | Siempre, sin respetar scroll manual | Solo si el usuario está al fondo |
-
-### Conceptos Clave
-
-1. **Virtualización**: Técnica que solo renderiza elementos visibles en pantalla usando placeholders con altura estimada para el scrollbar.
-2. **`React.memo`**: HOC que cachea el resultado del render y lo reutiliza si las props no cambiaron.
-3. **Comparador custom de memo**: Función `(prev, next) => boolean` que define exactamente qué props determinan si hay que re-renderizar.
-4. **`useCallback`**: Memoiza funciones para que su referencia sea estable entre renders.
-5. **Cap de array**: Estrategia `slice(-N)` para mantener el estado acotado en el tiempo.
+| Metrica                      | Antes           | Despues                 |
+|------------------------------|-----------------|-------------------------|
+| Nodos DOM tras 10 min        | ~300            | ~15-20 (solo visibles)  |
+| Re-renders por mensaje nuevo | Todos           | Solo el nuevo           |
+| Memoria del array            | Sin limite      | Max 200 items           |
+| Auto-scroll                  | Siempre forzado | Respeta scroll manual   |
 
 ---
 
-## Personalizacion Rapida
+## Caso 8: Middleware de Autenticacion y Headers de Seguridad
 
-### Agregar un Juego Hardcodeado
+**Archivo:** `src/middleware.ts`
 
-1. Agrega frases en `src/lib/messagePatterns.ts`
-2. Mapea el nombre en el objeto `hardcodedMapping` de `src/lib/phraseCache.ts`
-
-### Ajustar Frecuencia de Mensajes
-
-Modifica el rango en `src/pages/api/chat-stream.ts`:
+### Proteccion de rutas con Clerk
 
 ```typescript
-const interval = getRandomInterval(3000, 7000); // min, max en ms
+import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server';
+
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/api/(.*)']);
+
+const authMiddleware = clerkMiddleware((auth, context) => {
+  const { userId, redirectToSignIn } = auth();
+  if (!userId && isProtectedRoute(context.request)) {
+    return redirectToSignIn();
+  }
+});
 ```
 
-### Cambiar Limite por Usuario
+`createRouteMatcher` compila los patrones glob una sola vez. `clerkMiddleware` inyecta `auth()` en cada request antes de que llegue a la pagina.
 
-Edita `MAX_GAMES_PER_USER` en `src/lib/phraseCache.ts`.
+### CSP dinamica segun entorno
+
+Clerk usa dominios distintos en desarrollo (`*.clerk.accounts.dev`) y produccion (`*.clerk.com`). Si se pone una CSP estatica, uno de los dos entornos deja de funcionar.
+
+```typescript
+const securityHeaders = defineMiddleware(async (context, next) => {
+  const response = await next(); // procesar la ruta primero
+  const isDev = import.meta.env.DEV;
+
+  const clerkDomains = isDev
+    ? { script: 'https://*.clerk.accounts.dev', img: 'https://*.clerk.accounts.dev', ... }
+    : { script: 'https://*.clerk.com https://clerk.rocketchat.online', ... };
+
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline' ${clerkDomains.script}`,
+    `img-src 'self' data: blob: https://cdn.7tv.app ${clerkDomains.img}`,
+    `connect-src 'self' https://7tv.io ${clerkDomains.connect}`,
+  ].join('; ');
+
+  response.headers.set('Content-Security-Policy', csp);
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  return response;
+});
+
+// sequence() ejecuta middlewares en orden: primero auth, luego headers
+export const onRequest = sequence(authMiddleware, securityHeaders);
+```
+
+**Conceptos clave:**
+- `sequence()`: combina middlewares en cadena. El orden importa: la autenticacion debe ir antes que cualquier logica de negocio.
+- Los headers se añaden **despues** de `await next()` porque necesitan la respuesta ya construida para modificarla.
+- `img-src` debe incluir `https://cdn.7tv.app` para que los emotes de SevenTV se carguen sin ser bloqueados.
+
+---
+
+## Caso 9: Limpieza de Recursos con useEffect
+
+**Archivo:** `src/components/StreamerDashboard.tsx`
+
+### Problema
+Si el usuario navega fuera del dashboard sin detener el chat, la conexion SSE queda abierta indefinidamente, consumiendo recursos en el servidor.
+
+### Solucion: `useRef` + cleanup en `useEffect`
+
+```typescript
+const eventSourceRef = useRef<EventSource | null>(null);
+
+// Al iniciar: guardar referencia
+const handleStartChat = () => {
+  const es = new EventSource(`/api/chat-stream?game=...`);
+  eventSourceRef.current = es;
+};
+
+// Al detener: cerrar y limpiar
+const handleStopChat = () => {
+  eventSourceRef.current?.close();
+  eventSourceRef.current = null;
+};
+
+// Garantia: si el componente se desmonta sin que el usuario haya parado el chat
+useEffect(() => {
+  return () => { eventSourceRef.current?.close(); };
+}, []);
+```
+
+**Por que `useRef` y no `useState`?**
+
+`useState` dispara un re-render cada vez que cambia. `useRef` guarda el valor sin re-renderizar. La referencia al `EventSource` es un efecto secundario (no afecta a la UI directamente), por eso `useRef` es la herramienta correcta.
 
 ---
 
-## Servidor Alternativo (Bun)
+## Problemas Encontrados en Produccion
 
-La carpeta `api/` contiene un servidor Bun opcional con SSE. Usalo solo si quieres separar el streaming del SSR principal.
+### Clerk no funcionaba con dominio personalizado (CSP)
 
----
+Despues de desplegar en Vercel con `rocketchat.online`, los componentes de autenticacion dejaban de cargar. Los errores en DevTools apuntaban a CSP bloqueando scripts e imagenes de Clerk.
 
-# Documentacion de Problemas y Soluciones
+**Causa raiz:** en desarrollo Clerk usa `*.clerk.accounts.dev`, pero con dominio personalizado en produccion cambia a `*.clerk.com` y al subdominio de Clerk propio del proyecto (`clerk.rocketchat.online`). La CSP no incluia esos dominios.
 
-Esta seccion documenta los problemas encontrados durante el desarrollo, las dudas que surgieron y el proceso de solucion.
+**Solucion:** CSP dinamica segun `import.meta.env.DEV` (ver Caso 8).
 
----
-
-## Problema 1: Clerk no funcionaba en produccion (CSP bloqueaba recursos)
-
-### Contexto
-Despues de desplegar en Vercel con dominio personalizado `rocketchat.online`, Clerk dejaba de funcionar. Los componentes de autenticacion no cargaban.
-
-### Sintomas
-- Consola del navegador mostraba errores de CSP (Content Security Policy)
-- Los scripts de Clerk eran bloqueados
-- Las imagenes de perfil no cargaban
-- La conexion WebSocket de Clerk fallaba
-
-### Dudas que surgieron
-- Por que funcionaba en desarrollo pero no en produccion?
-- Clerk usa dominios diferentes en dev vs prod?
-- Como se que dominios agregar al CSP?
-
-### Analisis del problema
-En desarrollo, Clerk usa dominios de prueba (`*.clerk.accounts.dev`), pero en produccion con dominio personalizado usa diferentes dominios (`*.clerk.com` y el subdominio propio).
-
-
-
-
-### Leccion aprendida
-Siempre verificar en DevTools > Console los errores de CSP. Clerk tiene documentacion sobre que dominios necesita, pero varian segun si usas dominio personalizado o no.
+**Configuracion adicional necesaria:**
+- Registros DNS en el proveedor de dominio: `A`, `AAAA` y `CNAME` apuntando a Vercel.
+- Entorno de produccion separado en el dashboard de Clerk para obtener keys de produccion (distintas a las de desarrollo).
+- En cada proveedor OAuth (Google, GitHub): agregar el dominio personalizado en las URLs de redireccion autorizadas y copiar el `clientId` y `secret` en Clerk.
 
 ---
-### Ademas
-tuvimos que configurar los dominos de clerk en mi provedor de dominio Dondomio para rocket.chat como: "A", "AAAA" y "CNAME" apuntando a Vercel tambien.
-- en clerk despues de conseguir un Domino estable, dreas un entorno de produccion para conseguir las variables de entorno para produccion y asi no usar las de desarrollo.
-- en vercel, en la configuracion del proyecto, agregar las variables de entorno para produccion.
-- Dashborad de clerk teniamos que configurar los porveedores de inicio de session que hayamso escogido, como google, github, etc. ir a la conspola developers de cada proveedor y agregar el dominio personalizado en los campos de redireccion. y conseguir las clientId y secret para agregarlos en clerk.
----
 
+## Personalizacion
 
+### Agregar un juego hardcodeado
+1. Añade frases en `src/lib/messagePatterns.ts`
+2. Mapea el nombre en `hardcodedMapping` dentro de `src/lib/phraseCache.ts`
 
+### Ajustar frecuencia de mensajes
+```typescript
+// src/pages/api/chat-stream.ts
+getRandomInterval(1000, 2800) // min y max en milisegundos
+```
 
-## Resumen de Configuracion Actual
-
-### Adaptador de despliegue
-- **Vercel** con `@astrojs/vercel`
-- SSR habilitado (`output: 'server'`)
-
-### Autenticacion
-- CSP configurada dinamicamente para dev/prod
-
-### Optimizaciones de rendimiento
-- Preload de fuentes personalizadas
-- Preconnect a Clerk
-- Lista de chat virtualizada con `react-virtuoso` (solo renderiza los mensajes visibles)
-- `React.memo` en `ChatMessage` con comparador custom (evita re-renders de mensajes ya montados)
-- Cap de 200 mensajes en estado para limitar consumo de memoria
-
-### Servicios de IA
-- Groq (primario)
-- Cerebras (fallback)
+### Cambiar el limite de juegos por usuario
+```typescript
+// src/lib/phraseCache.ts
+const MAX_GAMES_PER_USER = 4;
+```
 
 ---
 
 ## Agradecimientos
 
-Gracias a la herramienta de [@midu](https://github.com/midudev) para modelos de IA con capa gratuita.
+Gracias a la herramienta de [@midu](https://github.com/midudev) para acceso a modelos de IA con capa gratuita.
 
 ---
 
 ## Licencia
 
-MIT License - Puedes usar, modificar y distribuir este codigo libremente.
+MIT — Puedes usar, modificar y distribuir este codigo libremente.
