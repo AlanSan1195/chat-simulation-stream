@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { IconInfoCircle } from '@tabler/icons-react';
-import type { ChatMessage } from '../utils/types';
+import type { ChatMessage, MessageInterval } from '../utils/types';
+import { INTERVAL_PRESETS, DEFAULT_INTERVAL } from '../utils/types';
 import GameInput from './GameInput';
 import ChatWindow from './ChatWindow';
 import '../styles/global.css';
@@ -39,6 +40,7 @@ export default function StreamerDashboard() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userGames, setUserGames] = useState<string[]>([]);
   const [remainingSlots, setRemainingSlots] = useState(4);
+  const [interval, setInterval] = useState<MessageInterval>(DEFAULT_INTERVAL);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   // Cargar info del usuario al montar
@@ -68,6 +70,9 @@ export default function StreamerDashboard() {
     }
   };
 
+  const buildSseUrl = (game: string, iv: MessageInterval) =>
+    `/api/chat-stream?game=${encodeURIComponent(game)}&min=${iv.min}&max=${iv.max}`;
+
   const handleStartChat = () => {
     if (!selectedGame) return;
 
@@ -76,7 +81,7 @@ export default function StreamerDashboard() {
     setMessages([]);
 
     // Crear conexión SSE con el nombre del juego
-    const eventSource = new EventSource(`/api/chat-stream?game=${encodeURIComponent(selectedGame)}`);
+    const eventSource = new EventSource(buildSseUrl(selectedGame, interval));
     
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
@@ -116,7 +121,7 @@ export default function StreamerDashboard() {
     setIsActive(true);
     setIsPaused(false);
 
-    const eventSource = new EventSource(`/api/chat-stream?game=${encodeURIComponent(selectedGame)}`);
+    const eventSource = new EventSource(buildSseUrl(selectedGame, interval));
 
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
@@ -142,14 +147,15 @@ export default function StreamerDashboard() {
       }
     };
   }, []);
-
+  
+  //logica de bonetes pause play y stop
   const canStart = !!selectedGame && !isActive && !isPaused;
   const canPause = isActive && !isPaused;
   const canResume = isPaused && !eventSourceRef.current;
   const canStop = isActive || isPaused;
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12 ">
       {/* Panel de Control - Left side */}
       <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4 md:p-8 itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
         {/* Logo/Title */}
@@ -232,6 +238,34 @@ export default function StreamerDashboard() {
           </button>
         </div>
 
+        {/* Interval Selector */}
+        <div className="space-y-2">
+          <p className="text-xs font-jet uppercase tracking-widest opacity-50">Velocidad de mensajes</p>
+          <div className="flex gap-2">
+            {INTERVAL_PRESETS.map((preset) => {
+              const isSelected = preset.min === interval.min && preset.max === interval.max;
+              const isDisabled = isActive && !isPaused;
+              return (
+                <button
+                  key={preset.label}
+                  onClick={() => setInterval(preset)}
+                  disabled={isDisabled}
+                  title={isDisabled ? 'Detén el stream para cambiar la velocidad' : `Un mensaje cada ${preset.label}`}
+                  className={`flex-1 py-1.5 text-xs font-jet font-semibold rounded-sm border 
+                    ${isSelected
+                      ? 'bg-primary text-bg-primary border-primary'
+                      : isDisabled
+                        ? 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'
+                        : 'bg-transparent border-white/20 text-white/60  hover:border-primary/60 hover:bg-primary/40 dark:hover:bg-transparent hover:text-black dark:hover:text-white'
+                    }`}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Info Card */}
         <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 dark:hover:bg-white/10 transition-colors text-xs select-none">
           <div className="space-y-1">
@@ -241,14 +275,14 @@ export default function StreamerDashboard() {
             </div>
             <p className="text-white font-jet leading-relaxed opacity-40">
               Escribe cualquier videojuego y la IA generara comentarios de chat personalizados.
-              Tienes un limite de 4 juegos. Los mensajes aparecen cada 2-5 segundos.
+              Tienes un limite de 4 juegos. Elige la velocidad de mensajes antes de iniciar el stream.
             </p>
           </div>
         </div>
       </div>
 
       {/* Ventana de Chat - Right side */}
-      <div className="lg:col-span-2 h-[500px] lg:h-full overflow-hidden">
+      <div className="lg:col-span-2 h-[800px] lg:h-[600px] overflow-hidden">
         <ChatWindow messages={messages} isActive={isActive} />
       </div>
     </div>

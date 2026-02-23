@@ -25,13 +25,25 @@ export interface Game {
   isCustom?: boolean;
 }
 
+export interface MessageInterval {
+  min: number; // ms
+  max: number; // ms
+  label: string;
+}
+
+export const INTERVAL_PRESETS: MessageInterval[] = [
+  { min: 4000, max:  7000, label: '4–7seg'  },
+  { min: 2000, max:  4000, label: '2–4seg'  },
+  { min: 1000, max:  2000, label: '1–2seg'  },
+  { min: 500, max:  1000, label: '0.5–1seg'  },
+];
+
+export const DEFAULT_INTERVAL: MessageInterval = INTERVAL_PRESETS[2]; // 2–4s
+
 export interface StreamConfig {
   gameId: string | null;
   isActive: boolean;
-  messageInterval: {
-    min: number;
-    max: number;
-  };
+  messageInterval: MessageInterval;
 }
 
 // Tipos para servicios de IA

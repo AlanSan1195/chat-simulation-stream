@@ -33,9 +33,9 @@ import Header from "../components/Header.astro";
 
   <SignedIn>
     <Header />
-    <main class="flex-1 px-4 py-6 lg:px-8 lg:py-5" role="main">
+    <main class="flex-1 px-4  lg:px-8 lg:py-5 " role="main">
       <div
-        class="max-w-7xl shadow-2xl dark:shadow-none mx-auto lg:h-[700px] border-0 bg-[#00000030] backdrop-blur-sm p-4 sm:p-6 lg:flex lg:flex-col rounded-xs"
+        class="max-w-7xl shadow-2xl dark:shadow-none mx-auto min-h-screen border-0 bg-[#00000030] backdrop-blur-sm p-4 sm:p-6 lg:flex lg:flex-col rounded-xs "
       >
         <h1 class="sr-only">Panel de Control - Rocket Chat Simulator</h1>
         <StreamerDashboard client:only="react" />
