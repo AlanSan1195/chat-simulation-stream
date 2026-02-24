@@ -51,8 +51,82 @@ export async function chatWithAI(messages: AIServiceMessage[]): Promise<string> 
 }
 
 /**
- * Genera frases de chat para un juego específico usando IA
+ * Genera frases de chat para un tema de Just Chatting usando IA
  */
+export async function generateChatTopicPhrases(topic: string): Promise<{
+  gameplay: string[];
+  reactions: string[];
+  questions: string[];
+  comments: string[];
+}> {
+  const systemPrompt = `Eres un generador de comentarios de chat de Twitch/YouTube para streams de tipo "Just Chatting" (charla libre con la audiencia).
+Genera comentarios auténticos, variados y entretenidos.
+
+VALIDACIÓN OBLIGATORIA:
+- PRIMERO verifica si el input es un tema de conversación coherente y apropiado para un stream.
+- Si el input contiene insultos, la palabra sexo, contenido sexual explícito, violencia, spam, código, comandos, o simplemente no tiene sentido como tema de conversación, devuelve EXACTAMENTE este JSON y nada más:
+  {"error": "INVALID_TOPIC", "reason": "breve descripción de por qué no es válido"}
+- Temas válidos incluyen: aspectos de la vida personal, hobbies, opiniones, noticias, cultura pop, viajes, comida, música, tecnología, etc.
+- Solo procede si el tema es apropiado para una conversación en stream.
+
+REGLAS para generar frases (solo si el tema es válido):
+- Los comentarios deben ser cortos (1-50 palabras máximo), como chat real de Twitch
+- Usa español casual y coloquial, jerga de internet
+- El tono debe ser de conversación, no de juego — más opiniones, anécdotas cortas, chistes
+- Incluye emotes como: 😂, ❤️, 🥲, 😭, 🤔, 👀, 💀, 🫡, ✋
+- Varía entre comentarios, reacciones cortas y preguntas
+- NO repitas frases
+- Adapta el contenido específicamente al tema mencionado`;
+
+  const userPrompt = `Genera comentarios de chat de Twitch para un stream de "Just Chatting" sobre el tema: "${topic}"
+
+Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
+{
+  "comments": ["frase1", "frase2", ... hasta 50 comentarios y opiniones sobre el tema],
+  "reactions": ["frase1", "frase2", ... hasta 15 reacciones cortas emocionales],
+  "questions": ["frase1", "frase2", ... hasta 30 preguntas que haría el chat al streamer],
+  "gameplay": []
+}`;
+
+  const response = await chatWithAI([
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ]);
+
+  try {
+    const cleanResponse = response
+      .replace(/```json\n?/g, '')
+      .replace(/```\n?/g, '')
+      .trim();
+
+    const parsed = JSON.parse(cleanResponse);
+
+    // Detectar rechazo por tema inválido
+    if (parsed.error === 'INVALID_TOPIC') {
+      const invalidError = new Error(parsed.reason || 'Tema no válido');
+      (invalidError as Error & { code: string }).code = 'INVALID_TOPIC';
+      throw invalidError;
+    }
+
+    if (!parsed.comments || !parsed.reactions || !parsed.questions) {
+      throw new Error('Estructura JSON inválida');
+    }
+
+    return {
+      gameplay: [],
+      reactions: Array.isArray(parsed.reactions) ? parsed.reactions : [],
+      questions: Array.isArray(parsed.questions) ? parsed.questions : [],
+      comments: Array.isArray(parsed.comments) ? parsed.comments : [],
+    };
+  } catch (parseError) {
+    if ((parseError as Error & { code?: string }).code === 'INVALID_TOPIC') {
+      throw parseError;
+    }
+    console.error('[AI] Error parseando respuesta JC:', parseError);
+    console.error('[AI] Respuesta raw:', response);
+    throw new Error('No se pudo parsear la respuesta de la IA');
+  }
+}
 export async function generateGamePhrases(gameName: string): Promise<{
   gameplay: string[];
   reactions: string[];

@@ -1,4 +1,4 @@
-import type { MessageCategory, ChatMessage, MessagePattern } from '../utils/types';
+import type { MessageCategory, ChatMessage, MessagePattern, StreamMode } from '../utils/types';
 import { getPhrasesForGame } from './phraseCache';
 
 const USERNAMES = [
@@ -32,20 +32,29 @@ function generateUsername(): string {
   return getRandomElement(USERNAMES);
 }
 
-function getRandomCategory(): MessageCategory {
+function getRandomCategory(mode: StreamMode): MessageCategory {
+  if (mode === 'justchatting') {
+    // JC: más comentarios y reacciones, menos preguntas
+    const categories: MessageCategory[] = ['comments', 'reactions', 'questions'];
+    const weights = [0.75, 0.10, 0.15];
+    const random = Math.random();
+    let sum = 0;
+    for (let i = 0; i < categories.length; i++) {
+      sum += weights[i];
+      if (random < sum) return categories[i];
+    }
+    return 'comments';
+  }
+
+  // Modo juego: gameplay y preguntas con peso mayor
   const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions'];
-  const weights = [0.4, 0.2, 0.4]; // 40% gameplay, 20% reactions, 40% questions
-  
+  const weights = [0.5, 0.2, 0.3];
   const random = Math.random();
   let sum = 0;
-  
   for (let i = 0; i < categories.length; i++) {
     sum += weights[i];
-    if (random < sum) {
-      return categories[i];
-    }
+    if (random < sum) return categories[i];
   }
-  
   return 'gameplay';
 }
 
@@ -78,6 +87,14 @@ const FALLBACK_PHRASES: MessagePattern = {
     'JAJAJAJASJAJSAJSJAJSA',
     'jajaja',
     'No puede ser, ay no ',
+    '😂😂😂',
+    '😭😭😭',
+    'el diaaaablo',
+    'jajJAjjAAJAJajaJAAJA',
+    'XD AJAJ ',
+    'yaaaaaaa',
+    'mmmmmm',
+    'mmm'
   ],
   questions: [
     'Cuantas horas llevas?',
@@ -91,23 +108,37 @@ const FALLBACK_PHRASES: MessagePattern = {
     'Se puede jugar en cooperativo?',
     'Que tal los graficos?',
   ],
+  comments: [
+    'jaja buena historia',
+    'eso me pasó igual a mi',
+    'no lo puedo creer',
+    'sigue contando!!',
+    'eso suena brutal',
+    'literalmente yo',
+    'cuéntame más',
+    '😂😂😂',
+    'el chat no puede con esto',
+  ],
 };
 
 /**
- * Genera un mensaje de chat para un juego específico
- * @param gameName - Nombre del juego (puede ser cualquier string)
+ * Genera un mensaje de chat para un juego/tema específico
  */
-export function generateMessage(gameName: string): ChatMessage {
-  // Obtener frases del cache o fallback
+export function generateMessage(gameName: string, mode: StreamMode = 'game'): ChatMessage {
   const patterns = getPhrasesForGame(gameName) || FALLBACK_PHRASES;
-  const category = getRandomCategory();
-  const messageArray = patterns[category];
-  
-  // Asegurar que hay contenido
-  const content = messageArray.length > 0 
-    ? getRandomElement(messageArray)
-    : getRandomElement(FALLBACK_PHRASES[category]);
-  
+  const category = getRandomCategory(mode);
+
+  // Para JC, si la categoria es 'comments' pero no hay frases (juego en cache sin comments), usar gameplay como fallback
+  let messageArray = patterns[category as keyof MessagePattern] ?? [];
+  if (!messageArray || messageArray.length === 0) {
+    const fallbackCat: keyof MessagePattern = mode === 'justchatting' ? 'comments' : 'gameplay';
+    messageArray = FALLBACK_PHRASES[fallbackCat] ?? FALLBACK_PHRASES.gameplay;
+  }
+
+  const content = messageArray.length > 0
+    ? getRandomElement(messageArray as string[])
+    : getRandomElement(FALLBACK_PHRASES.gameplay);
+
   return {
     id: crypto.randomUUID(),
     username: generateUsername(),

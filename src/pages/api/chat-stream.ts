@@ -1,11 +1,13 @@
 import type { APIRoute } from 'astro';
 import { generateMessage, getRandomInterval } from '../../lib/chatGenerator';
+import type { StreamMode } from '../../utils/types';
 
 const INTERVAL_MIN_BOUND = 500;
 const INTERVAL_MAX_BOUND = 30_000;
 
 export const GET: APIRoute = async ({ request, url }) => {
   const gameName = url.searchParams.get('game');
+  const mode = (url.searchParams.get('mode') ?? 'game') as StreamMode;
 
   if (!gameName || gameName.trim().length === 0) {
     return new Response('Invalid game parameter', { status: 400 });
@@ -23,7 +25,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
       const sendMessage = () => {
         try {
-          const message = generateMessage(gameName);
+          const message = generateMessage(gameName, mode);
           const data = `data: ${JSON.stringify(message)}\n\n`;
           controller.enqueue(encoder.encode(data));
         } catch (error) {

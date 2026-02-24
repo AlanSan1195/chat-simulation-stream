@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { IconInfoCircle } from '@tabler/icons-react';
-import type { ChatMessage, MessageInterval } from '../utils/types';
+import { IconInfoCircle, IconMessageCircle } from '@tabler/icons-react';
+import type { ChatMessage, MessageInterval, StreamMode } from '../utils/types';
 import { INTERVAL_PRESETS, DEFAULT_INTERVAL } from '../utils/types';
 import GameInput from './GameInput';
+import JustChattingInput from './JustChattingInput';
 import ChatWindow from './ChatWindow';
 import '../styles/global.css';
 
@@ -34,7 +35,9 @@ function StopIcon({ className }: { className?: string }) {
 const MAX_MESSAGES = 200;
 
 export default function StreamerDashboard() {
+  const [streamMode, setStreamMode] = useState<StreamMode>('game');
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -63,26 +66,41 @@ export default function StreamerDashboard() {
 
   const handleGameSelect = (gameName: string) => {
     setSelectedGame(gameName);
-    // Actualizar la lista de juegos del usuario
     if (!userGames.includes(gameName.toLowerCase())) {
       setUserGames(prev => [...prev, gameName.toLowerCase()]);
       setRemainingSlots(prev => Math.max(0, prev - 1));
     }
   };
 
-  const buildSseUrl = (game: string, iv: MessageInterval) =>
-    `/api/chat-stream?game=${encodeURIComponent(game)}&min=${iv.min}&max=${iv.max}`;
+  const handleTopicSelect = (topic: string) => {
+    setSelectedTopic(topic);
+  };
+
+  // Al cambiar de modo, detener el chat si estaba activo
+  const handleModeSwitch = (newMode: StreamMode) => {
+    if (isActive || isPaused) {
+      handleStopChat();
+    }
+    setStreamMode(newMode);
+  };
+
+  const isJustChatting = streamMode === 'justchatting';
+
+  // El contexto activo depende del modo
+  const activeContext = isJustChatting ? selectedTopic : selectedGame;
+
+  const buildSseUrl = (context: string, iv: MessageInterval) =>
+    `/api/chat-stream?game=${encodeURIComponent(context)}&min=${iv.min}&max=${iv.max}&mode=${streamMode}`;
 
   const handleStartChat = () => {
-    if (!selectedGame) return;
+    if (!activeContext) return;
 
     setIsActive(true);
     setIsPaused(false);
     setMessages([]);
 
-    // Crear conexión SSE con el nombre del juego
-    const eventSource = new EventSource(buildSseUrl(selectedGame, interval));
-    
+    const eventSource = new EventSource(buildSseUrl(activeContext, interval));
+
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
       setMessages((prev) => {
@@ -117,11 +135,11 @@ export default function StreamerDashboard() {
   };
 
   const handleResumeChat = () => {
-    if (!selectedGame || eventSourceRef.current) return;
+    if (!activeContext || eventSourceRef.current) return;
     setIsActive(true);
     setIsPaused(false);
 
-    const eventSource = new EventSource(buildSseUrl(selectedGame, interval));
+    const eventSource = new EventSource(buildSseUrl(activeContext, interval));
 
     eventSource.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
@@ -147,12 +165,20 @@ export default function StreamerDashboard() {
       }
     };
   }, []);
-  
-  //logica de bonetes pause play y stop
-  const canStart = !!selectedGame && !isActive && !isPaused;
+
+  const canStart = !!activeContext && !isActive && !isPaused;
   const canPause = isActive && !isPaused;
   const canResume = isPaused && !eventSourceRef.current;
   const canStop = isActive || isPaused;
+
+  // Label del header según modo y estado
+  const headerLabel = isActive && activeContext
+    ? isPaused
+      ? `En pausa: ${activeContext}`
+      : `${isJustChatting ? 'Chateando: ' : 'Streaming: '}${activeContext}`
+    : isJustChatting
+      ? 'Just Chatting'
+      : 'No hay stream activo';
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12 ">
@@ -162,25 +188,50 @@ export default function StreamerDashboard() {
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
           <h1 className="text-3xl text-primary uppercase font-departure">
-            {isActive && selectedGame
-              ? isPaused
-                ? `Streaming en pausa: ${selectedGame}`
-                : `Streaming: ${selectedGame}`
-              : 'No hay stream activo'}
+            {headerLabel}
           </h1>
         </div>
 
         {/* Panel de Control Title */}
         <h2 className="text-xl font-jet font-bold  mb-4 uppercase">Panel de Control</h2>
 
-        {/* Game Input */}
-        <GameInput
-          selectedGame={selectedGame}
-          onGameSelect={handleGameSelect}
-          disabled={isActive || isPaused}
-          userGames={userGames}
-          remainingSlots={remainingSlots}
-        />
+        {/* Botón Just Chatting */}
+        <div>
+          <button
+            onClick={() => handleModeSwitch(isJustChatting ? 'game' : 'justchatting')}
+            disabled={isActive && !isPaused}
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-jet border-[1px] rounded-xs transition-all
+              ${isJustChatting
+                ? 'bg-primary border-primary'
+                : 'bg-transparent hover:bg-primary/10 border-black/30 dark:border-white/30 text-black/70 dark:text-white/70 hover:border-primary/60 hover:text-black dark:hover:text-white'
+              }
+              ${isActive && !isPaused ? ' cursor-not-allowed' : 'cursor-pointer'}
+            `}
+            style={isJustChatting ? { color: 'var(--color-primary-text)' } : undefined}
+            title={isActive && !isPaused ? 'Detén el stream para cambiar de modo' : isJustChatting ? 'Volver a modo videojuego' : 'Activar Just Chatting'}
+          >
+            <IconMessageCircle size={15} />
+            Just Chatting
+            <span className={`ml-1 w-1.5 h-1.5 rounded-full ${isJustChatting ? 'bg-current' : 'bg-black/20 dark:bg-white/20'}`} />
+          </button>
+        </div>
+
+        {/* Input condicional: Game o Just Chatting */}
+        {isJustChatting ? (
+          <JustChattingInput
+            selectedTopic={selectedTopic}
+            onTopicSelect={handleTopicSelect}
+            disabled={isActive || isPaused}
+          />
+        ) : (
+          <GameInput
+            selectedGame={selectedGame}
+            onGameSelect={handleGameSelect}
+            disabled={isActive || isPaused}
+            userGames={userGames}
+            remainingSlots={remainingSlots}
+          />
+        )}
 
         {/* Play/Pause/Stop Buttons */}
         <div className="flex items-center gap-3">
@@ -228,19 +279,19 @@ export default function StreamerDashboard() {
             onClick={handleStopChat}
             disabled={!canStop}
             className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
-              !canStop
+             !canPause
                 ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:scale-105'
             }`}
             title="Detener Chat"
           >
-            <StopIcon className={!canStop ? 'text-bg-primary/50' : 'text-bg-primary'} />
+            <StopIcon className={!canPause ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
         </div>
 
         {/* Interval Selector */}
         <div className="space-y-3">
-          <p className="text-xs lg:text-xl font-jet font-bold uppercase ">Velocidad de mensajes</p>
+          <p className="text-xl font-jet font-bold uppercase ">Velocidad de mensajes</p>
           <div className="flex gap-2">
             {INTERVAL_PRESETS.map((preset) => {
               const isSelected = preset.min === interval.min && preset.max === interval.max;
@@ -256,7 +307,7 @@ export default function StreamerDashboard() {
                       ? 'bg-primary text-bg-primary border-primary'
                       : isDisabled
                         ? 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'
-                        : 'bg-transparent  border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40 dark:hover:bg-transparent hover:text-black dark:hover:text-white'
+                        : 'bg-transparent dark:hover:bg-primary/30  border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40  hover:text-black dark:hover:text-white'
                     }`}
                 >
                   {preset.label}
@@ -274,8 +325,10 @@ export default function StreamerDashboard() {
               <p className="text-lg font-departure  text-primary">Como funciona</p>
             </div>
             <p className="text-white font-jet leading-relaxed opacity-40">
-              Escribe cualquier videojuego y la IA generara comentarios de chat personalizados.
-              Tienes un limite de 4 juegos. Elige la velocidad de mensajes antes de iniciar el stream.
+              {isJustChatting
+                ? 'Escribe un tema o elige uno de los sugeridos. La IA generará comentarios de chat como si fuera un stream de Just Chatting.'
+                : 'Escribe cualquier videojuego y la IA generara comentarios de chat personalizados. Tienes un limite de 4 juegos. Elige la velocidad de mensajes antes de iniciar el stream.'
+              }
             </p>
           </div>
         </div>

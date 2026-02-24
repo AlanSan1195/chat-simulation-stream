@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { generateGamePhrases } from '../../lib/ai';
+import { generateGamePhrases, generateChatTopicPhrases } from '../../lib/ai';
 import { 
   getCachedPhrases, 
   setCachedPhrases, 
@@ -10,7 +10,7 @@ import {
   userHasGame,
   normalizeGameName
 } from '../../lib/phraseCache';
-import type { GeneratePhrasesResponse } from '../../utils/types';
+import type { GeneratePhrasesResponse, StreamMode } from '../../utils/types';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -29,14 +29,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Obtener el nombre del juego del body
+    // Obtener el nombre del juego/tema y el modo del body
     const body = await request.json();
-    const { gameName } = body as { gameName: string };
+    const { gameName, mode = 'game' } = body as { gameName: string; mode?: StreamMode };
 
     if (!gameName || typeof gameName !== 'string' || gameName.trim().length === 0) {
       return new Response(JSON.stringify({
         success: false,
-        error: 'Nombre de juego requerido',
+        error: 'Nombre requerido',
         gameName: ''
       } as GeneratePhrasesResponse), {
         status: 400,
@@ -70,14 +70,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
         success: true,
         gameName: normalizedGame,
         phrases: existingPhrases,
-        currentGames: getUserGames(userId)
+        currentGames: getUserGames(userId),
+        mode
       } as GeneratePhrasesResponse), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // Verificar límite de juegos del usuario
+    // Verificar límite de juegos del usuario (aplica igual a temas JC)
     if (!userHasGame(userId, normalizedGame) && !canUserAddGame(userId)) {
       return new Response(JSON.stringify({
         success: false,
@@ -91,17 +92,30 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Generar nuevas frases con IA
-    console.log(`[API] Generando frases para: ${gameName} (usuario: ${userId})`);
-    
+    // Generar nuevas frases con IA según el modo
+    console.log(`[API] Generando frases para: ${gameName} (usuario: ${userId}, modo: ${mode})`);
+
     let phrases;
     try {
-      phrases = await generateGamePhrases(gameName);
+      phrases = mode === 'justchatting'
+        ? await generateChatTopicPhrases(gameName)
+        : await generateGamePhrases(gameName);
     } catch (aiError) {
-      if ((aiError as Error & { code?: string }).code === 'INVALID_GAME') {
+      const err = aiError as Error & { code?: string };
+      if (err.code === 'INVALID_GAME') {
         return new Response(JSON.stringify({
           success: false,
           error: 'INVALID_GAME',
+          gameName: normalizedGame,
+        } as GeneratePhrasesResponse), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      if (err.code === 'INVALID_TOPIC') {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'INVALID_TOPIC',
           gameName: normalizedGame,
         } as GeneratePhrasesResponse), {
           status: 422,
@@ -115,13 +129,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
     setCachedPhrases(normalizedGame, phrases, userId);
     addGameToUser(userId, normalizedGame);
 
-    console.log(`[API] Frases generadas exitosamente para: ${gameName}`);
+    console.log(`[API] Frases generadas exitosamente para: ${gameName} (modo: ${mode})`);
 
     return new Response(JSON.stringify({
       success: true,
       gameName: normalizedGame,
       phrases,
-      currentGames: getUserGames(userId)
+      currentGames: getUserGames(userId),
+      mode
     } as GeneratePhrasesResponse), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

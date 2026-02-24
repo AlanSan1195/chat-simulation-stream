@@ -1,11 +1,13 @@
 // Tipos base para mensajes de chat
-export type MessageCategory = 'gameplay' | 'reactions' | 'questions' ;
+export type MessageCategory = 'gameplay' | 'reactions' | 'questions' | 'comments';
+
+export type StreamMode = 'game' | 'justchatting';
 
 export interface MessagePattern {
   gameplay: string[];
   reactions: string[];
   questions: string[];
-
+  comments?: string[];
 }
 
 export interface ChatMessage {
@@ -79,4 +81,5 @@ export interface GeneratePhrasesResponse {
   error?: string;
   limitReached?: boolean;
   currentGames?: string[];
+  mode?: StreamMode;
 }

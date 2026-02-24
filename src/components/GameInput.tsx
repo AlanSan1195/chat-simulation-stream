@@ -146,7 +146,7 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-jet   rounded-xs ${
+              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-jet  rounded-xs ${
                 selectedGame === game
                   ? 'bg-primary border-primary'
                   : 'bg-transparent text-black/50 dark:text-white/50 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-primary hover:bg-primary/30 dark:hover:text-white  dark:hover:border-primary border-[1px] border-black/50 dark:border-white/30 '
