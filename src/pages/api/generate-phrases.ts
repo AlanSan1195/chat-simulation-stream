@@ -94,7 +94,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Generar nuevas frases con IA
     console.log(`[API] Generando frases para: ${gameName} (usuario: ${userId})`);
     
-    const phrases = await generateGamePhrases(gameName);
+    let phrases;
+    try {
+      phrases = await generateGamePhrases(gameName);
+    } catch (aiError) {
+      if ((aiError as Error & { code?: string }).code === 'INVALID_GAME') {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'INVALID_GAME',
+          gameName: normalizedGame,
+        } as GeneratePhrasesResponse), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      throw aiError;
+    }
 
     // Guardar en cache
     setCachedPhrases(normalizedGame, phrases, userId);

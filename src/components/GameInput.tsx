@@ -22,11 +22,26 @@ export default function GameInput({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  const validateInput = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (trimmed.length < 2) return 'Escribe al menos el nombre del juego';
+    if (trimmed.length > 50) return 'Eso no parece un nombre de juego, es muy largo';
+    if (/^\d+$/.test(trimmed)) return 'Eso no parece un juego';
+    if (/^[^a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ]+$/.test(trimmed)) return 'Eso no parece un juego';
+    return null;
+  };
+
   const handleSubmit = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault();
     
     const gameName = inputValue.trim();
     if (!gameName || disabled) return;
+
+    const formatError = validateInput(gameName);
+    if (formatError) {
+      setError(formatError);
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -42,8 +57,10 @@ export default function GameInput({
       const data: GeneratePhrasesResponse = await response.json();
 
       if (!response.ok || !data.success) {
-        if (data.limitReached) {
-          setError(`Limite alcanzado (4 juegos). Tus juegos: ${data.currentGames?.join(', ')}`);
+        if (data.error === 'INVALID_GAME') {
+          setError('Eso no parece un juego prueba con uno que si exista');
+        } else if (data.limitReached) {
+          setError(`Límite alcanzado (4 juegos). Tus juegos: ${data.currentGames?.join(', ')}`);
         } else {
           setError(data.error || 'Error generando frases');
         }
@@ -112,9 +129,9 @@ export default function GameInput({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 p-3 bg-primary/10 border border-primary/30">
+        <div className="flex items-start gap-2 py-1 px-2 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 dark:hover:bg-white/10 transition-colors  ">
           <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-primary">{error}</p>
+          <p className="text-white text-xs font-jet leading-relaxed opacity-40">{error}</p>
         </div>
       )}
 
@@ -129,10 +146,10 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-rocket rounded-xs  ${
+              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-jet   rounded-xs ${
                 selectedGame === game
                   ? 'bg-primary border-primary'
-                  : 'bg-transparent text-black dark:text-white/80 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-primary dark:hover:text-white  dark:hover:border-primary border-[1px] border-black/20 dark:border-white/30'
+                  : 'bg-transparent text-black/50 dark:text-white/50 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-primary hover:bg-primary/30 dark:hover:text-white  dark:hover:border-primary border-[1px] border-black/50 dark:border-white/30 '
               } disabled:opacity-50 disabled:cursor-not-allowed`}
               style={selectedGame === game ? { color: 'var(--color-primary-text)' } : undefined}
             >

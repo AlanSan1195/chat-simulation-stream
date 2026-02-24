@@ -62,7 +62,13 @@ export async function generateGamePhrases(gameName: string): Promise<{
   const systemPrompt = `Eres un generador de comentarios de chat de Twitch/YouTube para streams de videojuegos.
 Genera comentarios auténticos, variados y entretenidos que los espectadores escribirían durante un stream.
 
-REGLAS:
+VALIDACIÓN OBLIGATORIA:
+- PRIMERO verifica si el input es un videojuego real y conocido.
+- Si el input NO es un videojuego (por ejemplo: palabras aleatorias, insultos, frases, contenido sexual, violento o inapropiado, nombres de personas, marcas no relacionadas, comandos, código, etc.), devuelve EXACTAMENTE este JSON y nada más:
+  {"error": "INVALID_GAME", "reason": "breve descripción de por qué no es válido"}
+- Solo procede a generar frases si el input es claramente un videojuego o franquicia de videojuegos reconocible.
+
+REGLAS para generar frases (solo si el input es un videojuego válido):
 - Los comentarios deben ser cortos y medios (1-65 palabras máximo)
 - Usa español casual y coloquial
 - Incluye variedad: comentarios sobre gameplay, reacciones, preguntas y emotes
@@ -97,6 +103,13 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
       .trim();
     
     const parsed = JSON.parse(cleanResponse);
+
+    // Detectar rechazo por input inválido
+    if (parsed.error === 'INVALID_GAME') {
+      const invalidError = new Error(parsed.reason || 'Input no válido');
+      (invalidError as Error & { code: string }).code = 'INVALID_GAME';
+      throw invalidError;
+    }
     
     // Validar estructura
     if (!parsed.gameplay || !parsed.reactions || !parsed.questions || !parsed.emotes) {
@@ -110,6 +123,10 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
       emotes: Array.isArray(parsed.emotes) ? parsed.emotes : [],
     };
   } catch (parseError) {
+    // Re-lanzar errores de validación sin envolverlos
+    if ((parseError as Error & { code?: string }).code === 'INVALID_GAME') {
+      throw parseError;
+    }
     console.error('[AI] Error parseando respuesta:', parseError);
     console.error('[AI] Respuesta raw:', response);
     throw new Error('No se pudo parsear la respuesta de la IA');

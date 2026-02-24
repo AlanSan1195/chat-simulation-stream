@@ -171,7 +171,7 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-semibold mb-4">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-bold  mb-4 uppercase">Panel de Control</h2>
 
         {/* Game Input */}
         <GameInput
@@ -183,7 +183,7 @@ export default function StreamerDashboard() {
         />
 
         {/* Play/Pause/Stop Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
             onClick={isPaused ? handleResumeChat : handleStartChat}
             disabled={isPaused ? !canResume : !canStart}
@@ -239,8 +239,8 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Interval Selector */}
-        <div className="space-y-2">
-          <p className="text-xs font-jet uppercase tracking-widest opacity-50">Velocidad de mensajes</p>
+        <div className="space-y-3">
+          <p className="text-xs lg:text-xl font-jet font-bold uppercase ">Velocidad de mensajes</p>
           <div className="flex gap-2">
             {INTERVAL_PRESETS.map((preset) => {
               const isSelected = preset.min === interval.min && preset.max === interval.max;
@@ -251,12 +251,12 @@ export default function StreamerDashboard() {
                   onClick={() => setInterval(preset)}
                   disabled={isDisabled}
                   title={isDisabled ? 'Detén el stream para cambiar la velocidad' : `Un mensaje cada ${preset.label}`}
-                  className={`flex-1 py-1.5 text-xs font-jet font-semibold rounded-sm border 
+                  className={`flex-1 py-1.5 text-xs font-jet  rounded-xs border 
                     ${isSelected
                       ? 'bg-primary text-bg-primary border-primary'
                       : isDisabled
                         ? 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'
-                        : 'bg-transparent border-white/20 text-white/60  hover:border-primary/60 hover:bg-primary/40 dark:hover:bg-transparent hover:text-black dark:hover:text-white'
+                        : 'bg-transparent  border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40 dark:hover:bg-transparent hover:text-black dark:hover:text-white'
                     }`}
                 >
                   {preset.label}
@@ -271,7 +271,7 @@ export default function StreamerDashboard() {
           <div className="space-y-1">
             <div className="flex gap-x-1 items-center">
               <IconInfoCircle className="text-primary mt-0.5" size={16} />
-              <p className="text-lg font-departure font-semibold text-primary">Como funciona</p>
+              <p className="text-lg font-departure  text-primary">Como funciona</p>
             </div>
             <p className="text-white font-jet leading-relaxed opacity-40">
               Escribe cualquier videojuego y la IA generara comentarios de chat personalizados.
