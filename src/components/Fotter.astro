@@ -1,20 +1,70 @@
 ---
+import LogoRocket from "../../public/logo-rocket.svg";
+import GitPixel from "../../public/assets/gitpixel.svg";
+
+const year = new Date().getFullYear()
 ---
 
-<footer class="flex flex-col justify-center items-center  ">
-    
-    
-    <div class="flex  mt-6 ">
-      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-        <img src="/assets/icons/instagram.svg" alt="Instagram" class="social-icon" />
-      </a>
-      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-        <img src="/assets/icons/linkelind.svg" alt="LinkedIn" class="social-icon" />
-      </a>
-      <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-        <img src="/assets/icons/githubIcon.svg" alt="GitHub" class="social-icon" />
-      </a>
-    </div>
-    
-</footer>
+<footer class="w-full text-white/40 font-departure text-[0.7rem] tracking-[0.08em]">
+  <div class="max-w-7xl mx-auto px-6 pb-6">
 
+    <!-- Scanline rule -->
+    <div
+      aria-hidden="true"
+      class="h-px my-5 py-5 scanline-rule"
+    ></div>
+
+  
+
+    <div class="flex justify-center sm:justify-between items-center flex-wrap gap-y-3 gap-x-6">
+
+      <!-- Brand block -->
+      <div class="flex items-center gap-2">
+        <a href="/" aria-label="Rocket Chat Simulator — inicio" class="text-black dark:text-white/80">
+          <LogoRocket class="text-black dark:text-white w-6 h-6 opacity-100 dark:opacity-40" aria-hidden="true" />
+        </a>
+      </div>
+
+      <!-- Copyright -->
+      <p class="m-0 flex flex-col text-center text-sm lg:text-lg text-pretty text-black dark:text-white/40 uppercase">
+        &copy; {year} · todos los derechos reservados · creado por <a href="https://alansan.dev" target="_blank" rel="noopener noreferrer" class="underline dark:hover:text-primary transition">Alan San</a>
+      </p>
+
+      <!-- Social links -->
+      <nav aria-label="Redes sociales" class="flex items-center gap-2.5">
+        <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+          class="flex items-center justify-center w-8 h-8 rounded-xs text-black dark:text-white/50"
+        >
+          <GitPixel class="w-5 h-5" aria-hidden="true" />
+        </a>
+      </nav>
+
+    </div>
+  </div>
+</footer>
+ <style>
+      .scanline-rule {
+        background: repeating-linear-gradient(
+          to right,
+          #201E1D 0px,
+          #201E1D 4px,
+          transparent 4px,
+          transparent 8px
+        );
+      }
+      @media (prefers-color-scheme: dark) {
+        .scanline-rule {
+          background: repeating-linear-gradient(
+            to right,
+            #2d2c2b 0px,
+            #201E1D 4px,
+            transparent 4px,
+            transparent 8px
+          );
+        }
+      }
+    </style>

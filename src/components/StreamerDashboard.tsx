@@ -335,7 +335,7 @@ export default function StreamerDashboard() {
       </div>
 
       {/* Ventana de Chat - Right side */}
-      <div className="lg:col-span-2 h-[800px] lg:h-[600px] overflow-hidden">
+      <div className="lg:col-span-2  h-[800px] lg:h-[600px] overflow-hidden">
         <ChatWindow messages={messages} isActive={isActive} />
       </div>
     </div>
