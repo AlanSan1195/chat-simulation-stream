@@ -183,7 +183,7 @@ export default function StreamerDashboard() {
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12 ">
       {/* Panel de Control - Left side */}
-      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4 md:p-8 itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
+      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4  itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
         {/* Logo/Title */}
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
@@ -335,9 +335,9 @@ export default function StreamerDashboard() {
       </div>
 
       {/* Ventana de Chat - Right side */}
-      <div className="lg:col-span-2  h-[800px] lg:h-[600px] overflow-hidden">
+
         <ChatWindow messages={messages} isActive={isActive} />
-      </div>
+
     </div>
   );
 }
