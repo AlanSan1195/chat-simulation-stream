@@ -144,11 +144,13 @@ export default function JustChattingInput({
               handleSubmit(topic);
             }}
             disabled={disabled || isLoading}
-            className={`px-4 py-1.5 text-xs border-[1px] transition-colors font-jet rounded-xs ${
+            className={`flex-1 px-4 py-1.5 text-xs border-[1px] transition-colors font-jet rounded-xs border ${
               selectedTopic === topic.toLowerCase()
-                ? 'bg-primary border-primary'
-                : 'bg-transparent hover:bg-primary/30  text-black/50 dark:text-white/40 dark:hover:text-white hover:text-black dark:hover:border-primary hover:border-primary border-black/50 dark:border-white/30'
-            }  disabled:cursor-not-allowed`}
+                ? 'bg-primary text-bg-primary border-primary'
+                : disabled || isLoading
+                  ? 'bg-transparent border-black/50 dark:border-white/20 text-black/60 dark:text-white/35 cursor-not-allowed'
+                  : 'bg-transparent dark:hover:bg-primary/30 border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40 hover:text-black dark:hover:text-white'
+            }`}
             style={selectedTopic === topic.toLowerCase() ? { color: 'var(--color-primary-text)' } : undefined}
           >
             {topic}

@@ -34,27 +34,40 @@ import Header from "../components/Header.astro";
 
   <SignedIn>
     <Header />
-    <main class="flex-1 px-4  lg:px-8 py-8 " role="main">
+    <main class="flex px-4 lg:px-8 py-8" role="main">
       <div
-        class="max-w-7xl  dark:shadow-none mx-auto min-h-screen border-0 bg-terminal/20 dark:bg-transparent  backdrop-blur-sm p-4 sm:p-6 lg:flex lg:flex-col rounded-xs "
+        class="relative overflow-hidden max-w-7xl dark:shadow-none mx-auto h-full border-0 bg-terminal/10  dark:bg-transparent backdrop-blur-sm p-4 sm:p-5  lg:flex lg:flex-col rounded-xs"
       >
-        <h1 class="sr-only">Panel de Control - Rocket Chat Simulator</h1>
-        <StreamerDashboard client:only="react" />
+        <!-- Grid decorativo con mask — solo dark mode -->
+        <div class="hidden dark:block absolute inset-0 z-0 grid-bg border" aria-hidden="true"></div>
+
+
+        <div class="relative z-10 flex flex-col   ">
+          <StreamerDashboard client:only="react" />
+        </div>
       </div>
     </main>
   </SignedIn>
 </Layout>
 
 <style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  
+
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.18; 
+    -webkit-mask-image:
+      repeating-linear-gradient(to right, black 0px, black 2px, transparent 3px, transparent 8px),
+      repeating-linear-gradient(to bottom, black 0px, black 2px, transparent 3px, transparent 8px),
+      radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
+    mask-image:
+      repeating-linear-gradient(to right, black 0px, black 2px, transparent 3px, transparent 8px),
+      repeating-linear-gradient(to bottom, black 0px, black 2px, transparent 3px, transparent 8px),
+      radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
 </style>

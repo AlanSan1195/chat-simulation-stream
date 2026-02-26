@@ -129,7 +129,7 @@ export default function GameInput({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 py-1 px-2 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5  transition-colors  ">
+        <div className="flex items-start gap-2 py-1 px-2 border rounded-sm border-black/15 dark:border-white/10 bg-terminal   transition-colors  ">
           <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
           <p className="text-white text-xs font-jet leading-relaxed">{error}</p>
         </div>
@@ -146,11 +146,13 @@ export default function GameInput({
                 onGameSelect(game);
               }}
               disabled={disabled}
-              className={` px-4 py-1.5 text-xs border-[1px] transition-colors font-jet  rounded-xs ${
+              className={`flex-1 px-4 py-1.5 text-xs border-[1px] transition-colors font-jet rounded-xs border ${
                 selectedGame === game
-                  ? 'bg-primary border-primary'
-                  : 'bg-transparent text-black/50 dark:text-white/50 dark:hover:text-primary hover:text-black dark:hover:border-primary hover:border-primary hover:bg-primary/30 dark:hover:text-white  dark:hover:border-primary border-[1px] border-black/50 dark:border-white/30 '
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  ? 'bg-primary text-bg-primary border-primary'
+                  : disabled
+                    ? 'bg-transparent border-black/50 dark:border-white/20 text-black/60 dark:text-white/35 cursor-not-allowed'
+                    : 'bg-transparent dark:hover:bg-primary/30 border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40 hover:text-black dark:hover:text-white'
+              }`}
               style={selectedGame === game ? { color: 'var(--color-primary-text)' } : undefined}
             >
               {game}

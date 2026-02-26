@@ -219,8 +219,8 @@ function ChatMessageComponent({ message, startTime, isAlternate }: ChatMessagePr
 
       {/* Username + message */}
       <div
-        className={`flex-1 min-w-0 text-sm leading-relaxed px-2 py-3 transition-colors group-hover:bg-white/10 border-t-[0.5px] border-l-[0.5px] border-white/20 ${
-          isAlternate ? 'bg-white/5' : 'bg-black/5'
+        className={`flex-1 min-w-0 text-sm leading-relaxed px-2 py-3 transition-colors group-hover:bg-white/10 ${
+          isAlternate ? '' : 'bg-black/5'
         }`}
       >
         <span style={{ color: usernameColor }} className="font-semibold">

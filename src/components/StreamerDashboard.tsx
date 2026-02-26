@@ -181,9 +181,9 @@ export default function StreamerDashboard() {
       : 'No hay stream activo';
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12 ">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full p-1 gap-x-4 ">
       {/* Panel de Control - Left side */}
-      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4  itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0  rounded-sm ">
+      <div className=" flex flex-col gap-y-7 sm:justify-around overflow-y-auto border border-black/20 p-4 bg-black/25 mb-4 h-full dark:bg-transparent dark:shadow-none dark:border-0  rounded-sm ">
         {/* Logo/Title */}
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
@@ -192,20 +192,23 @@ export default function StreamerDashboard() {
           </h1>
         </div>
 
+        <div className='flex flex-col gap-y-1 '>
+
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-bold  mb-4 uppercase">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-bold m-0 ">Panel de Control</h2>
 
         {/* Botón Just Chatting */}
         <div>
           <button
             onClick={() => handleModeSwitch(isJustChatting ? 'game' : 'justchatting')}
             disabled={isActive && !isPaused}
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-jet border-[1px] rounded-xs transition-all
+            className={`flex items-center gap-2 px-4 py-1.5 text-xs font-jet border-[1px] rounded-xs transition-colors
               ${isJustChatting
-                ? 'bg-primary border-primary'
-                : 'bg-transparent hover:bg-primary/10 border-black/30 dark:border-white/30 text-black/70 dark:text-white/70 hover:border-primary/60 hover:text-black dark:hover:text-white'
+                ? 'bg-primary text-bg-primary border-primary'
+                : isActive && !isPaused
+                  ? 'bg-transparent border-black/50 dark:border-white/20 text-black/60 dark:text-white/35 cursor-not-allowed'
+                  : 'bg-transparent dark:hover:bg-primary/30 border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40 hover:text-black dark:hover:text-white cursor-pointer'
               }
-              ${isActive && !isPaused ? ' cursor-not-allowed' : 'cursor-pointer'}
             `}
             style={isJustChatting ? { color: 'var(--color-primary-text)' } : undefined}
             title={isActive && !isPaused ? 'Detén el stream para cambiar de modo' : isJustChatting ? 'Volver a modo videojuego' : 'Activar Just Chatting'}
@@ -214,6 +217,7 @@ export default function StreamerDashboard() {
             Just Chatting
             <span className={`ml-1 w-1.5 h-1.5 rounded-full ${isJustChatting ? 'bg-current' : 'bg-black/20 dark:bg-white/20'}`} />
           </button>
+        </div>
         </div>
 
         {/* Input condicional: Game o Just Chatting */}
@@ -291,7 +295,7 @@ export default function StreamerDashboard() {
 
         {/* Interval Selector */}
         <div className="space-y-3">
-          <p className="text-xl font-jet font-bold uppercase ">Velocidad de mensajes</p>
+          <p className="text-xl font-jet font-bold  ">Velocidad de mensajes</p>
           <div className="flex gap-2">
             {INTERVAL_PRESETS.map((preset) => {
               const isSelected = preset.min === interval.min && preset.max === interval.max;
@@ -306,7 +310,7 @@ export default function StreamerDashboard() {
                     ${isSelected
                       ? 'bg-primary text-bg-primary border-primary'
                       : isDisabled
-                        ? 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'
+                        ? 'bg-transparent border-black/50 dark:border-white/20 text-black/60 dark:text-white/35 cursor-not-allowed'
                         : 'bg-transparent dark:hover:bg-primary/30  border-black/50 dark:border-white/50 text-black/50 dark:text-white/50 hover:border-primary/60 hover:bg-primary/40  hover:text-black dark:hover:text-white'
                     }`}
                 >
@@ -318,8 +322,8 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Info Card */}
-        <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 transition-colors text-xs select-none">
-          <div className="space-y-1">
+        <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal  transition-colors text-xs select-none ">
+          <div className="space-y-1 ">
             <div className="flex gap-x-1 items-center">
               <IconInfoCircle className="text-primary mt-0.5" size={16} />
               <p className="text-lg font-departure  text-primary">Como funciona</p>
