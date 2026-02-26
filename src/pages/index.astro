@@ -1,105 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/astro/components";
-import Fotter from "../components/Fotter.astro";
-import PlatformToggle from "../components/PlatformToggle.tsx";
+import HeroSection from "../components/HeroSection.astro";
+import HowItWorksSection from "../components/HowItWorksSection.astro";
+import FeaturesSection from "../components/FeaturesSection.astro";
+import FinalCtaSection from "../components/FinalCtaSection.astro";
 ---
 
-<Layout 
+<Layout
   title="Rocket Chat Simulator - Practica Streaming con Audiencia Simulada"
-  description="Simula un chat de Twitch o YouTube para practicar streaming. Genera comentarios realistas con IA para entrenar antes de tu primer stream en vivo."
+  description="Simula un chat de Twitch o Kick para practicar streaming. Genera comentarios realistas con IA para entrenar antes de tu primer stream en vivo."
 >
-  <main class="min-h-screen flex flex-col items-center justify-center" role="main">
-    <article class="max-w-3xl w-full text-center space-y-8">
-      <!-- Hero Section -->
-      <header>
-        <div class="flex justify-center mb-4">
-          <PlatformToggle client:load />
-        </div>
-        <h1 class="text-6xl md:text-[180px] font-rocket ">Rocket</h1>
-        <p class="chat-simulator-text text-3xl font-departure text-primary uppercase" aria-label="Chat Simulator - Simulador de chat para streamers">
-          Chat Simulator
-        </p>
-      </header>
-
-      <!-- Description Box -->
-      <section
-        class="bg-terminal mx-6 p-6 md:p-8 border-[0.5px] border-white/20 text-left relative"
-        aria-labelledby="description-heading"
-      >
-        <h2 id="description-heading" class="sr-only">Descripcion del servicio</h2>
-        <p
-          id="text-terminal-hero"
-          class="text-base md:text-lg text-white/80 leading-relaxed font-jet"
-        >
-          Practica con una audiencia simulada a tu gameplay y experimenta un
-          stream de verdad
-        </p>
-
-        <!-- cli cursor animation -->
-        <span class="h-[2.2px] w-6 bg-primary absolute bottom-3 right-5 cli" aria-hidden="true"></span>
-      </section>
-
-      <!-- CTA Section -->
-      <nav class="space-y-3" aria-label="Acciones principales">
-        <SignedOut>
-          <SignInButton
-            mode="modal"
-            class="inline-block bg-primary hover:bg-primary text-bg-primary  py-3 px-8  font-bold font-departure"
-          >
-            Comenzar Stream
-          </SignInButton>
-          <p class="text-sm font-jet">
-            Inicia sesion para ingresar al dashboard
-          </p>
-        </SignedOut>
-
-        <SignedIn>
-          <a
-            href="/dashboard"
-            class="inline-block bg-primary hover:scale-105 text-bg-primary font-medium py-3 px-8 text-base transition-all"
-            aria-label="Ir al panel de control del simulador"
-          >
-            Ir al Dashboard
-          </a>
-        </SignedIn>
-      </nav>
-    </article>
+  <main role="main">
+    <HeroSection />
+    <HowItWorksSection />
+    <FeaturesSection />
+    <FinalCtaSection />
   </main>
 </Layout>
-
-<style>
-  .chat-simulator-text {
-    text-shadow:
-      0 0 1.7px rgb(0, 0, 0),
-      0 0 0px rgba(0, 0, 0, 0.541);
-  }
-
-  .cli {
-    animation: blink 1.2s step-start infinite;
-  }
-
-  @keyframes blink {
-    0%,
-    50% {
-      opacity: 1;
-    }
-    51%,
-    100% {
-      opacity: 0;
-    }
-  }
-  
-  /* Screen reader only class */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-</style>

@@ -25,6 +25,7 @@ export default function PlatformToggle() {
     document.documentElement.style.setProperty("--color-primary-text", PLATFORMS[p].textColor);
     document.documentElement.style.setProperty("--color-bg-void", PLATFORMS[p].voidColor);
     document.documentElement.style.setProperty("--grid-opacity", PLATFORMS[p].gridOpacity);
+    document.documentElement.setAttribute("data-platform", p);
   }
 
   function toggle() {
