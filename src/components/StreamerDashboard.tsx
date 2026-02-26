@@ -183,7 +183,7 @@ export default function StreamerDashboard() {
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full gap-5 lg:gap-x-12 ">
       {/* Panel de Control - Left side */}
-      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4  itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0 rounded-sm">
+      <div className="flex-shrink-0 space-y-7 flex flex-col overflow-y-auto border border-black/20 p-4  itemce bg-black/15 dark:bg-transparent dark:shadow-none dark:border-0  rounded-sm ">
         {/* Logo/Title */}
         <div>
           <p className="text-5xl font-rocket">Rocket</p>
@@ -318,7 +318,7 @@ export default function StreamerDashboard() {
         </div>
 
         {/* Info Card */}
-        <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 dark:hover:bg-white/10 transition-colors text-xs select-none">
+        <div className="flex gap-2 px-3 py-3 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 transition-colors text-xs select-none">
           <div className="space-y-1">
             <div className="flex gap-x-1 items-center">
               <IconInfoCircle className="text-primary mt-0.5" size={16} />

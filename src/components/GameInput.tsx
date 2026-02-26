@@ -24,7 +24,7 @@ export default function GameInput({
 
   const validateInput = (value: string): string | null => {
     const trimmed = value.trim();
-    if (trimmed.length < 2) return 'Escribe al menos el nombre del juego';
+    if (trimmed.length < 2) return 'El nombre del juego debe tener al menos 2 caracteres';
     if (trimmed.length > 50) return 'Eso no parece un nombre de juego, es muy largo';
     if (/^\d+$/.test(trimmed)) return 'Eso no parece un juego';
     if (/^[^a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ]+$/.test(trimmed)) return 'Eso no parece un juego';
@@ -107,7 +107,7 @@ export default function GameInput({
           onKeyDown={handleKeyDown}
           disabled={disabled || isLoading}
           placeholder="Ej: Elden Ring, Silkson, Minecraft, Valorant..."
-          className="w-full bg-bg-secundary dark:bg-black/40 border-[2px] border-black/20 dark:border-bg-secundary/20 pl-6 pr-14 py-3 text-black dark:text-white placeholder-black/40 dark:placeholder-white/10 focus:outline-none  focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm rounded-sm "
+          className="w-full bg-bg-secundary dark:bg-black/40 border-[2px] border-black/20 dark:border-bg-secundary/20 pl-6 pr-14 py-3 text-black dark:text-white placeholder-black/40 dark:placeholder-white/20 focus:outline-none  focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition font-mono text-sm rounded-sm "
         />
         
         <button
@@ -129,9 +129,9 @@ export default function GameInput({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 py-1 px-2 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5 dark:hover:bg-white/10 transition-colors  ">
+        <div className="flex items-start gap-2 py-1 px-2 border rounded-sm border-black/15 dark:border-white/10 bg-terminal dark:bg-white/5  transition-colors  ">
           <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-white text-xs font-jet leading-relaxed opacity-40">{error}</p>
+          <p className="text-white text-xs font-jet leading-relaxed">{error}</p>
         </div>
       )}
 

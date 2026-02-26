@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 
 type Platform = "twitch" | "kick";
 
-const PLATFORMS: Record<Platform, { color: string; label: string; textColor: string }> = {
-  twitch: { color: "#9146FF", label: "Twitch", textColor: "#ffffff" },
-  kick: { color: "#53FC18", label: "Kick", textColor: "#0a1a00" },
+const PLATFORMS: Record<Platform, { color: string; label: string; textColor: string; voidColor: string }> = {
+  twitch: { color: "#9146FF", label: "Twitch", textColor: "#ffffff", voidColor: "#393073" },
+  kick:   { color: "#53FC18", label: "Kick",   textColor: "#0a1a00", voidColor: "#036617" },
 };
 
 const STORAGE_KEY = "preferred-platform";
@@ -21,14 +21,9 @@ export default function PlatformToggle() {
   }, []);
 
   function applyColor(p: Platform) {
-    document.documentElement.style.setProperty(
-      "--color-primary",
-      PLATFORMS[p].color
-    );
-    document.documentElement.style.setProperty(
-      "--color-primary-text",
-      PLATFORMS[p].textColor
-    );
+    document.documentElement.style.setProperty("--color-primary", PLATFORMS[p].color);
+    document.documentElement.style.setProperty("--color-primary-text", PLATFORMS[p].textColor);
+    document.documentElement.style.setProperty("--color-bg-void", PLATFORMS[p].voidColor);
   }
 
   function toggle() {
