@@ -39,7 +39,7 @@ import Header from "../components/Header.astro";
         class="relative overflow-hidden max-w-7xl dark:shadow-none mx-auto h-full border-0 bg-terminal/10  dark:bg-transparent backdrop-blur-sm p-4 sm:p-5  lg:flex lg:flex-col rounded-xs"
       >
         <!-- Grid decorativo con mask — solo dark mode -->
-        <div class="hidden dark:block absolute inset-0 z-0 grid-bg border" aria-hidden="true"></div>
+        <div class="hidden dark:block  absolute inset-0 z-0 grid-bg " aria-hidden="true"></div>
 
 
         <div class="relative z-10 flex flex-col   ">
@@ -58,7 +58,7 @@ import Header from "../components/Header.astro";
       linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
       linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.18; 
+    opacity: var(--grid-opacity, 0.35);
     -webkit-mask-image:
       repeating-linear-gradient(to right, black 0px, black 2px, transparent 3px, transparent 8px),
       repeating-linear-gradient(to bottom, black 0px, black 2px, transparent 3px, transparent 8px),

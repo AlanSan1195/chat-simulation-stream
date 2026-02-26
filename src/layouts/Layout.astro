@@ -121,16 +121,15 @@ const structuredData = {
     <script is:inline>
       (function () {
         var platforms = {
-          twitch: { color: "#9146FF", textColor: "#ffffff" },
-          kick: { color: "#53FC18", textColor: "#0a1a00" },
+          twitch: { color: "#9146FF", textColor: "#ffffff", voidColor: "#393073", gridOpacity: "0.35" },
+          kick:   { color: "#53FC18", textColor: "#0a1a00", voidColor: "#036617", gridOpacity: "0.18" },
         };
         var stored = localStorage.getItem("preferred-platform");
         var p = platforms[stored] || platforms.twitch;
         document.documentElement.style.setProperty("--color-primary", p.color);
-        document.documentElement.style.setProperty(
-          "--color-primary-text",
-          p.textColor,
-        );
+        document.documentElement.style.setProperty("--color-primary-text", p.textColor);
+        document.documentElement.style.setProperty("--color-bg-void", p.voidColor);
+        document.documentElement.style.setProperty("--grid-opacity", p.gridOpacity);
       })();
     </script>
   </head>
