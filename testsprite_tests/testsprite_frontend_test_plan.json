@@ -1,0 +1,2302 @@
+[
+  {
+    "id": "TC001",
+    "title": "Landing page theme toggles from Twitch to Kick",
+    "description": "Verifies that switching the platform toggle on the landing page updates the visible theme across the landing UI.",
+    "category": "Platform Theme Toggle",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"platform theme toggle\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Kick\" in the platform theme toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Kick\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"primary call-to-action button\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"landing page header\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Landing page theme toggles from Kick back to Twitch",
+    "description": "Verifies that switching the toggle back restores the Twitch selection and the UI reflects the change.",
+    "category": "Platform Theme Toggle",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Kick\" in the platform theme toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Kick\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Twitch\" in the platform theme toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Twitch\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"primary call-to-action button\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Theme selection on landing carries into dashboard after sign-in navigation",
+    "description": "Verifies that choosing a theme on the landing page is reflected when the user proceeds into the authenticated dashboard experience.",
+    "category": "Platform Theme Toggle",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Kick\" in the platform theme toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Kick\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Sign in\" call-to-action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/sign-in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"sign-in form\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Theme toggle control is present on dashboard header after successful sign-in",
+    "description": "Verifies that after authenticating, the dashboard header exposes the platform toggle control for switching themes.",
+    "category": "Platform Theme Toggle",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"platform theme toggle\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Dashboard theme can be switched after sign-in",
+    "description": "Verifies that the platform theme toggle on the dashboard updates the visible selection and the dashboard UI remains present.",
+    "category": "Platform Theme Toggle",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Kick\" in the platform theme toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Kick\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Switch to Just Chatting mode updates the input area",
+    "description": "Verifies that clicking the Just Chatting mode toggle swaps the input area to the Just Chatting input UI.",
+    "category": "Stream Mode Toggle (Game vs Just Chatting)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Just Chatting\" button to switch to Just Chatting mode"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"JustChattingInput\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Switch back to Game mode updates the input area",
+    "description": "Verifies that clicking the Game mode (Juegos) toggle swaps the input area back to the Game input UI.",
+    "category": "Stream Mode Toggle (Game vs Just Chatting)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Juegos\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"GameInput\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Toggle Game -> Just Chatting -> Game swaps input area each time",
+    "description": "Verifies mode switching works both directions and the input area changes accordingly in a single session.",
+    "category": "Stream Mode Toggle (Game vs Just Chatting)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Just Chatting\" button to switch to Just Chatting mode"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"JustChattingInput\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Juegos\" button to return to Game mode"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"GameInput\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Mode toggles are usable when stream is not active",
+    "description": "Verifies that when not streaming, the user can click mode toggles and the input area updates.",
+    "category": "Stream Mode Toggle (Game vs Just Chatting)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Just Chatting\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"JustChattingInput\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Juegos\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"GameInput\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Mode selection persists during the session while not streaming",
+    "description": "Verifies that after switching to Just Chatting, the Just Chatting input remains visible until the user switches back (no unexpected auto-revert).",
+    "category": "Stream Mode Toggle (Game vs Just Chatting)",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Just Chatting\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"JustChattingInput\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Wait for 2 seconds"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"JustChattingInput\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Generate AI phrases successfully and add a new game chip",
+    "description": "Verifies that submitting a valid game name triggers generation UI states and results in a success indicator and a new game chip.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"Minecraft\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a loading spinner is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Successful generation shows checkmark and adds the game chip to the list",
+    "description": "Verifies the post-generation success UI: checkmark appears and the new game chip becomes visible.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"Valorant\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the search button to submit"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a checkmark icon is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Valorant\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Inline validation blocks 1-character game submission",
+    "description": "Verifies that a 1-character game name shows inline validation and prevents generation from starting.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"A\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an inline validation error message is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Whitespace-only input is rejected with validation error",
+    "description": "Verifies that submitting blank/whitespace input does not start generation and shows a visible validation error.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"   \" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an inline validation error message is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Over-50-character game name is rejected with validation error",
+    "description": "Verifies that a game name longer than 50 characters cannot be submitted and shows an inline error.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"ThisGameNameIsIntentionallyWayTooLongToBeAcceptedByValidation\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an inline validation error message is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Reselect an existing game by clicking its chip",
+    "description": "Verifies that clicking an existing game chip reselects it instantly in the UI.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify at least one game chip is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click an existing game chip in the chips list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the clicked game name is visible as the currently selected game"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "4-game limit reached shows limit error and does not add new chip",
+    "description": "Verifies that when the user is at the 4-game limit, submitting another valid game shows a limit-reached error and does not add the new game.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify there are 4 game chips visible in the chips list"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Apex Legends\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a limit-reached error message is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Invalid or non-real game name shows a visible error",
+    "description": "Verifies that an invalid/non-real game name results in an error message instead of success UI.",
+    "category": "Game Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"zzzz-not-a-real-game-123\" into the game text input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the search button to submit"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an error message is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Generate phrases from a preset topic chip in Just Chatting mode",
+    "description": "Verifies a user can select a preset topic chip, see generation progress, and then see phrases appear successfully.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Click the preset topic chip labeled \"Música\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"success checkmark\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Generated phrases\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Generate phrases from a valid typed topic using Submit",
+    "description": "Verifies a user can type a valid topic within length limits, submit it, and see generated phrases after successful completion.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Travel stories\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"success checkmark\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Generated phrases\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Reject topic shorter than 2 characters (client-side validation)",
+    "description": "Verifies the UI shows a validation message and prevents generation when the topic is too short.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Type \"A\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Topic must be at least 2 characters\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Reject empty topic submission in Just Chatting mode",
+    "description": "Verifies submitting an empty topic shows validation feedback and does not start generation.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Enter a topic\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Reject topic longer than 60 characters (client-side validation)",
+    "description": "Verifies the UI prevents generation and shows an error when the topic exceeds the maximum allowed length.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Type \"This topic is intentionally written to be longer than sixty characters total.\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Topic must be 60 characters or less\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Inappropriate topic is rejected by the server and shown as an error (Enter key)",
+    "description": "Verifies submitting an inappropriate topic via Enter triggers an error state with a clear message from the server.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Type \"extremely inappropriate topic\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"invalid\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"success checkmark\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Switching to Just Chatting mode shows topic chips and topic input controls",
+    "description": "Verifies the mode switch exposes the expected Just Chatting UI elements for topic selection and submission.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"topic input field\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Submit button\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Música\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"topic chips\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "After a successful generation, generating again replaces/updates the phrase results",
+    "description": "Verifies a second generation request can be started after success and the UI updates to the latest generated phrases.",
+    "category": "Just Chatting Topic Input and AI Phrase Generation",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Just Chatting\" mode"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Food recommendations\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"success checkmark\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Food recommendations\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Movie recommendations\" into the topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"loading spinner\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"success checkmark\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Movie recommendations\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "Start stream after selecting 2-4s and verify messages appear over time",
+    "description": "Verifies that when streaming starts, chat messages appear and continue appearing (consistent with an active interval setting).",
+    "category": "Message Speed Selector",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"2-4s\" speed preset button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button to start the stream"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"chat message\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Attempt to change speed while streaming and see tooltip explaining restriction",
+    "description": "Verifies that attempting to interact with speed controls during an active stream shows an explanatory tooltip/message.",
+    "category": "Message Speed Selector",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button to start the stream"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"0.5-1s\" speed preset button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"speed cannot be changed\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC029",
+    "title": "All four speed presets are visible on the dashboard",
+    "description": "Verifies that the user can see all four preset options for message speed selection.",
+    "category": "Message Speed Selector",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"4-7s\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"2-4s\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"1-2s\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC030",
+    "title": "Start streaming after selecting a game/topic (Streaming label + messages appear)",
+    "description": "Verifies that Play starts the SSE stream, updates the header label to Streaming, and begins rendering chat messages.",
+    "category": "Stream Playback Controls",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Streaming:\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC031",
+    "title": "Pause streaming keeps existing messages and shows En pausa label",
+    "description": "Verifies that Pause stops new messages without clearing existing messages and updates the header label to En pausa.",
+    "category": "Stream Playback Controls",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Streaming:\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Pause\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"En pausa\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC032",
+    "title": "Resume after pause continues stream and returns label to Streaming",
+    "description": "Verifies that Play after Pause resumes streaming and updates the header label back to Streaming.",
+    "category": "Stream Playback Controls",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Pause\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"En pausa\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Streaming:\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC033",
+    "title": "Stop ends stream and clears messages (No hay stream activo label)",
+    "description": "Verifies that Stop ends streaming, clears the chat window, and updates the header to No hay stream activo.",
+    "category": "Stream Playback Controls",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Streaming:\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Stop\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No hay stream activo\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC034",
+    "title": "Stop after pause still resets to No hay stream activo",
+    "description": "Verifies that stopping from the paused state ends the session and returns UI to idle state.",
+    "category": "Stream Playback Controls",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Pause\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"En pausa\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Stop\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No hay stream activo\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC035",
+    "title": "Changing selected game/topic while idle updates subsequent Streaming label after Play",
+    "description": "Verifies that the selected chip determines the stream label when starting playback.",
+    "category": "Stream Playback Controls",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click a game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click a different game or topic chip"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Streaming:\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC036",
+    "title": "Play is blocked or shows idle label if no game/topic selected",
+    "description": "Verifies that attempting to start streaming without selecting a game/topic does not enter Streaming state.",
+    "category": "Stream Playback Controls",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No hay stream activo\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No hay stream activo\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC037",
+    "title": "Empty chat window shows empty state when no stream is active",
+    "description": "Verifies the chat window displays the empty state icon and hint text before any messages are generated.",
+    "category": "Virtualized Chat Window",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window empty state icon is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window hint text for starting a stream is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC038",
+    "title": "Starting a stream populates the virtualized chat and auto-scrolls to newest messages",
+    "description": "Verifies messages begin appearing after starting the stream and the list stays scrolled to the latest message.",
+    "category": "Virtualized Chat Window",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the game selection control on the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select the first available game option from the game dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify at least one chat message row is visible in the chat window"
+      }
+    ]
+  },
+  {
+    "id": "TC039",
+    "title": "Empty state disappears once messages are generated",
+    "description": "Verifies the chat window transitions from empty state to populated list after the stream starts.",
+    "category": "Virtualized Chat Window",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window empty state icon is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the game selection control on the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select the first available game option from the game dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify at least one chat message row is visible in the chat window"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window empty state icon is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC040",
+    "title": "SevenTV emote images can appear in chat messages during streaming",
+    "description": "Verifies that at least one message can render an emote image while the stream is running (probabilistic).",
+    "category": "Virtualized Chat Window",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the game selection control on the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select the first available game option from the game dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for 10 seconds"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an emote image is visible within any chat message"
+      }
+    ]
+  },
+  {
+    "id": "TC041",
+    "title": "When messages exceed 200, oldest messages are dropped and chat continues rendering and auto-scrolling",
+    "description": "Verifies the chat window enforces a max of 200 messages and continues to render smoothly while auto-scrolling to new messages.",
+    "category": "Virtualized Chat Window",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the game selection control on the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select the first available game option from the game dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for enough time for the chat to generate more than 200 messages"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window shows recent messages and remains populated"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat window is scrolled to the latest visible message row"
+      }
+    ]
+  },
+  {
+    "id": "TC042",
+    "title": "Virtualized chat continues rendering after scrolling up and then letting new messages arrive",
+    "description": "Verifies virtualization remains stable: user scrolls up, then new messages arrive and list can return to latest messages without breaking rendering.",
+    "category": "Virtualized Chat Window",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the game selection control on the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select the first available game option from the game dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Play\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for 5 seconds"
+      },
+      {
+        "type": "action",
+        "description": "Scroll up within the chat window"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify chat message rows remain visible after scrolling"
+      },
+      {
+        "type": "action",
+        "description": "Wait for 5 seconds"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the bottom of the chat window"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the latest chat message row is visible at the bottom of the chat window"
+      }
+    ]
+  },
+  {
+    "id": "TC043",
+    "title": "Start stream shows chat messages and some include SevenTV emote images",
+    "description": "Verifies that starting the stream produces chat messages and at least one message renders a SevenTV emote image alongside text when emotes are available.",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"chat message list\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"an emote image inside a chat message\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC044",
+    "title": "Chat message displays both text and emote image together when emotes are present",
+    "description": "Verifies that a message containing an emote still renders readable message text alongside the emote image (not replacing all content).",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"a chat message with visible text\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"an emote image inside a chat message\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC045",
+    "title": "Stop stream halts additional incoming messages",
+    "description": "Verifies that stopping the stream stops further chat updates (no continued message flow).",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"chat message list\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Stop stream\" button"
+      }
+    ]
+  },
+  {
+    "id": "TC046",
+    "title": "Emote rendering is non-blocking: messages appear even before any emote image is visible",
+    "description": "Verifies that chat messages render promptly after starting the stream and are not blocked by emote availability.",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"chat message list\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"a chat message with visible text\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC047",
+    "title": "Scrolling within chat keeps messages visible and readable while stream is running",
+    "description": "Verifies that the user can scroll the virtualized chat list during an active stream and still see messages (including potential emotes).",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the bottom of the chat message list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"chat message list\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC048",
+    "title": "Repeated start stream action does not break chat rendering",
+    "description": "Verifies the UI remains stable if the user starts the stream, stops it, then starts again, and chat messages still render (with or without emotes).",
+    "category": "Chat Messages with SevenTV Emotes",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Stop stream\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Start stream\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"a chat message with visible text\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC049",
+    "title": "Register up to four distinct games and verify four chips are shown",
+    "description": "Verifies a user can register up to 4 distinct games and each successful generation adds a visible game chip.",
+    "category": "User Game Limit Enforcement (4 games)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Game 1\" into the game/topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Generate\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Game 1\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC050",
+    "title": "Register additional games until reaching four chips total",
+    "description": "Verifies registering the 2nd, 3rd, and 4th distinct games results in a visible chip for each and a total of four chips displayed.",
+    "category": "User Game Limit Enforcement (4 games)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Game 2\" into the game/topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Generate\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Game 2\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC051",
+    "title": "Register a third distinct game and confirm it is added as a chip",
+    "description": "Verifies adding a 3rd distinct game successfully shows the corresponding chip in the registered games list.",
+    "category": "User Game Limit Enforcement (4 games)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Game 3\" into the game/topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Generate\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Game 3\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC052",
+    "title": "Register a fourth distinct game and verify the UI shows all four chips",
+    "description": "Verifies adding the 4th distinct game succeeds and the UI reflects four registered game chips.",
+    "category": "User Game Limit Enforcement (4 games)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /sign-in"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email or username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Game 4\" into the game/topic input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Generate\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Game 4\" is visible"
+      }
+    ]
+  }
+]
