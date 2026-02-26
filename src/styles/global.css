@@ -19,25 +19,17 @@
 }
 
 
-body{
-  background-color: var(--color-bg-secundary); 
-  color: var(--color-bg-primary);
-}
-
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: var(--color-bg-secundary);
-    color: black;
-  }
+body {
+  background-color: var(--color-bg-secundary);
+  color: black;
 }
 
 @media (prefers-color-scheme: dark) {
-  body{
+  body {
     color: white;
-    background-color: var(--color-bg-primary);
+    background-color: #000000;
   }
 }
-
 
 @font-face {
   font-family: "rocket";

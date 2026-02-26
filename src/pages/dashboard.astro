@@ -12,17 +12,18 @@ import Header from "../components/Header.astro";
 >
   <SignedOut>
     <main
-      class="min-h-screen bg-[#e8e4de] flex items-center justify-center"
+      class="min-h-screen bg-bg-secundary dark:bg-transparent flex items-center justify-center"
       role="main"
     >
       <article class="text-center space-y-4">
-        <h1 class="text-3xl font-light text-black">Acceso Restringido</h1>
-        <p class="text-black/60">
+        <h1 class="text-3xl font-light text-black dark:text-white">Acceso Restringido</h1>
+        <p class="text-black/60 dark:text-white/60">
           Debes iniciar sesion para acceder al dashboard
         </p>
         <a
           href="/"
-          class="inline-block bg-[#9146FF] hover:bg-[#7b2fbe] text-white font-medium py-2 px-6 transition"
+          class="inline-block bg-primary hover:opacity-80 font-medium py-2 px-6 transition"
+          style="color: var(--color-primary-text);"
           aria-label="Volver a la pagina principal"
         >
           Volver al inicio

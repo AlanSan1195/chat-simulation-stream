@@ -1,45 +1,49 @@
 ---
-import '../styles/global.css';
-import Fotter from '../components/Fotter.astro';
+import "../styles/global.css";
+import Fotter from "../components/Fotter.astro";
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
-  type?: 'website' | 'article';
+  type?: "website" | "article";
   noindex?: boolean;
 }
 
-const { 
-  title, 
+const {
+  title,
   description = "Practica streaming con una audiencia simulada. Rocket Chat Simulator genera comentarios realistas de Twitch/YouTube para que practiques antes de tu primer stream.",
   image = "/desktop-hero-dark.png",
   type = "website",
-  noindex = false
+  noindex = false,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://rocketchat.online');
-const imageURL = new URL(image, Astro.site || 'https://rocketchat.online');
+const canonicalURL = new URL(
+  Astro.url.pathname,
+  Astro.site || "https://rocketchat.online",
+);
+const imageURL = new URL(image, Astro.site || "https://rocketchat.online");
 
 // Structured Data JSON-LD
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Rocket Chat Simulator",
-  "description": description,
-  "url": canonicalURL.href,
-  "applicationCategory": "Utility",
-  "operatingSystem": "Web Browser",
-  "offers": {
+  name: "Rocket Chat Simulator",
+  description: description,
+  url: canonicalURL.href,
+  applicationCategory: "Utility",
+  operatingSystem: "Web Browser",
+  offers: {
     "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
+    price: "0",
+    priceCurrency: "USD",
   },
-  "creator": {
+  creator: {
     "@type": "Person",
-    "name": "Alan San"
+    name: "Alan San",
   },
-  "keywords": "chat simulator, twitch, youtube, streaming, streamer, practice, simulador de chat, stream practice"
+  keywords:
+    "chat simulator, twitch, youtube, streaming, streamer, practice, simulador de chat, stream practice",
 };
 ---
 
@@ -49,23 +53,32 @@ const structuredData = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    
+
     <!-- Primary Meta Tags -->
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content="Alan San" />
-    <meta name="keywords" content="chat simulator, simulador de chat, twitch chat, youtube chat, streaming practice, practica streaming, streamer tools, herramientas streamer, fake chat, chat de prueba, stream simulator" />
-    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    <meta name="googlebot" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    
+    <meta
+      name="keywords"
+      content="chat simulator, simulador de chat, twitch chat, youtube chat, streaming practice, practica streaming, streamer tools, herramientas streamer, fake chat, chat de prueba, stream simulator"
+    />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, nofollow" : "index, follow"}
+    />
+    <meta
+      name="googlebot"
+      content={noindex ? "noindex, nofollow" : "index, follow"}
+    />
+
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL.href} />
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/logo-rocket.svg" />
     <link rel="apple-touch-icon" href="/logo-rocket.svg" />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL.href} />
@@ -76,25 +89,31 @@ const structuredData = {
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Rocket Chat Simulator" />
     <meta property="og:locale" content="es_ES" />
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalURL.href} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL.href} />
-    <meta name="twitter:image:alt" content="Rocket Chat Simulator - Practica streaming con audiencia simulada" />
-    
+    <meta
+      name="twitter:image:alt"
+      content="Rocket Chat Simulator - Practica streaming con audiencia simulada"
+    />
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#9146FF" />
     <meta name="msapplication-TileColor" content="#9146FF" />
-    
+
     <!-- Generator -->
     <meta name="generator" content={Astro.generator} />
-    
+
     <!-- Structured Data JSON-LD -->
-    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-    
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
+
     <!-- Preconnect a servicios externos -->
     <link rel="preconnect" href="https://clerk.rocketchat.online" />
     <link rel="dns-prefetch" href="https://clerk.rocketchat.online" />
@@ -103,17 +122,29 @@ const structuredData = {
       (function () {
         var platforms = {
           twitch: { color: "#9146FF", textColor: "#ffffff" },
-          kick:   { color: "#53FC18", textColor: "#0a1a00" },
+          kick: { color: "#53FC18", textColor: "#0a1a00" },
         };
         var stored = localStorage.getItem("preferred-platform");
         var p = platforms[stored] || platforms.twitch;
         document.documentElement.style.setProperty("--color-primary", p.color);
-        document.documentElement.style.setProperty("--color-primary-text", p.textColor);
+        document.documentElement.style.setProperty(
+          "--color-primary-text",
+          p.textColor,
+        );
       })();
     </script>
   </head>
-  <body class="bg-bg-secundary text-black min-h-screen">
-    <div id="clerk-root">
+  <body class="bg-bg-secundary dark:bg-black text-black dark:text-white min-h-screen">
+
+    <!-- Emerald Void — solo dark mode -->
+    <div
+      class="hidden dark:block fixed inset-0 -z-10 pointer-events-none"
+      style="background: radial-gradient(125% 125% at 0% 10%, #000000 60%, var(--color-bg-void) 100%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div id="clerk-root" class="locative z-10">
       <slot />
     </div>
     <Fotter />
