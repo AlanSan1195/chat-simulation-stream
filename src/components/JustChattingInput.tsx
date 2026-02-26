@@ -128,9 +128,9 @@ export default function JustChattingInput({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 px-3 py-2 bg-terminal dark:bg-primary/10 border dark:border-primary/30 rounded-xs">
+        <div className="flex items-start gap-2 px-3 py-2 bg-terminal border dark:border-white/20 rounded-xs">
           <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
-          <p className=" text-white/40 font-jet text-xs dark:text-primary">{error}</p>
+          <p className=" text-white/40 font-jet text-xs ">{error}</p>
         </div>
       )}
 

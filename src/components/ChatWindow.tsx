@@ -29,7 +29,7 @@ export default function ChatWindow({ messages, isActive }: ChatWindowProps) {
     <div className="flex flex-col h-[800px]  border-[1px] md:col-span-2 border-white/10 bg-terminal overflow-hidden rounded-sm">
       {/* Header */}
       <div className="relative flex items-center px-4 py-8 border-b border-white/10 flex-shrink-0">
-        <h2 className="text-white font-jet text-sm sm:text-2xl font-medium tracking-wide absolute left-0 right-0 text-center pointer-events-none">
+        <h2 className="text-white font-jet text-sm sm:text-2xl font-medium  absolute left-0 right-0 text-center pointer-events-none">
           Chat
         </h2>
       </div>

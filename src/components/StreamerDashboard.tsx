@@ -175,10 +175,16 @@ export default function StreamerDashboard() {
   const headerLabel = isActive && activeContext
     ? isPaused
       ? `En pausa: ${activeContext}`
-      : `${isJustChatting ? 'Chateando: ' : 'Streaming: '}${activeContext}`
+      : `${isJustChatting ? 'Chateando: ' : ' '}${activeContext}`
     : isJustChatting
       ? 'Just Chatting'
-      : 'No hay stream activo';
+      : 'selecciona un juego o un tema';
+
+
+  const headerTitle = isActive    ? isPaused
+      ? `Stream en pausa: ${activeContext}`
+      : `Stream activo: ${activeContext}`
+    : 'Streamer Dashboard';
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full p-1 gap-x-4 ">
@@ -186,7 +192,9 @@ export default function StreamerDashboard() {
       <div className=" flex flex-col gap-y-7 sm:justify-around overflow-y-auto border border-black/20 p-4 bg-black/25 mb-4 h-full dark:bg-transparent dark:shadow-none dark:border-0  rounded-sm ">
         {/* Logo/Title */}
         <div>
-          <p className="text-5xl font-rocket">Rocket</p>
+          <p className="text-4xl font-rocket uppercase">
+            {isActive && !isPaused ? 'Streaming:' : 'Stream:'}
+          </p>
           <h1 className="text-3xl text-primary uppercase font-departure">
             {headerLabel}
           </h1>
@@ -195,7 +203,7 @@ export default function StreamerDashboard() {
         <div className='flex flex-col gap-y-1 '>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-bold m-0 ">Panel de Control</h2>
+        <h2 className="text-xl font-jet font-bold u m-0  ">Categoria</h2>
 
         {/* Botón Just Chatting */}
         <div>
@@ -295,7 +303,7 @@ export default function StreamerDashboard() {
 
         {/* Interval Selector */}
         <div className="space-y-3">
-          <p className="text-xl font-jet font-bold  ">Velocidad de mensajes</p>
+          <p className="text-xl font-jet font-bold   ">Velocidad de mensajes</p>
           <div className="flex gap-2">
             {INTERVAL_PRESETS.map((preset) => {
               const isSelected = preset.min === interval.min && preset.max === interval.max;
