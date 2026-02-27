@@ -637,6 +637,103 @@ Despues de desplegar en Vercel con `rocketchat.online`, los componentes de auten
 
 ---
 
+## Flujo de Generacion de Mensajes
+
+Esta es la parte central de la app. El proceso tiene dos fases completamente separadas.
+
+### Fase 1 — Generacion de frases con IA (ocurre una sola vez por juego)
+
+Cuando el usuario escribe un nombre de juego y hace submit:
+
+1. El frontend hace `POST /api/generate-phrases` con el nombre del juego
+2. El servidor comprueba si las frases ya estan en cache (RAM). Si estan, responde directamente sin llamar a la IA
+3. Si no estan en cache, llama a la IA **una sola vez**:
+   - Intenta primero con **Groq** (`openai/gpt-oss-120b`)
+   - Si falla, usa **Cerebras** (`llama-3.3-70b`) como fallback
+4. El prompt instruye a la IA para que devuelva un JSON con frases categorizadas:
+   ```json
+   {
+     "gameplay":  [...hasta 50 frases sobre el juego],
+     "reactions": [...hasta 15 reacciones emocionales],
+     "questions": [...hasta 30 preguntas al streamer],
+     "emotes":    [...hasta 20 expresiones cortas]
+   }
+   ```
+   Para el modo Just Chatting, la categoria `gameplay` se reemplaza por `comments` (hasta 50 frases).
+5. Las frases generadas se guardan en un `Map` en RAM del servidor, indexadas por nombre de juego normalizado
+6. **La IA no vuelve a ser llamada** para ese juego mientras el servidor no se reinicie
+
+### Fase 2 — Stream de mensajes en tiempo real (sin IA, pura randomizacion local)
+
+Cuando el usuario pulsa Play:
+
+1. El frontend abre una conexion `EventSource` a `/api/chat-stream?game=...&min=2000&max=4000`
+2. El servidor entra en un bucle de `setTimeout` con delay aleatorio entre `min` y `max` ms
+3. En cada tick, `generateMessage()` construye un mensaje **localmente** (sin red, sin IA):
+   - Busca las frases del juego en el `Map` de RAM
+   - Elige categoria con pesos (gameplay 50%, questions 30%, reactions 20% en modo juego)
+   - Elige una frase aleatoria de esa categoria
+   - Elige un username de una lista fija de 20 nombres
+   - Genera un `id` unico con `crypto.randomUUID()`
+4. El mensaje se envia como evento SSE: `data: {"id":"...","username":"...","content":"..."}\n\n`
+5. El frontend lo recibe, lo agrega al array (maximo 200 mensajes), y Virtuoso lo renderiza
+
+### Tres capas de fallback para las frases
+
+Si las frases de un juego no estan disponibles, el generador cae en cascada:
+
+```
+1. Cache en RAM (frases generadas por IA para ese juego)
+       ↓ si no existe
+2. MESSAGE_PATTERNS hardcodeados (rdr2, bg3, minecraft)
+       ↓ si no existe
+3. FALLBACK_PHRASES genericas (frases validas para cualquier contexto)
+```
+
+### Diagrama completo
+
+```
+[Usuario escribe juego]
+        ↓
+POST /api/generate-phrases
+        ↓
+  ¿En cache? ──── SI ──────────────────────────┐
+        ↓ NO                                   │
+  chatWithAI()                                 │
+    Groq (openai/gpt-oss-120b)                 │
+    └─ falla → Cerebras (llama-3.3-70b)        │
+        ↓                                      │
+  JSON: { gameplay[], reactions[], ... }       │
+        ↓                                      │
+  setCachedPhrases() → Map en RAM ─────────────┘
+        ↓
+[Usuario pulsa Play]
+        ↓
+new EventSource('/api/chat-stream?game=...&min=2000&max=4000')
+        ↓
+  Loop setTimeout (delay aleatorio entre min y max ms)
+    → getPhrasesForGame()  → busca en Map de RAM
+    → getRandomCategory()  → pesos por modo (game / justchatting)
+    → getRandomElement()   → frase aleatoria de la categoria
+    → username de lista fija (20 opciones)
+    → crypto.randomUUID()  → id del mensaje
+        ↓
+  SSE: data: { id, username, content, timestamp, category }
+        ↓
+eventSource.onmessage → setMessages([...prev, msg].slice(-200))
+        ↓
+<Virtuoso> renderiza solo los ~15 items visibles en el viewport
+```
+
+### Puntos clave
+
+- **La IA genera en batch, no en tiempo real.** Las frases existen antes de que empiece el stream
+- **El stream es pura logica local.** Cada mensaje tarda microsegundos en generarse
+- **La cache es solo en memoria.** Si el servidor se reinicia, las frases de juegos personalizados desaparecen y el stream cae al fallback generico
+- **Limite por usuario:** cada usuario puede tener activos un maximo de 4 juegos con frases generadas por IA (`MAX_GAMES_PER_USER = 4` en `phraseCache.ts`)
+
+---
+
 ## Personalizacion
 
 ### Agregar un juego hardcodeado
