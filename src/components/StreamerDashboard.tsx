@@ -34,6 +34,11 @@ function StopIcon({ className }: { className?: string }) {
 
 const MAX_MESSAGES = 200;
 
+// Backoff exponencial: 1s → 2s → 4s → 8s → 16s (tope en 30s)
+const RECONNECT_BASE_DELAY = 1_000;
+const RECONNECT_MAX_DELAY = 30_000;
+const RECONNECT_MAX_ATTEMPTS = 10;
+
 export default function StreamerDashboard() {
   const [streamMode, setStreamMode] = useState<StreamMode>('game');
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -45,6 +50,8 @@ export default function StreamerDashboard() {
   const [remainingSlots, setRemainingSlots] = useState(4);
   const [interval, setInterval] = useState<MessageInterval>(DEFAULT_INTERVAL);
   const eventSourceRef = useRef<EventSource | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Cargar info del usuario al montar
   useEffect(() => {
@@ -92,16 +99,11 @@ export default function StreamerDashboard() {
   const buildSseUrl = (context: string, iv: MessageInterval) =>
     `/api/chat-stream?game=${encodeURIComponent(context)}&min=${iv.min}&max=${iv.max}&mode=${streamMode}`;
 
-  const handleStartChat = () => {
-    if (!activeContext) return;
+  const openEventSource = (context: string, iv: MessageInterval, preserveMessages = false) => { 
+    const url = buildSseUrl(context, iv);
+    const es = new EventSource(url);
 
-    setIsActive(true);
-    setIsPaused(false);
-    setMessages([]);
-
-    const eventSource = new EventSource(buildSseUrl(activeContext, interval));
-
-    eventSource.onmessage = (event) => {
+    es.onmessage = (event) => {
       const newMessage: ChatMessage = JSON.parse(event.data);
       setMessages((prev) => {
         const next = [...prev, newMessage];
@@ -109,15 +111,61 @@ export default function StreamerDashboard() {
       });
     };
 
-    eventSource.onerror = () => {
-      console.error('Error en conexión SSE');
-      handleStopChat();
+    es.onerror = () => {
+      es.close();
+      eventSourceRef.current = null;
+
+      const attempts = reconnectAttemptsRef.current;
+
+      // Si se agotaron los intentos o el stream ya no esta activo, parar definitivamente
+      if (attempts >= RECONNECT_MAX_ATTEMPTS) {
+        console.error('[SSE] Sin mas intentos de reconexion, deteniendo stream');
+        setIsActive(false);
+        setIsPaused(false);
+        setMessages([]);
+        return;
+      }
+
+      // Backoff exponencial con tope en RECONNECT_MAX_DELAY
+      const delay = Math.min(
+        RECONNECT_BASE_DELAY * Math.pow(2, attempts),
+        RECONNECT_MAX_DELAY
+      );
+
+      console.warn(`[SSE] Conexion perdida. Reconectando en ${delay / 1000}s (intento ${attempts + 1}/${RECONNECT_MAX_ATTEMPTS})`);
+
+      reconnectAttemptsRef.current = attempts + 1;
+      reconnectTimerRef.current = setTimeout(() => {
+        // Verificar que el usuario no haya pausado/detenido mientras esperabamos
+        if (eventSourceRef.current === null && reconnectAttemptsRef.current > 0) {
+          openEventSource(context, iv, true);
+        }
+      }, delay);
     };
 
-    eventSourceRef.current = eventSource;
+    es.onopen = () => {
+      // Conexion establecida (o restablecida): resetear contador de intentos
+      reconnectAttemptsRef.current = 0;
+    };
+
+    eventSourceRef.current = es;
+    if (!preserveMessages) setMessages([]);
+  };
+
+  const handleStartChat = () => {
+    if (!activeContext) return;
+    reconnectAttemptsRef.current = 0;
+    setIsActive(true);
+    setIsPaused(false);
+    openEventSource(activeContext, interval, false);
   };
 
   const handleStopChat = () => {
+    reconnectAttemptsRef.current = RECONNECT_MAX_ATTEMPTS; // impide reconexion pendiente
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
     setIsActive(false);
     setIsPaused(false);
     setMessages([]);
@@ -129,6 +177,11 @@ export default function StreamerDashboard() {
 
   const handlePauseChat = () => {
     if (!eventSourceRef.current) return;
+    reconnectAttemptsRef.current = RECONNECT_MAX_ATTEMPTS; // impide reconexion pendiente
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
     setIsPaused(true);
     eventSourceRef.current.close();
     eventSourceRef.current = null;
@@ -136,33 +189,17 @@ export default function StreamerDashboard() {
 
   const handleResumeChat = () => {
     if (!activeContext || eventSourceRef.current) return;
+    reconnectAttemptsRef.current = 0;
     setIsActive(true);
     setIsPaused(false);
-
-    const eventSource = new EventSource(buildSseUrl(activeContext, interval));
-
-    eventSource.onmessage = (event) => {
-      const newMessage: ChatMessage = JSON.parse(event.data);
-      setMessages((prev) => {
-        const next = [...prev, newMessage];
-        return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
-      });
-    };
-
-    eventSource.onerror = () => {
-      console.error('Error en conexión SSE');
-      handleStopChat();
-    };
-
-    eventSourceRef.current = eventSource;
+    openEventSource(activeContext, interval, true);
   };
 
   // Limpiar al desmontar
   useEffect(() => {
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+      if (eventSourceRef.current) eventSourceRef.current.close();
     };
   }, []);
 

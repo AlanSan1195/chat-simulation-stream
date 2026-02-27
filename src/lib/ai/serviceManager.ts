@@ -82,9 +82,9 @@ REGLAS para generar frases (solo si el tema es válido):
 
 Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
 {
-  "comments": ["frase1", "frase2", ... hasta 50 comentarios y opiniones sobre el tema],
-  "reactions": ["frase1", "frase2", ... hasta 15 reacciones cortas emocionales],
-  "questions": ["frase1", "frase2", ... hasta 30 preguntas que haría el chat al streamer],
+  "comments": ["frase1", "frase2", ... hasta 200 comentarios y opiniones sobre el tema],
+  "reactions": ["frase1", "frase2", ... hasta 60 reacciones cortas emocionales],
+  "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat al streamer],
   "gameplay": []
 }`;
 
@@ -157,10 +157,10 @@ REGLAS para generar frases (solo si el input es un videojuego válido):
 
 Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
 {
-  "gameplay": ["frase1", "frase2", ... hasta 50 frases sobre gameplay/mecánicas],
-  "reactions": ["frase1", "frase2", ... hasta 15 frases de reacciones cortas],
-  "questions": ["frase1", "frase2", ... hasta 30 preguntas que haría el chat],
-  "emotes": ["emote1", "emote2", ... hasta 20 emotes populares usados en Twitch/YouTube]
+  "gameplay": ["frase1", "frase2", ... hasta 200 frases sobre gameplay/mecánicas],
+  "reactions": ["frase1", "frase2", ... hasta 60 frases de reacciones cortas],
+  "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat],
+  "emotes": ["emote1", "emote2", ... hasta 40 emotes populares usados en Twitch/YouTube]
 }`;
 
   const response = await chatWithAI([
