@@ -36,8 +36,11 @@ import Header from "../components/Header.astro";
     <Header />
     <main class="flex px-4 lg:px-8 py-8" role="main">
       <div
-        class="relative overflow-hidden max-w-7xl dark:shadow-none mx-auto h-full border-0 scanlines-bg  dark:bg-transparent backdrop-blur-sm p-4 sm:p-5  lg:flex lg:flex-col rounded-xs"
+        class="relative overflow-hidden max-w-7xl dark:shadow-none mx-auto h-full border-0 scanlines-border dark:bg-transparent backdrop-blur-sm p-4 sm:p-5  lg:flex lg:flex-col rounded-xs"
       >
+        <!-- Scanlines decorativas — pointer-events:none para no bloquear interacción -->
+        <div class="scanlines-bg absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
+
         <!-- Grid decorativo con mask — solo dark mode -->
         <div class="hidden dark:block  absolute inset-0 z-0 grid-bg " aria-hidden="true"></div>
 
@@ -51,17 +54,19 @@ import Header from "../components/Header.astro";
 </Layout>
 
 <style>
+    .scanlines-border {
+      border: .08px solid rgba(0, 0, 0, 0.350);
+    }
+
     .scanlines-bg {
-   border: .08px solid rgba(0, 0, 0, 0.350);
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 3px,
-      rgba(0,0,0,0.012) 3px,
-      rgba(0,0,0,0.015) 8px
-    );
-  }
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.012) 3px,
+        rgba(0,0,0,0.015) 8px
+      );
+    }
 
   .grid-bg {
     background-image:
