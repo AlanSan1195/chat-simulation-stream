@@ -1,144 +1,96 @@
 ---
 import { SignedIn, SignedOut, SignInButton } from "@clerk/astro/components";
 import PlatformToggle from "./PlatformToggle.tsx";
+import Chat from "../pages/dev/chat.astro";
+import ChatPreview from "./ChatPreview.astro";
+import HeaderHero from "./HeaderHero.astro";
 ---
 
-<section class="hero-section relative overflow-hidden min-h-screen flex flex-col" aria-labelledby="hero-heading">
-
+<section
+  class="relative overflow-hidden min-h-screen flex flex-col"
+  aria-labelledby="hero-heading"
+>
   <!-- Fondo de ruido/textura -->
-  <div class="noise-overlay" aria-hidden="true"></div>
-  
-  <!-- Líneas decorativas horizontales -->
+  <div
+    class="noise-overlay absolute inset-0 opacity-45 dark:opacity-[0.035] pointer-events-none"
+    aria-hidden="true"
+  >
+  </div>
 
-  <div class="scanlines-bg" aria-hidden="true"></div>
+  <!-- Líneas decorativas horizontales -->
+  <div
+    class="scanlines-bg absolute inset-0 pointer-events-none"
+    aria-hidden="true"
+  >
+  </div>
+
   <!-- Header con toggle -->
-  <header class="relative z-10 flex items-center justify-between px-6 md:px-12 pt-8 pb-4">
-    <div class="flex items-center gap-3">
-      <span class="status-dot" aria-hidden="true"></span>
-      <span class="font-jet text-sm text-black dark:text-white/40 uppercase tracking-widest">v2.0 · beta</span>
-    </div>
-    <PlatformToggle client:load />
-  </header>
+  <HeaderHero />
 
   <!-- Contenido principal del hero -->
-  <div class="relative z-10 flex-1 flex flex-col justify-center px-6 md:px-12 pb-16 pt-4 ">
-
+  <div
+    class="relative z-10 flex-1 flex flex-col justify-center px-6 md:px-12 pb-16 pt-4"
+  >
     <!-- Eyebrow tag -->
-    <div class="eyebrow-tag mb-6 self-start">
-      <span class="font-jet text-xs sm:text-sm uppercase  tracking-[0.2em]">Simulador de Chat · Streaming</span>
+    <div
+      class=" flex justify-center sm:inline-flex  items-center gap-2 px-3 py-1 border border-black/40 dark:border-white/20 bg-black/[0.04] dark:bg-white/[0.04] mb-6 sm:self-start"
+    >
+      <span class="font-jet text-xs sm:text-sm uppercase tracking-[0.2em]"
+        >Una audiencia para ti</span
+      >
     </div>
 
     <!-- Título principal -->
-    <div class="hero-title-block mb-8">
-      <h1 id="hero-heading" class="font-rocket leading-none text-black dark:text-white text-8xl sm:text-[200px]">
-        Rocket
+    <div class="mb-8">
+      <h1
+        id="hero-heading"
+        class="font-rocket leading-none text-black text-center sm:text-left dark:text-white text-8xl sm:text-[200px]"
+      >
+        TwicKi
       </h1>
-      <div class="flex justify-center sm:justify-start gap-4 flex-wrap">
-        <span class="font-departure text-shadow-black   text-primary uppercase leading-none  text-2xl sm:text-7xl">
-          Chat Simulator
-        </span>
-        <span class="font-jet text-sm text-black/50 dark:text-white/30 self-end pb-2 hidden md:inline">— by Alan San</span>
+      <div class="relative">
+        <!-- Líneas diagonales de fondo, ancho completo -->
+        <!-- estilo Maratone Game -->
+        <div
+          class="absolute inset-0 bg-[repeating-linear-gradient(-45deg,#000_0_12px,transparent_7px_20px)] sm:bg-[repeating-linear-gradient(-45deg,#000_0_20px,transparent_7px_36px)] dark:bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.2)_0_12px,transparent_7px_20px)] sm:dark:bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.2)_0_20px,transparent_7px_36px)]"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative z-10 inline-block whitespace-nowrap bg-black  px-1 sm:px-4 pr-7 sm:pr-16 [clip-path:polygon(0_0,100%_0,calc(100%-1.5rem)_100%,0_100%)] sm:[clip-path:polygon(0_0,100%_0,calc(100%-3.5rem)_100%,0_100%)] sm:dark:[clip-path:polygon(0_0,100%_0,calc(100%-4.5rem)_100%,0_100%)]">
+          <h2
+            class="font-departure text-shadow-black text-primary uppercase  text-lg sm:text-7xl m-0 p-0"
+          >
+            Chat Simulator
+          </h2>
+        </div>
       </div>
     </div>
 
     <!-- Descripción y CTA en grid -->
-    <div class="hero-bottom-grid">
-
-      <!-- Chat preview estático -->
-      <div class="description-block">
-        <div class="chat-preview">
-          <!-- Header -->
-          <div class="chat-preview-header">
-            <span class="font-jet text-sm text-white/60">Chat</span>
-          </div>
-          <!-- Messages -->
-          <div class="chat-preview-body">
-
-            <div class="chat-row">
-              <span class="chat-ts">0:00:04</span>
-              <div class="chat-msg">
-                <span style="color:#53FC18" class="font-semibold">xXShadowKiller99</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">acaba de entrar al stream OMEGALUL</span>
-              </div>
-            </div>
-
-            <div class="chat-row alt">
-              <span class="chat-ts">0:00:11</span>
-              <div class="chat-msg">
-                <span style="color:#FF8CC8" class="font-semibold">lunasita_uwu</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">gg bro que partida mas épica</span>
-              </div>
-            </div>
-
-            <div class="chat-row">
-              <span class="chat-ts">0:00:19</span>
-              <div class="chat-msg">
-                <span style="color:#74B9FF" class="font-semibold">ProGamer_404</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">ese move no lo vi venir PogChamp</span>
-              </div>
-            </div>
-
-            <div class="chat-row alt">
-              <span class="chat-ts">0:00:27</span>
-              <div class="chat-msg">
-                <span style="color:#9146FF" class="font-semibold">twitchfan_es</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">llevamos 5 muertes seguidas bro 💀</span>
-              </div>
-            </div>
-
-            <div class="chat-row">
-              <span class="chat-ts">0:00:35</span>
-              <div class="chat-msg">
-                <span style="color:#FFFC00" class="font-semibold">el_del_barrio</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">primera vez viendo el stream, saludos desde México!</span>
-              </div>
-            </div>
-
-            <div class="chat-row alt">
-              <span class="chat-ts">0:00:42</span>
-              <div class="chat-msg">
-                <span style="color:#00D8FF" class="font-semibold">NeonWatcher</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">cuántas horas llevas jugando hoy?</span>
-              </div>
-            </div>
-
-            <div class="chat-row">
-              <span class="chat-ts">0:00:58</span>
-              <div class="chat-msg">
-                <span style="color:#E17055" class="font-semibold">RetroVibe_ES</span>
-                <span class="text-white/40">: </span>
-                <span class="text-white/90">F en el chat por esa muerte LUL</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
+    <div
+      class="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-8 max-w-[1100px] md:items-start"
+    >
+      <ChatPreview />
       <!-- CTA -->
-      <div class="cta-block">
+      <div class="flex flex-col gap-6">
         <nav aria-label="Acciones principales" class="flex flex-col gap-4">
           <SignedOut>
             <SignInButton
               mode="modal"
-              class="cta-primary font-departure uppercase tracking-widest"
+              class="inline-block bg-primary text-primary-text px-8 py-3.5 text-[0.9rem] cursor-pointer border-none text-center hover:opacity-85 hover:-translate-y-px active:translate-y-0 transition-all duration-150 font-departure uppercase tracking-widest"
             >
               Comenzar Stream
             </SignInButton>
-            <p class="font-jet text-sm  text-black/50 dark:text-white/40 text-center">
+            <p
+              class="font-jet text-sm text-black/50 dark:text-white/40 text-center"
+            >
               Gratis · Sin tarjeta · Sin excusas
             </p>
           </SignedOut>
           <SignedIn>
             <a
               href="/dashboard"
-              class="cta-primary font-departure uppercase tracking-widest text-center"
+              class="inline-block bg-primary text-primary-text px-8 py-3.5 text-[0.9rem] cursor-pointer border-none text-center hover:opacity-85 hover:-translate-y-px active:translate-y-0 transition-all duration-150 font-departure uppercase tracking-widest"
               aria-label="Ir al panel de control del simulador"
             >
               Ir al Dashboard
@@ -147,63 +99,73 @@ import PlatformToggle from "./PlatformToggle.tsx";
         </nav>
 
         <!-- Stats rápidos -->
-        <div class="quick-stats">
-          <div class="stat-item">
-            <span class="text-sm sm:text-3xl font-departure text-primary">7TV</span>
-            <span class="stat-label font-jet text-xs text-black/40 dark:text-white/40">Emotes reales</span>
+        <div
+          class=" flex items-center gap-4 py-4 border-t border-black dark:border-white/40"
+        >
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm sm:text-3xl font-departure text-primary"
+              >7TV</span
+            >
+            <span
+              class="font-jet text-xs text-black/50 dark:text-white/50 leading-none"
+              >Emotes reales</span
+            >
           </div>
-          <div class="stat-divider" aria-hidden="true"></div>
-          <div class="stat-item">
-            <span class=" text-sm sm:text-3xl  font-departure text-primary">IA</span>
-            <span class="stat-label font-jet text-xs text-black/40 dark:text-white/40">Mensajes únicos</span>
+          <div class="w-px h-8  bg-black dark:bg-white/40" aria-hidden="true">
           </div>
-          <div class="stat-divider" aria-hidden="true"></div>
-          <div class="stat-item">
-            <span class=" text-sm sm:text-3xl  font-departure text-primary">2x</span>
-            <span class="stat-label font-jet text-xs text-black/40 dark:text-white/40">Plataformas</span>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm sm:text-3xl font-departure text-primary"
+              >IA</span
+            >
+            <span
+              class="font-jet text-xs text-black/50 dark:text-white/50 leading-none"
+              >Mensajes únicos</span
+            >
+          </div>
+          <div class="w-px h-8  bg-black dark:bg-white/40" aria-hidden="true">
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm sm:text-3xl font-departure text-primary"
+              >2x</span
+            >
+            <span
+              class="font-jet text-xs text-black/50 dark:text-white/50 leading-none"
+              >Plataformas</span
+            >
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- Scroll hint -->
-  <div class="scroll-hint" aria-hidden="true">
-    <span class="font-jet text-[0.8rem] uppercase tracking-[0.25em] text-black dark:text-white">scroll</span>
-    <div class="scroll-line"></div>
+  <div
+    class="hidden absolute bottom-0 right-10 sm:flex flex-col items-center gap-2"
+    aria-hidden="true"
+  >
+    <span
+      class="font-jet text-sm uppercase tracking-[0.25em] text-black dark:text-white"
+      >scroll</span
+    >
+    <div class="scroll-line w-[2.3px] h-12"></div>
   </div>
-
 </section>
 
 <style>
- 
-  /* ─── Noise overlay ─────────────────────────── */
+  /* Noise overlay - SVG texture background (not expressible in Tailwind) */
   .noise-overlay {
-    position: absolute;
-    inset: 0;
-    opacity: 0.45;
-    pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 256px 256px;
   }
-  @media (prefers-color-scheme: dark) {
-    .noise-overlay {
-      opacity: 0.035;
-    }
-  }
 
-  /* ─── Scanlines background ─────────────────── */
+  /* Scanlines - repeating gradient (not expressible in Tailwind) */
   .scanlines-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
     background: repeating-linear-gradient(
       to bottom,
       transparent 0px,
       transparent 3px,
-      rgba(0,0,0,0.012) 3px,
-      rgba(0,0,0,0.015) 8px
+      rgba(0, 0, 0, 0.012) 3px,
+      rgba(0, 0, 0, 0.015) 8px
     );
   }
   @media (prefers-color-scheme: dark) {
@@ -212,188 +174,84 @@ import PlatformToggle from "./PlatformToggle.tsx";
         to bottom,
         transparent 0px,
         transparent 3px,
-        rgba(255,255,255,0.012) 3px,
-        rgba(255,255,255,0.04) 4px
+        rgba(255, 255, 255, 0.012) 3px,
+        rgba(255, 255, 255, 0.04) 4px
       );
     }
   }
 
-  /* ─── Status dot ───────────────────────────── */
-  .status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--color-primary);
-    animation: pulse-dot 2.5s ease-in-out infinite;
-    display: inline-block;
-
-  }
+  /* Pulse dot animation */
   @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.85); }
-  }
-
-  /* ─── Eyebrow tag ──────────────────────────── */
-  .eyebrow-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.75rem;
-    border: 0.5px solid rgba(0,0,0,0.35);
-    background: rgba(0,0,0,0.04);
-
-  }
-  @media (prefers-color-scheme: dark) {
-    .eyebrow-tag {
-      border-color: rgba(255,255,255,.12);
-      background: rgba(255,255,255,0.04);
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.85);
     }
   }
-
-  /* ─── Hero bottom grid ─────────────────────── */
-  .hero-bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: 1100px;
-  }
-  @media (min-width: 768px) {
-    .hero-bottom-grid {
-      grid-template-columns: 1.4fr 1fr;
-      align-items: start;
-    }
+  .animate-pulse-dot {
+    animation: pulse-dot 2.5s ease-in-out infinite;
   }
 
-  /* ─── Chat preview estático ───────────────── */
-  .chat-preview {
-    background: #111111;
-    border: 1px solid rgba(255,255,255,0.1);
-    overflow: hidden;
-  }
-  .chat-preview-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-  }
-  .chat-preview-body {
-    display: flex;
-    flex-direction: column;
-  }
-  .chat-row {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .chat-row.alt .chat-msg {
-    background: rgba(0,0,0,0.05);
-  }
+  /* Chat row hover */
   .chat-row:hover .chat-msg {
-    background: rgba(255,255,255,0.05);
-  }
-  .chat-ts {
-    font-family: var(--font-jet);
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.35);
-    width: 4rem;
-    flex-shrink: 0;
-    padding: 0 0.5rem;
-    tabular-nums: always;
-  }
-  .chat-msg {
-    flex: 1;
-    min-width: 0;
-    font-family: var(--font-jet);
-    font-size: 0.8rem;
-    line-height: 1.5;
-    padding: 0.6rem 0.5rem;
-    transition: background 0.15s;
+    background: rgba(255, 255, 255, 0.05);
   }
 
-  /* ─── CTA block ────────────────────────────── */
-  .cta-block {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .cta-primary {
-    display: inline-block;
-    background: var(--color-primary);
-    color: var(--color-primary-text);
-    padding: 0.85rem 2rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: none;
-    transition: opacity 0.45s ease, transform 0.15s ease;
-    text-align: center;
-  }
-  .cta-primary:hover {
-    opacity: 0.85;
-    transform: translateY(-1px);
-  }
-  .cta-primary:active {
-    transform: translateY(0);
-  }
-
-  /* ─── Quick stats ──────────────────────────── */
-  .quick-stats {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
-    border-top: 0.8px solid rgba(0,0,0,1);
-  }
-  @media (prefers-color-scheme: dark) {
-    .quick-stats {
-      border-top-color: rgba(255,255,255,.2);
-    }
-  }
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-  .stat-value {
-    font-size: 1.1rem;
-    line-height: 1;
-  }
-  .stat-label {
-    line-height: 1;
-  }
-  .stat-divider {
-    width: 0.5px;
-    height: 2rem;
-    background: rgba(0,0,0,0.1);
-  }
-  @media (prefers-color-scheme: dark) {
-    .stat-divider { background: rgba(255,255,255,0.2); }
-  }
-
-  /* ─── Scroll hint ──────────────────────────── */
-  .scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    right: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
+  /* Scroll line animation */
   .scroll-line {
-    width: 0.5px;
-    height: 3rem;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
     animation: scroll-drop 2s ease-in-out infinite;
   }
   @media (prefers-color-scheme: dark) {
-    .scroll-line { background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent); }
+    .scroll-line {
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.5),
+        transparent
+      );
+    }
   }
   @keyframes scroll-drop {
-    0% { transform: scaleY(0); transform-origin: top; }
-    50% { transform: scaleY(1); transform-origin: top; }
-    51% { transform: scaleY(1); transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; }
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    50% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    51% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+
+  .scanline-rule {
+    background: repeating-linear-gradient(
+      to right,
+      #201e1d 0.8px,
+      #201e1d 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  @media (prefers-color-scheme: dark) {
+    .scanline-rule {
+      background: repeating-linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.922) 0px,
+        rgba(255, 255, 255, 0.835) 0.2px,
+        transparent 2px,
+        transparent 8px
+      );
+    }
   }
 </style>
