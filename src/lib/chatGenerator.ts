@@ -48,7 +48,7 @@ function getRandomCategory(mode: StreamMode): MessageCategory {
 
   // Modo juego: gameplay y preguntas con peso mayor
   const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions'];
-  const weights = [0.5, 0.2, 0.3];
+  const weights = [0.2, 0.5, 0.3];
   const random = Math.random();
   let sum = 0;
   for (let i = 0; i < categories.length; i++) {
