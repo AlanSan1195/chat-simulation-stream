@@ -45,15 +45,19 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    ssr: {
-      // Excluir del bundle SSR — solo se usan en el cliente (client:only)
-      external: ['@tabler/icons-react', 'react-virtuoso'],
-    },
   },
 
   adapter: vercel({
-    // Cada página/ruta API obtiene su propia Vercel Function
-    // → cada función lleva solo sus dependencias directas
-    functionPerRoute: true,
+    // ISR: cachea paginas SSR en CDN tras primera visita
+    // Paginas con auth o dinamicas se excluyen para servirse siempre fresh
+    isr: {
+      exclude: [
+        /^\/api\/.+/,    // APIs siempre fresh (SSE, generate-phrases)
+        '/dashboard',     // Depende de auth (SignedIn/SignedOut SSR)
+        '/dev/chat',      // Ruta de desarrollo
+      ],
+    },
+    // Timeout maximo de funciones serverless (segundos)
+    maxDuration: 60,
   }),
 });

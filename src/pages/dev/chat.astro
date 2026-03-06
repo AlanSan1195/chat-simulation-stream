@@ -28,7 +28,7 @@ const MOCK: ChatMessage[] = [
 <body style="background:#151515; padding:2rem; max-width:900px; margin:0 auto; display:grid; grid-template-columns:1fr 2fr; gap:2rem; align-items:start;">
   <div style="background:#151515">
     <GameInput
-      client:load
+      client:only="react"
       selectedGame="Elden Ring"
       onGameSelect={() => {}}
       disabled={false}
@@ -36,9 +36,9 @@ const MOCK: ChatMessage[] = [
       remainingSlots={1}
     />
   </div>
-  <ChatWindow client:load messages={MOCK} isActive={true} />
+  <ChatWindow client:only="react" messages={MOCK} isActive={true} />
   <div style="grid-column:1 / -1;">
-    <SevenTvEmoteTest client:load />
+    <SevenTvEmoteTest client:only="react" />
   </div>
 </body>
 </html>
