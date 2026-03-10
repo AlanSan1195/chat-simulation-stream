@@ -157,7 +157,17 @@ export default function StreamerDashboard() {
     reconnectAttemptsRef.current = 0;
     setIsActive(true);
     setIsPaused(false);
-    openEventSource(activeContext, interval, false);
+    // Si habia una conexion previa recien cerrada, esperar a que el servidor
+    // libere el slot antes de abrir la nueva (evita 429)
+    const hadPreviousStream = eventSourceRef.current !== null;
+    if (hadPreviousStream) {
+      eventSourceRef.current?.close();
+      eventSourceRef.current = null;
+    }
+    reconnectTimerRef.current = setTimeout(() => {
+      reconnectTimerRef.current = null;
+      openEventSource(activeContext, interval, false);
+    }, hadPreviousStream ? 300 : 0);
   };
 
   const handleStopChat = () => {
@@ -192,7 +202,12 @@ export default function StreamerDashboard() {
     reconnectAttemptsRef.current = 0;
     setIsActive(true);
     setIsPaused(false);
-    openEventSource(activeContext, interval, true);
+    // Delay para que el servidor procese el abort signal de la conexion anterior
+    // antes de abrir una nueva (evita 429 por slot no liberado aun)
+    reconnectTimerRef.current = setTimeout(() => {
+      reconnectTimerRef.current = null;
+      openEventSource(activeContext, interval, true);
+    }, 300);
   };
 
   // Limpiar al desmontar
@@ -242,7 +257,7 @@ export default function StreamerDashboard() {
     : 'Streamer Dashboard';
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 lg:flex-1 lg:min-h-0 h-full p-1 gap-x-4  ">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 flex-1 min-h-0 p-1 gap-x-4  ">
       {/* Panel de Control - Left side */}
       <div className=" flex flex-col gap-y-7 sm:justify-around overflow-y-auto border border-black/20 p-4 bg-black/25 mb-4 h-full dark:bg-transparent dark:shadow-none dark:border-0  rounded-sm ">
         {/* Logo/Title */}

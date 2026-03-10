@@ -134,7 +134,7 @@ const structuredData = {
       })();
     </script>
   </head>
-  <body class="bg-bg-secundary dark:bg-black text-black dark:text-white min-h-screen">
+  <body class="bg-bg-secundary dark:bg-black text-black dark:text-white min-h-screen flex flex-col">
 
     <!-- Emerald Void — solo dark mode -->
     <div
@@ -144,7 +144,7 @@ const structuredData = {
     >
     </div>
 
-    <div id="clerk-root" class="locative z-10">
+    <div id="clerk-root" class="locative z-10 flex flex-col flex-1">
       <slot />
     </div>
     <Footer />

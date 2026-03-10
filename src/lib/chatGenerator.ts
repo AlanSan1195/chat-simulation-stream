@@ -36,7 +36,7 @@ function getRandomCategory(mode: StreamMode): MessageCategory {
   if (mode === 'justchatting') {
     // JC: más comentarios y reacciones, menos preguntas
     const categories: MessageCategory[] = ['comments', 'reactions', 'questions'];
-    const weights = [0.75, 0.10, 0.15];
+    const weights = [0.50, 0.15, 0.25];
     const random = Math.random();
     let sum = 0;
     for (let i = 0; i < categories.length; i++) {
@@ -48,7 +48,7 @@ function getRandomCategory(mode: StreamMode): MessageCategory {
 
   // Modo juego: gameplay y preguntas con peso mayor
   const categories: MessageCategory[] = ['gameplay', 'reactions', 'questions'];
-  const weights = [0.2, 0.5, 0.3];
+  const weights = [0.5, 0.3, 0.2];
   const random = Math.random();
   let sum = 0;
   for (let i = 0; i < categories.length; i++) {
