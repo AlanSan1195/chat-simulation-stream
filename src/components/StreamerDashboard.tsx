@@ -99,7 +99,7 @@ export default function StreamerDashboard() {
   const buildSseUrl = (context: string, iv: MessageInterval) =>
     `/api/chat-stream?game=${encodeURIComponent(context)}&min=${iv.min}&max=${iv.max}&mode=${streamMode}`;
 
-  const openEventSource = (context: string, iv: MessageInterval, preserveMessages = false) => { 
+  const openEventSource = (context: string, iv: MessageInterval, preserveMessages = false) => {
     const url = buildSseUrl(context, iv);
     const es = new EventSource(url);
 
@@ -117,7 +117,7 @@ export default function StreamerDashboard() {
 
       const attempts = reconnectAttemptsRef.current;
 
-      // Si se agotaron los intentos o el stream ya no esta activo, parar definitivamente
+      // Si se agotaron los intentos, parar definitivamente
       if (attempts >= RECONNECT_MAX_ATTEMPTS) {
         console.error('[SSE] Sin mas intentos de reconexion, deteniendo stream');
         setIsActive(false);
@@ -157,17 +157,11 @@ export default function StreamerDashboard() {
     reconnectAttemptsRef.current = 0;
     setIsActive(true);
     setIsPaused(false);
-    // Si habia una conexion previa recien cerrada, esperar a que el servidor
-    // libere el slot antes de abrir la nueva (evita 429)
-    const hadPreviousStream = eventSourceRef.current !== null;
-    if (hadPreviousStream) {
-      eventSourceRef.current?.close();
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
-    reconnectTimerRef.current = setTimeout(() => {
-      reconnectTimerRef.current = null;
-      openEventSource(activeContext, interval, false);
-    }, hadPreviousStream ? 300 : 0);
+    openEventSource(activeContext, interval, false);
   };
 
   const handleStopChat = () => {
@@ -202,12 +196,7 @@ export default function StreamerDashboard() {
     reconnectAttemptsRef.current = 0;
     setIsActive(true);
     setIsPaused(false);
-    // Delay para que el servidor procese el abort signal de la conexion anterior
-    // antes de abrir una nueva (evita 429 por slot no liberado aun)
-    reconnectTimerRef.current = setTimeout(() => {
-      reconnectTimerRef.current = null;
-      openEventSource(activeContext, interval, true);
-    }, 300);
+    openEventSource(activeContext, interval, true);
   };
 
   // Limpiar al desmontar
@@ -361,13 +350,13 @@ export default function StreamerDashboard() {
             onClick={handleStopChat}
             disabled={!canStop}
             className={`w-12 h-12 flex items-center justify-center transition-all rounded-sm ${
-             !canPause
+             !canStop
                 ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:scale-105'
             }`}
             title="Detener Chat"
           >
-            <StopIcon className={!canPause ? 'text-bg-primary/50' : 'text-bg-primary'} />
+            <StopIcon className={!canStop ? 'text-bg-primary/50' : 'text-bg-primary'} />
           </button>
         </div>
 

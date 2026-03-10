@@ -4,7 +4,7 @@
 //
 // Dos mecanismos independientes:
 // 1. Rate limit por IP: limita requests/ventana a cualquier ruta protegida
-// 2. Conexiones SSE concurrentes por userId: limita streams abiertos simultaneos
+// 2. Un stream SSE activo por usuario: si llega uno nuevo, cancela el anterior
 
 // ============================================
 // 1. RATE LIMIT POR IP (ventana deslizante)
@@ -59,50 +59,47 @@ export function getRemainingRequests(ip: string): number {
 }
 
 // ============================================
-// 2. CONEXIONES SSE CONCURRENTES POR USUARIO
+// 2. STREAM SSE ACTIVO POR USUARIO
 // ============================================
+//
+// Cada usuario puede tener como máximo 1 stream SSE abierto.
+// Si llega una nueva conexión del mismo usuario, el stream anterior
+// se cancela automáticamente antes de abrir el nuevo.
+// Esto evita cualquier race condition: no hay contadores, no hay slots.
 
-/** Maximo de streams SSE abiertos por usuario */
-const MAX_CONCURRENT_STREAMS = 3;
-
-/** userId -> cantidad de conexiones activas */
-const activeStreams = new Map<string, number>();
+const activeControllers = new Map<string, AbortController>();
 
 /**
- * Intenta registrar una nueva conexion SSE para un usuario.
- * Retorna `true` si se permite, `false` si excede el limite.
+ * Registra un nuevo stream SSE para un usuario.
+ * Si ya existía uno activo, lo cancela primero.
+ * Devuelve el AbortController que el stream debe usar para su cleanup.
  */
-export function acquireStream(userId: string): boolean {
-  const current = activeStreams.get(userId) ?? 0;
+export function registerStream(userId: string): AbortController {
+  // Cancelar el stream anterior si existe
+  activeControllers.get(userId)?.abort();
 
-  if (current >= MAX_CONCURRENT_STREAMS) {
-    return false;
-  }
-
-  activeStreams.set(userId, current + 1);
-  return true;
+  const controller = new AbortController();
+  activeControllers.set(userId, controller);
+  return controller;
 }
 
 /**
- * Libera una conexion SSE cuando el cliente se desconecta.
- * Debe llamarse siempre en el cleanup del stream.
+ * Elimina el registro del stream cuando termina.
+ * Solo borra si el controller coincide con el registrado actualmente
+ * (evita borrar el de un stream más nuevo que ya lo reemplazó).
  */
-export function releaseStream(userId: string): void {
-  const current = activeStreams.get(userId) ?? 0;
-  const next = current - 1;
-
-  if (next <= 0) {
-    activeStreams.delete(userId);
-  } else {
-    activeStreams.set(userId, next);
+export function unregisterStream(userId: string, controller: AbortController): void {
+  if (activeControllers.get(userId) === controller) {
+    activeControllers.delete(userId);
   }
 }
 
 /**
- * Obtiene la cantidad de streams activos de un usuario.
+ * Devuelve true si el usuario tiene un stream SSE activo.
+ * Usado por chat-wave para validar que hay un stream al que enviar oleadas.
  */
-export function getActiveStreamCount(userId: string): number {
-  return activeStreams.get(userId) ?? 0;
+export function hasActiveStream(userId: string): boolean {
+  return activeControllers.has(userId);
 }
 
 // ============================================
@@ -139,4 +136,3 @@ if (typeof globalThis.setInterval === 'function') {
 
 export const RATE_LIMIT_WINDOW_MS = WINDOW_MS;
 export const RATE_LIMIT_MAX_REQUESTS = MAX_REQUESTS_PER_WINDOW;
-export const SSE_MAX_CONCURRENT = MAX_CONCURRENT_STREAMS;

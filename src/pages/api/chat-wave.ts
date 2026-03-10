@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import type { WaveType } from '../../utils/types';
 import { enqueueWave } from '../../lib/waveManager';
-import { getActiveStreamCount } from '../../lib/rateLimiter';
+import { hasActiveStream } from '../../lib/rateLimiter';
 
 const VALID_WAVE_TYPES: WaveType[] = ['laugh', 'hype', 'fear', 'omg'];
 
@@ -16,8 +16,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  // El usuario debe tener al menos un stream SSE activo
-  if (getActiveStreamCount(userId) === 0) {
+  // El usuario debe tener un stream SSE activo
+  if (!hasActiveStream(userId)) {
     return new Response(
       JSON.stringify({ error: 'No hay stream activo para este usuario' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { generateMessage, getRandomInterval } from '../../lib/chatGenerator';
-import { acquireStream, releaseStream, SSE_MAX_CONCURRENT } from '../../lib/rateLimiter';
+import { registerStream, unregisterStream } from '../../lib/rateLimiter';
 import { hasActiveWave, getNextWavePhrase, clearWaves } from '../../lib/waveManager';
 import type { StreamMode } from '../../utils/types';
 
@@ -12,7 +12,6 @@ const HEARTBEAT_INTERVAL = 30_000;
 const MAX_STREAM_DURATION = 2 * 60 * 60 * 1000;
 
 export const GET: APIRoute = async ({ request, url, locals }) => {
-  // Obtener userId de Clerk (la ruta ya esta protegida por auth middleware)
   const auth = locals.auth?.();
   const userId = auth?.userId;
 
@@ -33,20 +32,14 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
     );
   }
 
-  // Verificar limite de conexiones SSE concurrentes
-  if (!acquireStream(userId)) {
-    return new Response(
-      JSON.stringify({
-        error: `Limite de ${SSE_MAX_CONCURRENT} streams concurrentes alcanzado`,
-      }),
-      { status: 429, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
-
   const rawMin = Number(url.searchParams.get('min'));
   const rawMax = Number(url.searchParams.get('max'));
   const intervalMin = Number.isFinite(rawMin) && rawMin >= INTERVAL_MIN_BOUND ? rawMin : 2000;
   const intervalMax = Number.isFinite(rawMax) && rawMax <= INTERVAL_MAX_BOUND && rawMax > intervalMin ? rawMax : 4000;
+
+  // Registrar el stream: si el usuario ya tenía uno abierto (otra pestaña),
+  // se cancela automáticamente antes de abrir este.
+  const streamController = registerStream(userId);
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -59,7 +52,6 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
           controller.enqueue(encoder.encode(data));
         } catch (error) {
           console.error('Error generando mensaje:', error);
-          // Enviar evento de error al cliente y cerrar limpiamente
           try {
             const errorEvent = `data: ${JSON.stringify({ type: 'error', message: 'Error generando mensaje' })}\n\n`;
             controller.enqueue(encoder.encode(errorEvent));
@@ -72,7 +64,6 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
       const sendWaveMessage = (phrase: string) => {
         try {
           const message = generateMessage(gameName, mode);
-          // Sobreescribir contenido y categoría con la frase de la oleada
           const waveMessage = { ...message, content: phrase, category: 'reactions' as const };
           const data = `data: ${JSON.stringify(waveMessage)}\n\n`;
           controller.enqueue(encoder.encode(data));
@@ -81,26 +72,21 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
         }
       };
 
-      // Heartbeat: comentario SSE cada 30s para mantener viva la conexion
-      // contra proxies y balanceadores que cortan conexiones idle
+      // Heartbeat cada 30s para mantener viva la conexion contra proxies
       const heartbeatId = setInterval(() => {
         try {
           controller.enqueue(encoder.encode(': ping\n\n'));
         } catch {
-          // El stream ya fue cerrado, ignorar
+          // Stream ya cerrado, ignorar
         }
       }, HEARTBEAT_INTERVAL);
 
       const scheduleNext = (): ReturnType<typeof setTimeout> => {
         if (hasActiveWave(userId)) {
-          // Modo oleada: emitir frase de la oleada a velocidad rápida (180–350ms)
           const phrase = getNextWavePhrase(userId);
-          if (phrase) {
-            sendWaveMessage(phrase);
-          }
+          if (phrase) sendWaveMessage(phrase);
           return setTimeout(scheduleNext, getRandomInterval(180, 350));
         }
-        // Modo normal: mensaje random al ritmo configurado por el usuario
         const interval = getRandomInterval(intervalMin, intervalMax);
         return setTimeout(() => {
           sendMessage();
@@ -110,30 +96,29 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
 
       let timeoutId = scheduleNext();
 
-      // Timeout maximo del stream (2h) para evitar conexiones eternas
-      const maxDurationId = setTimeout(() => {
-        clearTimeout(timeoutId);
-        clearInterval(heartbeatId);
-        clearWaves(userId);
-        releaseStream(userId);
-        try {
-          const closeEvent = `data: ${JSON.stringify({ type: 'stream-end', message: 'Duracion maxima alcanzada' })}\n\n`;
-          controller.enqueue(encoder.encode(closeEvent));
-          controller.close();
-        } catch {
-          // Stream ya cerrado
-        }
-      }, MAX_STREAM_DURATION);
-
-      // Cleanup al desconectar el cliente
-      request.signal.addEventListener('abort', () => {
+      const cleanup = () => {
         clearTimeout(timeoutId);
         clearTimeout(maxDurationId);
         clearInterval(heartbeatId);
         clearWaves(userId);
-        releaseStream(userId);
-        controller.close();
-      });
+        unregisterStream(userId, streamController);
+        try { controller.close(); } catch { /* ya cerrado */ }
+      };
+
+      // Timeout maximo del stream (2h)
+      const maxDurationId = setTimeout(() => {
+        try {
+          const closeEvent = `data: ${JSON.stringify({ type: 'stream-end', message: 'Duracion maxima alcanzada' })}\n\n`;
+          controller.enqueue(encoder.encode(closeEvent));
+        } catch { /* ignorar */ }
+        cleanup();
+      }, MAX_STREAM_DURATION);
+
+      // El cliente cierra la pestaña o hace Stop
+      request.signal.addEventListener('abort', cleanup);
+
+      // El servidor cancela este stream porque llegó uno nuevo del mismo usuario
+      streamController.signal.addEventListener('abort', cleanup);
     }
   });
 
