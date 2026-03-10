@@ -2,18 +2,52 @@
 import { UserButton } from "@clerk/astro/components";
 import LogoRocket from "../../public/logo-rocket.svg";
 import PlatformToggle from "./PlatformToggle.tsx";
+
+interface Props {
+  showUser?: boolean;
+}
+
+const { showUser = false } = Astro.props;
 ---
 
-<header class="flex justify-between px-10 max-w-7xl mx-auto border-black/20 dark:border-white/10 " role="banner">
-  <a href="/" aria-label="Ir a la pagina principal de Rocket Chat Simulator">
-    <LogoRocket class="w-18 h-18 text-black dark:text-white" aria-hidden="true" />
-    <span class="sr-only">Rocket Chat Simulator</span>
-  </a>
-  <nav class="flex items-center justify-center gap-x-5" aria-label="Menu de usuario">
-    <PlatformToggle client:load />
-    <div class="scale-145 items-center flex">
-      <UserButton />
+<header
+  class="relative z-10 flex items-center justify-between px-6 sm:px-8 md:px-12 pt-6 pb-4 "
+  role="banner"
+>
+  <!-- Logo + badge -->
+  <div class="flex items-center gap-2 min-w-0">
+    <a
+      href="/"
+      aria-label="Ir a la pagina principal de Rocket Chat Simulator"
+      class="shrink-0"
+    >
+      <LogoRocket
+        class="w-10 h-10 sm:w-12 sm:h-12 text-black dark:text-white"
+        aria-hidden="true"
+      />
+      <span class="sr-only">Rocket Chat Simulator</span>
+    </a>
+
+    <div class="flex items-center mx-2 sm:mx-5 gap-2">
+      <span
+        class="inline-block size-2 sm:size-2.5 rounded-full bg-primary animate-pulse-dot"
+        aria-hidden="true"
+      ></span>
+      <span
+        class="font-jet text-[0.6rem] sm:text-xs text-black/50 dark:text-white/40 uppercase tracking-widest whitespace-nowrap"
+      >
+        v2.0 · beta
+      </span>
     </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex items-center gap-x-4 sm:gap-x-5" aria-label="Menu de usuario">
+    <PlatformToggle client:load />
+    {showUser && (
+      <div class="scale-145 flex items-center">
+        <UserButton />
+      </div>
+    )}
   </nav>
 </header>
-
