@@ -87,7 +87,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
   "reactions": ["frase1", "frase2", ... hasta 60 reacciones cortas emocionales],
   "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat al streamer],
   "gameplay": [],
-  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales en algunas ocaciones tambien, modera el uso del guion bajo, o números, sin espacios]
+  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales , modera el uso del guion bajo usalo muy poco , o números, sin espacios]
 }`;
 
   const response = await chatWithAI([
@@ -165,7 +165,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
   "reactions": ["frase1", "frase2", ... hasta 60 frases de reacciones cortas],
   "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat],
   "emotes": ["emote1", "emote2", ... hasta 40 emotes populares usados en Twitch/YouTube],
-  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales en algunas ocaciones tambien, modera el uso del guion bajo, o números, sin espacios]
+  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales , modera el uso del guion bajo usalo muy poco , o números, sin espacios]
 }`;
 
   const response = await chatWithAI([
