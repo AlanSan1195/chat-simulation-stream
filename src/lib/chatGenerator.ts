@@ -1,54 +1,47 @@
 import type { MessageCategory, ChatMessage, MessagePattern, StreamMode } from '../utils/types';
 import { getPhrasesForGame } from './phraseCache';
 
-const USERNAMES = [
-  'elpepe_junior',
-  'juan_el_pro_777',
-  'tostadora_gamer',
-  'gamer_Pobre_05',
-  'soya1ala_33',
-  'MiMamáMeMima',
-  'DonComedia',
-  'vegettaFalso',
-  'user_Anonimo_99',
-  'AlanFanNumero1',
-  'elXokas_Real_NoFake',
-  'Quesito_Explosivo',
-  'PanConQueso',
-  'Pinguino_Mafioso',
-  'Rodolfo_El_Reno',
-  'tio_Ibai',
-  'Gatito_Malo',
-  'Capitan_Salami',
-  'patata_Gamer',
-  'Lag_Legendario',
-  'Skibidi_Toilet_Fan',
-  'Nadie_Me_Quiere',
-  'elBicho_SIUUU',
-  'Abuelita_Gamer',
-  'Cocinero_De_Bugs',
-  'Mariguanito',
-  'luffytaro',
-  'speed-yGonzLEZ',
-  'toritobebe',
-  'elTuercas',
-  'birriasUnMotnon',
-  'brayanOconerPA',
-  'alanPro0.',
-  'darkboy_666',
-  'gamerSinVida',
-  'elReyDelChat',
-  'Sombra67',
-  'PandaGamerX',
-
-];
-
 function getRandomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function generateUsername(): string {
-  return getRandomElement(USERNAMES);
+// ============================================
+// SHUFFLE POOL DE USERNAMES POR JUEGO
+// Garantiza que no se repita un username hasta
+// haber rotado todos los disponibles.
+// ============================================
+
+interface UsernamePool {
+  queue: string[];
+  source: string[];
+}
+
+const usernamePools = new Map<string, UsernamePool>();
+
+function shuffled<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function getNextUsername(gameName: string, usernames: string[]): string {
+  let pool = usernamePools.get(gameName);
+
+  // Si no existe pool o la fuente cambió de tamaño (juego recargado), reiniciar
+  if (!pool || pool.source.length !== usernames.length) {
+    pool = { queue: shuffled(usernames), source: usernames };
+    usernamePools.set(gameName, pool);
+  }
+
+  // Si se agotó el pool, rebarajar para la siguiente ronda
+  if (pool.queue.length === 0) {
+    pool.queue = shuffled(pool.source);
+  }
+
+  return pool.queue.pop()!;
 }
 
 function getRandomCategory(mode: StreamMode): MessageCategory {
@@ -138,6 +131,27 @@ const FALLBACK_PHRASES: MessagePattern = {
     '😂😂😂',
     'el chat no puede con esto',
   ],
+  usernames: [
+    'usersin_vida',
+    'lag_eterno',
+    'patata_gamer',
+    'noobEtterno99',
+    'el_delchat',
+    'viewer_errandom',
+    'pandagamer_x',
+    'sombra67',
+    'doncomedia',
+    'tostadora_pro',
+    'abuelitagamer',
+    'capitansalami',
+    'pinguinoMAAafioso',
+    'coci',
+    'reyattack',
+    'ROCKETMAN',
+    'twicki',
+    'twick',
+    'rockit'
+  ],
 };
 
 /**
@@ -158,9 +172,11 @@ export function generateMessage(gameName: string, mode: StreamMode = 'game'): Ch
     ? getRandomElement(messageArray as string[])
     : getRandomElement(FALLBACK_PHRASES.gameplay);
 
+  const usernameSource = patterns.usernames?.length ? patterns.usernames : FALLBACK_PHRASES.usernames!;
+
   return {
     id: crypto.randomUUID(),
-    username: generateUsername(),
+    username: getNextUsername(gameName, usernameSource),
     content,
     timestamp: Date.now(),
     category

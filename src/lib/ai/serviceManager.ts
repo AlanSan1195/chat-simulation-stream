@@ -58,6 +58,7 @@ export async function generateChatTopicPhrases(topic: string): Promise<{
   reactions: string[];
   questions: string[];
   comments: string[];
+  usernames: string[];
 }> {
   const systemPrompt = `Eres un generador de comentarios de chat de Twitch/YouTube para streams de tipo "Just Chatting" (charla libre con la audiencia).
 Genera comentarios auténticos, variados y entretenidos.
@@ -85,7 +86,8 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
   "comments": ["frase1", "frase2", ... hasta 200 comentarios y opiniones sobre el tema],
   "reactions": ["frase1", "frase2", ... hasta 60 reacciones cortas emocionales],
   "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat al streamer],
-  "gameplay": []
+  "gameplay": [],
+  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales en algunas ocaciones tambien, modera el uso del guion bajo, o números, sin espacios]
 }`;
 
   const response = await chatWithAI([
@@ -117,6 +119,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
       reactions: Array.isArray(parsed.reactions) ? parsed.reactions : [],
       questions: Array.isArray(parsed.questions) ? parsed.questions : [],
       comments: Array.isArray(parsed.comments) ? parsed.comments : [],
+      usernames: Array.isArray(parsed.usernames) ? parsed.usernames : [],
     };
   } catch (parseError) {
     if ((parseError as Error & { code?: string }).code === 'INVALID_TOPIC') {
@@ -132,6 +135,7 @@ export async function generateGamePhrases(gameName: string): Promise<{
   reactions: string[];
   questions: string[];
   emotes: string[];
+  usernames: string[];
 }> {
   const systemPrompt = `Eres un generador de comentarios de chat de Twitch/YouTube para streams de videojuegos.
 Genera comentarios auténticos, variados y entretenidos que los espectadores escribirían durante un stream.
@@ -160,7 +164,8 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
   "gameplay": ["frase1", "frase2", ... hasta 200 frases sobre gameplay/mecánicas],
   "reactions": ["frase1", "frase2", ... hasta 60 frases de reacciones cortas],
   "questions": ["frase1", "frase2", ... hasta 120 preguntas que haría el chat],
-  "emotes": ["emote1", "emote2", ... hasta 40 emotes populares usados en Twitch/YouTube]
+  "emotes": ["emote1", "emote2", ... hasta 40 emotes populares usados en Twitch/YouTube],
+  "usernames": ["username1", "username2", ... hasta 180 nombres de usuario estilo Twitch, creativos y variados, usa nombre de personas normales en algunas ocaciones tambien, modera el uso del guion bajo, o números, sin espacios]
 }`;
 
   const response = await chatWithAI([
@@ -195,6 +200,7 @@ Devuelve EXACTAMENTE este formato JSON (sin markdown, solo el JSON):
       reactions: Array.isArray(parsed.reactions) ? parsed.reactions : [],
       questions: Array.isArray(parsed.questions) ? parsed.questions : [],
       emotes: Array.isArray(parsed.emotes) ? parsed.emotes : [],
+      usernames: Array.isArray(parsed.usernames) ? parsed.usernames : [],
     };
   } catch (parseError) {
     // Re-lanzar errores de validación sin envolverlos
