@@ -262,7 +262,7 @@ export default function StreamerDashboard() {
         <div className='flex flex-col gap-y-1 '>
 
         {/* Panel de Control Title */}
-        <h2 className="text-xl font-jet font-bold u m-0  ">Categoria</h2>
+        <h2 className="text-xl font-jet font-bold m-0  ">Categoria</h2>
 
         {/* Botón Just Chatting */}
         <div>
