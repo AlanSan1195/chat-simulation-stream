@@ -346,7 +346,7 @@ export default function StreamerDashboard() {
             disabled={isPaused ? !canResume : !canStart}
             className={`w-11 h-11 flex items-center justify-center transition-all ${
               (isPaused ? !canResume : !canStart)
-                ? 'bg-primary/40 cursor-not-allowed'
+                ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:opacity-85 hover:-translate-y-px active:translate-y-0'
             }`}
             title={isPaused ? 'Reanudar Chat' : 'Iniciar Chat'}
@@ -360,7 +360,7 @@ export default function StreamerDashboard() {
             disabled={!canPause}
             className={`w-11 h-11 flex items-center justify-center transition-all ${
               !canPause
-                ? 'bg-primary/40 cursor-not-allowed'
+                ? 'bg-primary/60 cursor-not-allowed'
                 : 'bg-primary hover:opacity-85 hover:-translate-y-px active:translate-y-0'
             }`}
             title="Pausar Chat"
@@ -372,9 +372,9 @@ export default function StreamerDashboard() {
           <button
             onClick={handleStopChat}
             disabled={!canStop}
-            className={`w-11 h-11 flex items-center justify-center transition-all ${
+            className={`w-11 h-11 flex items-center  justify-center transition-all ${
               !canStop
-                ? 'bg-primary/40 cursor-not-allowed'
+                ? 'bg-primary/60  cursor-not-allowed'
                 : 'bg-primary hover:opacity-85 hover:-translate-y-px active:translate-y-0'
             }`}
             title="Detener Chat"
